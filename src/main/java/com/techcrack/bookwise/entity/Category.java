@@ -12,36 +12,38 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(unique = true)
     private String name;
-    private LocalDateTime createAt;
-    @ManyToOne
-    private Users createdBy;
+    @Column(nullable = false)
+    private LocalDateTime createdAt;
+    @Column(nullable = false)
+    private long createdBy;
     private boolean isActive;
 
     public Category() {
         super();
     }
 
-    public Category(String name, Users createdBy, LocalDateTime createAt) {
+    public Category(String name, long createdBy, LocalDateTime createAt) {
         this.name = name;
         this.createdBy = createdBy;
-        this.createAt = createAt;
+        this.createdAt = createAt;
         this.isActive  = true;
     }
 
-    public LocalDateTime getCreateAt() {
-        return createAt;
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 
-    public void setCreateAt(LocalDateTime createAt) {
-        this.createAt = createAt;
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 
-    public Users getCreatedBy() {
+    public long getCreatedBy() {
         return createdBy;
     }
 
-    public void setCreatedBy(Users createdBy) {
+    public void setCreatedBy(long createdBy) {
         this.createdBy = createdBy;
     }
 
@@ -87,7 +89,7 @@ public class Category {
                 "name='" + name + '\'' +
                 ", isActive=" + isActive +
                 ", createdBy=" + createdBy +
-                ", createAt=" + createAt +
+                ", createAt=" + createdAt +
                 '}';
     }
 }

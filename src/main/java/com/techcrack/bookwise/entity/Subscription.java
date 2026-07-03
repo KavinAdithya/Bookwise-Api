@@ -1,5 +1,6 @@
 package com.techcrack.bookwise.entity;
 
+import com.techcrack.bookwise.constans.ApplicationData;
 import com.techcrack.bookwise.constans.Subscriptions;
 import jakarta.persistence.*;
 
@@ -14,26 +15,34 @@ public class Subscription {
     private Long id;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private Subscriptions subscriptions;
-    private LocalDateTime createAt;
+
+    private LocalDateTime createdAt;
     private Long updatedBy;
     private LocalDateTime updatedAt;
     private boolean isActive;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "userId")
+    @JoinColumn(name = "userId", nullable = false)
     private Users user;
 
     public Subscription() {
         super();
     }
 
-    public LocalDateTime getCreateAt() {
-        return createAt;
+    public void initialize() {
+        this.isActive = true;
+        this.createdAt = ApplicationData.SYSTEM_DATE;
+    }
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 
-    public void setCreateAt(LocalDateTime createAt) {
-        this.createAt = createAt;
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 
     public LocalDateTime getEndDate() {

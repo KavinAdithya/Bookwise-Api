@@ -17,18 +17,24 @@ public class BorrowBook {
     @ManyToOne
     private Users user;
     @ManyToOne
+    @JoinColumn(nullable = false)
     private Book book;
     private int quantity;
+    @Column(nullable = false)
     private LocalDateTime borrowDate;
+    @Column(nullable = false)
     private LocalDateTime dueDate;
     private LocalDateTime returnDate;
+    @Column(nullable = false)
     private int freeReturnDays;
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private BorrowStatus status;
     private double totalAmountPaidOnReturn;
+    @Column(nullable = false)
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    @ManyToOne
-    private Users updateBy;
+    private long updateBy;
 
     public BorrowBook() {
         super();
@@ -125,11 +131,11 @@ public class BorrowBook {
         this.totalAmountPaidOnReturn = totalAmountPaidOnReturn;
     }
 
-    public Users getUpdateBy() {
+    public long getUpdateBy() {
         return updateBy;
     }
 
-    public void setUpdateBy(Users updateBy) {
+    public void setUpdateBy(long updateBy) {
         this.updateBy = updateBy;
     }
 

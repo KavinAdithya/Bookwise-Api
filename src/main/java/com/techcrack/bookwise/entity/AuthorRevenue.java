@@ -14,14 +14,19 @@ public class AuthorRevenue {
     private Long id;
 
     @ManyToOne
+    @JoinColumn(nullable = false)
     private Author author;
     @ManyToOne
+    @JoinColumn(nullable = false)
     private Book book;
     @ManyToOne
+    @JoinColumn(nullable = false)
     private PurchaseBook purchaseBook;
     @ManyToOne
+    @JoinColumn(nullable = false)
     private BorrowBook borrowBook;
     private double amount;
+    @Column(nullable = false)
     private LocalDateTime createdAt;
 
     public AuthorRevenue() {

@@ -1,9 +1,9 @@
 package com.techcrack.bookwise.constans;
 
 public enum Subscriptions {
-    FREE_PLAN(5, 0, 3),
-    PREMIUM_PLAN(30, 100, 7),
-    LIFETIME_PLAN(Integer.MAX_VALUE, 9000, Integer.MAX_VALUE);
+    FREE(5, 0, 3),
+    PREMIUM(30, 100, 7),
+    LIFETIME(Integer.MAX_VALUE, 9000, Integer.MAX_VALUE);
 
 
     private final int days;

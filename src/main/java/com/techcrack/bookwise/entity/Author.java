@@ -12,10 +12,13 @@ public class Author {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private Status status;
     private String bio;
 
     @OneToOne
+    @JoinColumn(unique = true)
     private Users user;
 
     public Author() {

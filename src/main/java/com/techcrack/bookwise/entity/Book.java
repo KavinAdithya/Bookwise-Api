@@ -17,12 +17,16 @@ public class Book {
     private String ISBN;
 
     @OneToOne
+    @JoinColumn(nullable = false)
     private Users author;
     private String description;
 
     @ManyToOne
+    @JoinColumn(nullable = false)
     private Category category;
+    @Column(nullable = false)
     private String language;
+    @Column(nullable = false)
     private LocalDateTime publishDate;
     private int totalCopies;
     private int availableCopies;
@@ -32,8 +36,7 @@ public class Book {
     private boolean isActive;
     private LocalDateTime updatedAt;
 
-    @ManyToOne
-    private Users updatedBy;
+    private long updatedBy;
 
     public Book() {
     }
@@ -175,11 +178,11 @@ public class Book {
         this.updatedAt = updatedAt;
     }
 
-    public Users getUpdatedBy() {
+    public long getUpdatedBy() {
         return updatedBy;
     }
 
-    public void setUpdatedBy(Users updatedBy) {
+    public void setUpdatedBy(long updatedBy) {
         this.updatedBy = updatedBy;
     }
 

@@ -11,16 +11,20 @@ public class AuditLog {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    @Column(nullable = false)
     private String action;
+    @Column(nullable = false)
     private String oldValue;
+    @Column(nullable = false)
     private String newValue;
+    @Column(nullable = false)
     private String entityType;
+    @Column(nullable = false)
     private Long entityId;
+    @Column(nullable = false)
     private LocalDateTime loggedAt;
-
-    @ManyToOne
-    private Users user;
+    @Column(nullable = false)
+    private long userId;
 
     public AuditLog() {
         super();
@@ -66,12 +70,12 @@ public class AuditLog {
         this.loggedAt = loggedAt;
     }
 
-    public Users getLoggerUser() {
-        return user;
+    public long getUserId() {
+        return userId;
     }
 
-    public void setLoggerUser(Users user) {
-        this.user = user;
+    public void setUserId(long userId) {
+        this.userId = userId;
     }
 
     public String getNewValue() {
@@ -109,7 +113,7 @@ public class AuditLog {
                 ", entityId=" + entityId +
                 ", entityType='" + entityType + '\'' +
                 ", loggedAt=" + loggedAt +
-                ", loggerUserId=" + user.getId() +
+                ", loggerUserId=" + userId +
                 ", newValue='" + newValue + '\'' +
                 ", oldValue='" + oldValue + '\'' +
                 '}';

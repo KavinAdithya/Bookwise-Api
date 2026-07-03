@@ -1,5 +1,6 @@
 package com.techcrack.bookwise.entity;
 
+import com.techcrack.bookwise.constans.ApplicationData;
 import com.techcrack.bookwise.constans.Roles;
 import jakarta.persistence.*;
 
@@ -12,23 +13,37 @@ public class Users {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(nullable = false)
     private String name;
+    @Column(unique = true, nullable = false)
     private String email;
+    @Column(unique = true, nullable = false)
+    private String username;
+    @Column(nullable = false)
     private String password;
     private String address;
+    @Column(unique = true, nullable = false)
     private String contact;
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private Roles role;
     private boolean isActive;
+    @Column(nullable = false)
     private LocalDateTime createdAt;
     private Long updatedBy;
     private LocalDateTime updatedAt;
 
     @OneToOne
-    @JoinColumn(name = "SubscriptionId")
+    @JoinColumn(name = "SubscriptionId", nullable = false)
     private Subscription subscription;
 
     public Users() {
         super();
+    }
+
+    public void initialize() {
+        isActive = true;
+        createdAt = ApplicationData.SYSTEM_DATE;
     }
 
     public String getAddress() {
@@ -127,21 +142,30 @@ public class Users {
         this.updatedBy = updatedBy;
     }
 
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Users users)) return false;
-        return isActive() == users.isActive() && Objects.equals(getId(), users.getId()) && Objects.equals(getName(), users.getName()) && Objects.equals(getEmail(), users.getEmail()) && Objects.equals(getPassword(), users.getPassword()) && Objects.equals(getAddress(), users.getAddress()) && Objects.equals(getContact(), users.getContact()) && getRole() == users.getRole() && Objects.equals(getSubscription(), users.getSubscription());
+        return isActive() == users.isActive() && Objects.equals(getId(), users.getId()) && Objects.equals(getName(), users.getName()) && Objects.equals(getEmail(), users.getEmail()) && Objects.equals(getPassword(), users.getPassword()) && Objects.equals(getAddress(), users.getAddress()) && Objects.equals(getContact(), users.getContact()) && getRole() == users.getRole() && Objects.equals(getSubscription(), users.getSubscription()) && Objects.equals(getUsername(), users.getUsername());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getName(), getEmail(), getPassword(), getAddress(), getContact(), getRole(), isActive(), getSubscription());
+        return Objects.hash(getId(), getName(), getEmail(), getPassword(), getAddress(), getContact(), getRole(), isActive(), getSubscription(), getUsername());
     }
 
     @Override
     public String toString() {
         return "Users{" +
+                "username='" + username + '\'' +
                 "address='" + address + '\'' +
                 ", contact='" + contact + '\'' +
                 ", createdAt=" + createdAt +

@@ -12,11 +12,16 @@ public class PurchaseBook {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
+    @JoinColumn(nullable = false)
     private Users user;
     @ManyToOne
+    @JoinColumn(nullable = false)
     private Book book;
     private int quantity;
+
+    @Column(nullable = false)
     private LocalDateTime purchaseDate;
+    @Column(nullable = false)
     private LocalDateTime createdAt;
     private double totalAmount;
 

@@ -11,12 +11,13 @@ public class AdminIncome {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    @Column(nullable = false)
     private String sourceType;
+    @Column(nullable = false)
     private Long sourceId;
     private double amount;
+    @Column(nullable = false)
     private LocalDateTime incomeDate;
-    private LocalDateTime createdAt;
 
     public AdminIncome() {
         super();
@@ -28,14 +29,6 @@ public class AdminIncome {
 
     public void setAmount(double amount) {
         this.amount = amount;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
     }
 
     public Long getId() {
@@ -85,8 +78,7 @@ public class AdminIncome {
     @Override
     public String toString() {
         return "AdminIncome{" +
-                "createdAt=" + createdAt +
-                ", amount=" + amount +
+                " amount=" + amount +
                 ", incomeDate=" + incomeDate +
                 ", sourceId=" + sourceId +
                 ", sourceType='" + sourceType + '\'' +
