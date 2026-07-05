@@ -33,10 +33,6 @@ public class Users {
     private Long updatedBy;
     private LocalDateTime updatedAt;
 
-    @OneToOne
-    @JoinColumn(name = "SubscriptionId", nullable = false)
-    private Subscription subscription;
-
     public Users() {
         super();
     }
@@ -118,14 +114,6 @@ public class Users {
         this.role = role;
     }
 
-    public Subscription getSubscription() {
-        return subscription;
-    }
-
-    public void setSubscription(Subscription subscription) {
-        this.subscription = subscription;
-    }
-
     public LocalDateTime getUpdatedAt() {
         return updatedAt;
     }
@@ -154,12 +142,12 @@ public class Users {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Users users)) return false;
-        return isActive() == users.isActive() && Objects.equals(getId(), users.getId()) && Objects.equals(getName(), users.getName()) && Objects.equals(getEmail(), users.getEmail()) && Objects.equals(getPassword(), users.getPassword()) && Objects.equals(getAddress(), users.getAddress()) && Objects.equals(getContact(), users.getContact()) && getRole() == users.getRole() && Objects.equals(getSubscription(), users.getSubscription()) && Objects.equals(getUsername(), users.getUsername());
+        return isActive() == users.isActive() && Objects.equals(getId(), users.getId()) && Objects.equals(getName(), users.getName()) && Objects.equals(getEmail(), users.getEmail()) && Objects.equals(getPassword(), users.getPassword()) && Objects.equals(getAddress(), users.getAddress()) && Objects.equals(getContact(), users.getContact()) && getRole() == users.getRole() && Objects.equals(getUsername(), users.getUsername());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getName(), getEmail(), getPassword(), getAddress(), getContact(), getRole(), isActive(), getSubscription(), getUsername());
+        return Objects.hash(getId(), getName(), getEmail(), getPassword(), getAddress(), getContact(), getRole(), isActive(), getUsername());
     }
 
     @Override
@@ -173,7 +161,6 @@ public class Users {
                 ", isActive=" + isActive +
                 ", name='" + name + '\'' +
                 ", role=" + role +
-                ", subscription=" + subscription +
                 ", updatedBy=" + updatedBy +
                 ", updatedAt=" + updatedAt +
                 '}';

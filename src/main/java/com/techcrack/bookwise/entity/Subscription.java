@@ -101,6 +101,14 @@ public class Subscription {
         this.updatedBy = updatedBy;
     }
 
+    public Users getUser() {
+        return user;
+    }
+
+    public void setUser(Users user) {
+        this.user = user;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
