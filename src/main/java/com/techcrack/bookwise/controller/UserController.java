@@ -8,17 +8,18 @@ import com.techcrack.bookwise.entity.Subscription;
 import com.techcrack.bookwise.entity.Users;
 import com.techcrack.bookwise.service.SubscriptionService;
 import com.techcrack.bookwise.service.UserService;
-import com.techcrack.bookwise.utils.SubscriptionHelper;
-import com.techcrack.bookwise.utils.UserHelper;
+import com.techcrack.bookwise.utils.responseHelper.ApiResponseEntity;
+import com.techcrack.bookwise.utils.dtoMapper.SubscriptionHelper;
+import com.techcrack.bookwise.utils.dtoMapper.UserHelper;
+import com.techcrack.bookwise.utils.responseHelper.ResponseEntityHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/users")
 public class UserController {
     private final UserService service;
     private final UserHelper helper;
@@ -34,8 +35,8 @@ public class UserController {
         this.subscriptionHelper = subscriptionHelper;
     }
 
-    @PostMapping("/register")
-    public UserResponseDTO registerUser(@RequestBody UserRegisterDTO userRegisterDTO) {
+    @PostMapping("/users/register")
+    public ResponseEntity<ApiResponseEntity<UserResponseDTO>> registerUser(@RequestBody UserRegisterDTO userRegisterDTO) {
         logger.info("Request received to create a user with {}", userRegisterDTO.getUsername());
 
         Users user = helper.mapToUser(userRegisterDTO);
@@ -46,18 +47,28 @@ public class UserController {
         subscription = subscriptionService.register(subscription);
 
         logger.info("Request completed for create user {}", user.getUsername());
-        return helper.mapToUserResponse(user,
+        UserResponseDTO response =  helper.mapToUserResponse(user,
                     subscriptionHelper.mapToSubscriptionResponse(subscription)
                 );
+
+        return ResponseEntityHelper.buildSuccessResponse(
+                "User created successfully",
+                response
+        );
     }
 
     @PostMapping("/login")
-    public JwtAuthenticatedTokenResponseDTO authenticateUser(@RequestBody UserAuthenticateDTO userAuthenticateDTO) {
+    public ResponseEntity<ApiResponseEntity<JwtAuthenticatedTokenResponseDTO>> authenticateUser(@RequestBody UserAuthenticateDTO userAuthenticateDTO) {
         logger.info("Login Request received for {}", userAuthenticateDTO.getUsername());
 
         String token = service.authenticate(userAuthenticateDTO.getUsername(), userAuthenticateDTO.getPassword());
 
         logger.info("Login Request completed for {} Token generated : {}", userAuthenticateDTO.getPassword(), token);
-        return new JwtAuthenticatedTokenResponseDTO(token);
+        JwtAuthenticatedTokenResponseDTO response =  new JwtAuthenticatedTokenResponseDTO(token);
+
+        return ResponseEntityHelper.buildSuccessResponse(
+            "Authentication success! Token Generated",
+                    response
+        );
     }
 }

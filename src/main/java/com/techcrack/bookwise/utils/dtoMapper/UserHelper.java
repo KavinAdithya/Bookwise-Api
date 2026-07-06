@@ -1,11 +1,9 @@
-package com.techcrack.bookwise.utils;
+package com.techcrack.bookwise.utils.dtoMapper;
 
 import com.techcrack.bookwise.dtos.SubscriptionResponseDTO;
 import com.techcrack.bookwise.dtos.UserRegisterDTO;
 import com.techcrack.bookwise.dtos.UserResponseDTO;
-import com.techcrack.bookwise.entity.Subscription;
 import com.techcrack.bookwise.entity.Users;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component

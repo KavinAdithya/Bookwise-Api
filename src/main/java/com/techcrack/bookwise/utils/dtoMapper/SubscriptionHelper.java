@@ -1,7 +1,6 @@
-package com.techcrack.bookwise.utils;
+package com.techcrack.bookwise.utils.dtoMapper;
 
 import com.techcrack.bookwise.constans.ApplicationData;
-import com.techcrack.bookwise.constans.Subscriptions;
 import com.techcrack.bookwise.dtos.SubscriptionDTO;
 import com.techcrack.bookwise.dtos.SubscriptionResponseDTO;
 import com.techcrack.bookwise.entity.Subscription;
