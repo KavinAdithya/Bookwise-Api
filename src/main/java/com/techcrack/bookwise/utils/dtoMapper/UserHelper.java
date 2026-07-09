@@ -1,5 +1,6 @@
 package com.techcrack.bookwise.utils.dtoMapper;
 
+import com.techcrack.bookwise.constans.Roles;
 import com.techcrack.bookwise.dtos.SubscriptionResponseDTO;
 import com.techcrack.bookwise.dtos.UserRegisterDTO;
 import com.techcrack.bookwise.dtos.UserResponseDTO;
@@ -9,7 +10,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class UserHelper {
 
-    public Users mapToUser(UserRegisterDTO source) {
+    public Users mapToUser(UserRegisterDTO source, Roles role) {
         Users user = new Users();
 
         user.setAddress(source.getAddress());
@@ -19,7 +20,7 @@ public class UserHelper {
         user.setUsername(source.getUsername());
         user.setPassword(source.getPassword());
         user.setName(source.getName());
-        user.setRole(source.getRole());
+        user.setRole(role);
 
         return user;
     }

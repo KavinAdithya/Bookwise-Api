@@ -1,8 +1,15 @@
 package com.techcrack.bookwise.dtos;
 
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.techcrack.bookwise.constans.Status;
-import com.techcrack.bookwise.entity.Users;
 
+
+@JsonPropertyOrder({
+        "id",
+        "bio",
+        "status",
+        "user"
+})
 public class AuthorResponseDTO {
     private Long id;
     private String bio;

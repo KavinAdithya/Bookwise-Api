@@ -27,7 +27,7 @@ public class SecurityConfiguration {
                         .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**")
                         .permitAll()
                         .requestMatchers("/error").permitAll()
-                        .requestMatchers("/users/login", "/users/register")
+                        .requestMatchers("/login", "/**/register")
                         .permitAll()
                         .anyRequest()
                         .authenticated())

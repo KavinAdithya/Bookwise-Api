@@ -1,21 +1,31 @@
 package com.techcrack.bookwise.dtos;
 
 
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+
+@JsonPropertyOrder({
+        "id",
+        "username",
+        "email",
+        "contact",
+        "address",
+        "subscription"
+})
 public class UserResponseDTO {
     private Long id;
     private String email;
     private String username;
     private String address;
     private String contact;
-    private SubscriptionResponseDTO subscriptionResponseDTO;
+    private SubscriptionResponseDTO subscription;
 
-    public UserResponseDTO(String address, String contact, String email, Long id, String username, SubscriptionResponseDTO subscriptionResponseDTO) {
+    public UserResponseDTO(String address, String contact, String email, Long id, String username, SubscriptionResponseDTO subscription) {
         this.address = address;
         this.contact = contact;
         this.email = email;
         this.id = id;
         this.username = username;
-        this.subscriptionResponseDTO = subscriptionResponseDTO;
+        this.subscription = subscription;
     }
 
     public String getAddress() {
@@ -58,12 +68,12 @@ public class UserResponseDTO {
         this.username = username;
     }
 
-    public SubscriptionResponseDTO getSubscriptionResponseDTO() {
-        return subscriptionResponseDTO;
+    public SubscriptionResponseDTO getSubscription() {
+        return subscription;
     }
 
-    public void setSubscriptionResponseDTO(SubscriptionResponseDTO subscriptionResponseDTO) {
-        this.subscriptionResponseDTO = subscriptionResponseDTO;
+    public void setSubscription(SubscriptionResponseDTO subscription) {
+        this.subscription = subscription;
     }
 
     @Override
@@ -74,7 +84,7 @@ public class UserResponseDTO {
                 ", email='" + email + '\'' +
                 ", username='" + username + '\'' +
                 ", contact='" + contact + '\'' +
-                ", subscription='" + subscriptionResponseDTO + '\'' +
+                ", subscription='" + subscription + '\'' +
                 '}';
     }
 }

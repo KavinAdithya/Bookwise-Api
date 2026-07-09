@@ -9,9 +9,9 @@ import com.techcrack.bookwise.constans.ApplicationData;
 		"success",
 		"message",
 		"data",
-		"localDateTime",
+		"timestamp",
 })
-public record ApiResponseEntity<T>(boolean success, String message, T data, LocalDateTime localDateTime) {
+public record ApiResponseEntity<T>(boolean success, String message, T data, LocalDateTime timestamp) {
 
 	public static <T> ApiResponseEntity<T> success(String message, T data) {
 		return new ApiResponseEntity<T>(

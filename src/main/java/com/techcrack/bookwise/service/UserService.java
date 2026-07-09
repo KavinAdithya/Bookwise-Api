@@ -91,6 +91,13 @@ public class UserService {
                 )
         );
 
+        System.out.println(
+                encoder.matches(
+                        "Alice@123",
+                        "$2a$10$9spQ2.ugW9gtyTBfguQKQMOcgYmK9a4NOIB3o7o78Mb3F9SOIOoNfa"
+                )
+        );
+
         logger.info("Authentication Details are valid");
 
         return jwtService.generateToken(username);

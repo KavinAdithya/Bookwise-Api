@@ -1,22 +1,24 @@
 package com.techcrack.bookwise.dtos;
 
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.techcrack.bookwise.constans.Subscriptions;
-import jakarta.persistence.Column;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-
 import java.time.LocalDateTime;
 
+@JsonPropertyOrder({
+        "plan",
+        "startDate",
+        "endDate"
+})
 public class SubscriptionResponseDTO {
 
     private LocalDateTime startDate;
     private LocalDateTime endDate;
-    private Subscriptions subscriptions;
+    private Subscriptions plan;
 
-    public SubscriptionResponseDTO(LocalDateTime endDate, LocalDateTime startDate, Subscriptions subscriptions) {
+    public SubscriptionResponseDTO(LocalDateTime endDate, LocalDateTime startDate, Subscriptions plan) {
         this.endDate = endDate;
         this.startDate = startDate;
-        this.subscriptions = subscriptions;
+        this.plan = plan;
     }
 
     public LocalDateTime getEndDate() {
@@ -35,12 +37,12 @@ public class SubscriptionResponseDTO {
         this.startDate = startDate;
     }
 
-    public Subscriptions getSubscriptions() {
-        return subscriptions;
+    public Subscriptions getPlan() {
+        return plan;
     }
 
-    public void setSubscriptions(Subscriptions subscriptions) {
-        this.subscriptions = subscriptions;
+    public void setPlan(Subscriptions plan) {
+        this.plan = plan;
     }
 
     @Override
@@ -48,7 +50,7 @@ public class SubscriptionResponseDTO {
         return "SubscriptionResponseDTO{" +
                 "endDate=" + endDate +
                 ", startDate=" + startDate +
-                ", subscriptions=" + subscriptions +
+                ", subscriptions=" + plan +
                 '}';
     }
 }

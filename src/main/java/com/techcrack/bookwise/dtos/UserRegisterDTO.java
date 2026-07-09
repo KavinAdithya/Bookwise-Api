@@ -1,8 +1,5 @@
 package com.techcrack.bookwise.dtos;
 
-import com.techcrack.bookwise.constans.Roles;
-import com.techcrack.bookwise.entity.Subscription;
-
 public class UserRegisterDTO {
     private String name;
     private String email;
@@ -10,24 +7,22 @@ public class UserRegisterDTO {
     private String password;
     private String address;
     private String contact;
-    private Roles role;
-    private SubscriptionDTO subscription;
+    private SubscriptionRegisterDTO subscription;
 
-    public UserRegisterDTO(String address, String contact, String email, String name, String password, Roles role, String username) {
+    public UserRegisterDTO(String address, String contact, String email, String name, String password, String username) {
         this.address = address;
         this.contact = contact;
         this.email = email;
         this.name = name;
         this.password = password;
-        this.role = role;
         this.username = username;
     }
 
-    public SubscriptionDTO getSubscription() {
+    public SubscriptionRegisterDTO getSubscription() {
         return subscription;
     }
 
-    public void setSubscription(SubscriptionDTO subscription) {
+    public void setSubscription(SubscriptionRegisterDTO subscription) {
         this.subscription = subscription;
     }
 
@@ -71,14 +66,6 @@ public class UserRegisterDTO {
         this.password = password;
     }
 
-    public Roles getRole() {
-        return role;
-    }
-
-    public void setRole(Roles role) {
-        this.role = role;
-    }
-
     public String getUsername() {
         return username;
     }
@@ -96,7 +83,6 @@ public class UserRegisterDTO {
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 ", contact='" + contact + '\'' +
-                ", role=" + role + '\'' +
                 ", subscription=" + subscription +
                 '}';
     }
