@@ -31,7 +31,7 @@ public class UserService {
     }
 
     public Users register(Users user) {
-        logger.info("User registration started with {}", user);
+        logger.info("User registration started with {}", user.getUsername());
 
         Errors errors = validateData(user);
 
@@ -48,16 +48,19 @@ public class UserService {
     }
 
     private Errors validateData(Users user) {
+        logger.debug("Validating User data process started");
         Errors errors = new Errors();
 
         if (!isValidPassWord(user.getPassword())) {
             errors.addErrorMessage("Invalid Password : Ensure Password length is min 8 and contains alphanumeric and special letters");
         }
 
+        logger.debug("Validating user data is completed");
         return errors;
     }
 
     private boolean isValidPassWord(String password) {
+        logger.debug("Password Validating Process Started for {}", password);
 
         if (password.length() < 8) {
             return false;
@@ -75,15 +78,21 @@ public class UserService {
             }
 
             if (isDigit && isAlpha && isSpl) {
+                logger.debug("Password is Validated successfully.");
                 return true;
             }
         }
+
+        logger.debug("Password Validation Failed Due to IsDigit = {}, IsAlpha = {}, IsSpecialCharacter = {}", isDigit, isAlpha, isSpl);
 
         return false;
     }
 
     public String authenticate(String username, String password) {
-        logger.info("Authentication started for {} and {}", username, password);
+
+        logger.info("Authentication Process started for {}", username);
+
+        logger.debug("Authentication  Data  {} and {}", username, password);
 
         Authentication authentication = authManager.authenticate(
                 new UsernamePasswordAuthenticationToken(

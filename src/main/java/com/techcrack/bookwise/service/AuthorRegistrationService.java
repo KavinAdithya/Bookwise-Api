@@ -24,11 +24,13 @@ public class AuthorRegistrationService {
         logger.info("Author Registration process started {}", author.getUser().getUsername());
 
         RegistrationResult<Users, Subscription> userRegistrationResult = userRegistrationService.register(author.getUser(), subscription);
-
         author.setUser(userRegistrationResult.entity());
+
+        logger.debug("User & Subscription Registered Info : {}", userRegistrationResult);
 
         author = service.register(author);
 
+        logger.debug("Saved Author Info : {}" , author);
         logger.info("Author Registration Process done for {}", author.getUser().getUsername());
 
         return new RegistrationResult<>(author, userRegistrationResult.relatedEntity());

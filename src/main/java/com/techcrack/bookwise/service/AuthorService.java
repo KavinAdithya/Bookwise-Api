@@ -21,7 +21,9 @@ public class AuthorService {
         logger.info("Registration process for author has started {}", author.getUser().getUsername());
 
         author = repo.save(author);
-        
+
+        logger.debug("Registered Author Info : {}", author);
+
         logger.info("Registration process for author has completed {} and moved for admin verification", author.getUser().getUsername());
         return author;
     }

@@ -17,8 +17,9 @@ public class SubscriptionService {
     }
 
     public Subscription register(Subscription subscription) {
-        logger.info("{} User subscription save process started {}", subscription.getUser().getUsername(), subscription.getSubscriptions());
+        logger.info("{} User subscription Register process started {}", subscription.getUser().getUsername(), subscription.getSubscriptions());
         subscription =  repo.save(subscription);
+        logger.debug("Subscription Saved Info : {}", subscription);
         logger.info("{} User subscription process done {}", subscription.getUser().getUsername(), subscription.getSubscriptions());
         return subscription;
     }

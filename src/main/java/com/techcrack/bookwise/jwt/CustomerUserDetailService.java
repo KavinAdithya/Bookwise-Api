@@ -27,12 +27,14 @@ public class CustomerUserDetailService implements UserDetailsService {
     @Override
     @NonNull
     public UserDetails loadUserByUsername(@NonNull String username) throws UsernameNotFoundException {
-        logger.info("Spring Security Chain Filter for {}", username);
+        logger.info("Spring Security Loading User for {}", username);
 
         Users user = repo.findUserByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("No User Found"));
 
-        logger.info("Authentication done in Spring Security Chain Filter");
+        logger.debug("User Loaded Info {}", user);
+
+        logger.info("User Loaded Process done");
         return new UserPrincipal(user);
     }
 }
