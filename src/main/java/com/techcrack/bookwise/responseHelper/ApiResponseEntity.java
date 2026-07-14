@@ -1,4 +1,4 @@
-package com.techcrack.bookwise.utils.responseHelper;
+package com.techcrack.bookwise.responseHelper;
 
 import java.time.LocalDateTime;
 

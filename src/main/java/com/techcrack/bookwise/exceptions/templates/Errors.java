@@ -1,4 +1,4 @@
-package com.techcrack.bookwise.utils.exceptions.templates;
+package com.techcrack.bookwise.exceptions.templates;
 
 import java.util.ArrayList;
 import java.util.List;

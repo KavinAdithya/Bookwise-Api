@@ -1,10 +1,10 @@
 package com.techcrack.bookwise.service;
 
 import com.techcrack.bookwise.entity.Users;
-import com.techcrack.bookwise.exceptions.InvalidDataException;
+import com.techcrack.bookwise.exceptions.customized.InvalidDataException;
 import com.techcrack.bookwise.jwt.JwtService;
 import com.techcrack.bookwise.repository.UserRepository;
-import com.techcrack.bookwise.utils.exceptions.templates.Errors;
+import com.techcrack.bookwise.exceptions.templates.Errors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;

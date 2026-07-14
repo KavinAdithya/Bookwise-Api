@@ -1,7 +1,7 @@
-package com.techcrack.bookwise.utils.exceptions.handler;
+package com.techcrack.bookwise.exceptions.handler;
 
-import com.techcrack.bookwise.utils.responseHelper.ApiResponseEntity;
-import com.techcrack.bookwise.utils.responseHelper.ResponseEntityHelper;
+import com.techcrack.bookwise.responseHelper.ApiResponseEntity;
+import com.techcrack.bookwise.responseHelper.ResponseEntityHelper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;

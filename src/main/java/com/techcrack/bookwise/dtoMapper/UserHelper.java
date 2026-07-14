@@ -1,4 +1,4 @@
-package com.techcrack.bookwise.utils.dtoMapper;
+package com.techcrack.bookwise.dtoMapper;
 
 import com.techcrack.bookwise.constans.Roles;
 import com.techcrack.bookwise.dtos.SubscriptionResponseDTO;

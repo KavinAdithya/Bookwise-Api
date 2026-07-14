@@ -2,7 +2,7 @@ package com.techcrack.bookwise.service;
 
 import com.techcrack.bookwise.entity.Subscription;
 import com.techcrack.bookwise.entity.Users;
-import com.techcrack.bookwise.utils.responseHelper.RegistrationResult;
+import com.techcrack.bookwise.responseHelper.RegistrationResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;

@@ -1,4 +1,4 @@
-package com.techcrack.bookwise.utils.responseHelper;
+package com.techcrack.bookwise.responseHelper;
 
 import org.springframework.http.ResponseEntity;
 

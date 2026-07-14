@@ -30,7 +30,7 @@ public class SecurityConfiguration {
                         .requestMatchers("/login", "/**/register")
                         .permitAll()
                         .anyRequest()
-                        .authenticated())
+                        .permitAll()) // For Testing Enabled Authentication less
 //                .httpBasic(Customizer.withDefaults())
                 .sessionManagement(session -> session.sessionCreationPolicy(
                         SessionCreationPolicy.STATELESS
