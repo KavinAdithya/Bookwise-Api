@@ -18,7 +18,7 @@ public class Book {
 
     @OneToOne
     @JoinColumn(nullable = false)
-    private Users author;
+    private Author author;
     private String description;
 
     @ManyToOne
@@ -42,7 +42,7 @@ public class Book {
     }
 
     // Using this constructor when new book created
-    public Book(int totalCopies, String title, double purchasePrice, String language, String ISBN, String description, double commissionPercentage, Category category, double borrowFee, Users author) {
+    public Book(int totalCopies, String title, double purchasePrice, String language, String ISBN, String description, double commissionPercentage, Category category, double borrowFee, Author author) {
         this.totalCopies = totalCopies;
         this.title = title;
         this.purchasePrice = purchasePrice;
@@ -58,11 +58,11 @@ public class Book {
         this.publishDate = ApplicationData.SYSTEM_DATE;
     }
 
-    public Users getAuthor() {
+    public Author getAuthor() {
         return author;
     }
 
-    public void setAuthor(Users author) {
+    public void setAuthor(Author author) {
         this.author = author;
     }
 

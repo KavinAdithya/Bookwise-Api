@@ -62,4 +62,11 @@ public class CategoryService {
 
         return category;
     }
+
+    public Category get(long id) {
+        logger.info("Fetching Category By Id {}", id);
+
+        return repo.findById(id)
+                .orElseThrow(() -> new ObjectNotFoundException(Category.class, "Category not found with Id : " + id));
+    }
 }
