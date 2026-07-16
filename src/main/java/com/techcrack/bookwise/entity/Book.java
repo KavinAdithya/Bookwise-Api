@@ -13,12 +13,15 @@ public class Book {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(unique = true)
     private String title;
+    @Column(unique = true)
     private String ISBN;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(nullable = false)
     private Author author;
+    @Column(unique = true)
     private String description;
 
     @ManyToOne
@@ -41,20 +44,8 @@ public class Book {
     public Book() {
     }
 
-    // Using this constructor when new book created
-    public Book(int totalCopies, String title, double purchasePrice, String language, String ISBN, String description, double commissionPercentage, Category category, double borrowFee, Author author) {
-        this.totalCopies = totalCopies;
-        this.title = title;
-        this.purchasePrice = purchasePrice;
-        this.language = language;
-        this.ISBN = ISBN;
-        this.description = description;
-        this.commissionPercentage = commissionPercentage;
-        this.category = category;
-        this.borrowFee = borrowFee;
-        this.author = author;
+    public void initialize() {
         this.isActive = true;
-        this.availableCopies = totalCopies;
         this.publishDate = ApplicationData.SYSTEM_DATE;
     }
 

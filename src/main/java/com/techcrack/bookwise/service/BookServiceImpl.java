@@ -55,8 +55,7 @@ public class BookServiceImpl implements BookService {
         entity.setAuthor(author);
         logger.debug("Author successfully set to book Book : {}", entity);
 
-        Category category = categoryService.get(entity.getCategory().getId());
-
+        Category category = categoryService.getCategoryByName(entity.getCategory().getName());
         logger.debug("Category Info : {}", category);
         entity.setCategory(category);
 
