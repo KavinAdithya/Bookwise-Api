@@ -8,7 +8,7 @@ import com.techcrack.bookwise.dtos.UserResponseDTO;
 import com.techcrack.bookwise.entity.Subscription;
 import com.techcrack.bookwise.entity.Users;
 import com.techcrack.bookwise.service.UserRegistrationService;
-import com.techcrack.bookwise.service.UserService;
+import com.techcrack.bookwise.service.UserServiceImpl;
 import com.techcrack.bookwise.responseHelper.ApiResponseEntity;
 import com.techcrack.bookwise.dtoMapper.SubscriptionHelper;
 import com.techcrack.bookwise.dtoMapper.UserHelper;
@@ -24,12 +24,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class UserController {
     private final UserRegistrationService userRegistrationService;
-    private final UserService service;
+    private final UserServiceImpl service;
     private final UserHelper helper;
     private final Logger logger;
     private final SubscriptionHelper subscriptionHelper;
 
-    public UserController(UserRegistrationService userRegistrationService, UserService service, UserHelper helper, SubscriptionHelper subscriptionHelper) {
+    public UserController(UserRegistrationService userRegistrationService, UserServiceImpl service, UserHelper helper, SubscriptionHelper subscriptionHelper) {
         this.userRegistrationService = userRegistrationService;
         this.service = service;
         this.helper = helper;

@@ -21,7 +21,6 @@ public class Book {
     @ManyToOne
     @JoinColumn(nullable = false)
     private Author author;
-    @Column(unique = true)
     private String description;
 
     @ManyToOne

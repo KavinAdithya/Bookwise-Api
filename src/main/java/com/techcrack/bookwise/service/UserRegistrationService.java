@@ -9,11 +9,11 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class UserRegistrationService {
-    private final UserService service;
+    private final UserServiceImpl service;
     private final SubscriptionService subscriptionService;
     private final Logger logger;
 
-    public UserRegistrationService(UserService service, SubscriptionService subscriptionService ) {
+    public UserRegistrationService(UserServiceImpl service, SubscriptionService subscriptionService ) {
         this.service = service;
         this.subscriptionService = subscriptionService;
         this.logger = LoggerFactory.getLogger(UserRegistrationService.class);

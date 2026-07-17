@@ -4,4 +4,6 @@ import com.techcrack.bookwise.entity.Book;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface BookRepository extends JpaRepository<Book, Long> {
+    boolean existsByISBN(String ISBN);
+    boolean existsByTitle(String title);
 }

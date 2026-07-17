@@ -1,7 +1,9 @@
 package com.techcrack.bookwise.service;
 
+import com.techcrack.bookwise.abstractions.UserService;
 import com.techcrack.bookwise.entity.Users;
 import com.techcrack.bookwise.exceptions.customized.InvalidDataException;
+import com.techcrack.bookwise.exceptions.customized.ObjectNotFoundException;
 import com.techcrack.bookwise.jwt.JwtService;
 import com.techcrack.bookwise.repository.UserRepository;
 import com.techcrack.bookwise.exceptions.templates.Errors;
@@ -15,19 +17,19 @@ import org.springframework.stereotype.Service;
 
 
 @Service
-public class UserService {
+public class UserServiceImpl implements UserService {
     private final UserRepository repo;
     private final PasswordEncoder encoder;
     private final AuthenticationManager authManager;
     private final JwtService jwtService;
     private final Logger logger;
 
-    public UserService(UserRepository repo, PasswordEncoder encoder, AuthenticationManager authManager, JwtService jwtService) {
+    public UserServiceImpl(UserRepository repo, PasswordEncoder encoder, AuthenticationManager authManager, JwtService jwtService) {
         this.repo = repo;
         this.encoder = encoder;
         this.authManager = authManager;
         this.jwtService = jwtService;
-        this.logger = LoggerFactory.getLogger(UserService.class);
+        this.logger = LoggerFactory.getLogger(UserServiceImpl.class);
     }
 
     public Users register(Users user) {
@@ -45,6 +47,22 @@ public class UserService {
 
         logger.info("User data is validated successfully.");
         return repo.save(user);
+    }
+
+    @Override
+    public void remove(long key) {
+
+    }
+
+    @Override
+    public Users update(Users entity) {
+        return null;
+    }
+
+    @Override
+    public Users get(long key) {
+        return repo.findById(key)
+                .orElseThrow(() -> new ObjectNotFoundException(Users.class, "User Not Found"));
     }
 
     private Errors validateData(Users user) {
