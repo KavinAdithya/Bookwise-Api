@@ -8,6 +8,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class AuthorService {
 
@@ -38,5 +40,20 @@ public class AuthorService {
     public boolean isAuthorValid(Author author) {
         return author != null && author.getUser() != null &&
                 author.getUser().isActive() && author.getStatus()== Status.APPROVED;
+    }
+
+    public List<Author> getPendingAuthors() {
+        return repo.findAllByStatusAndIsActiveTrue(Status.PENDING);
+    }
+
+    public int approveAuthors(List<Long> authorIds) {
+        logger.info("Updating Author status to approve process started");
+
+        int rowsAffected = repo.updateAuthorStatusByIds(Status.APPROVED, authorIds);
+
+        logger.debug("Total Authors {} Affected rows {}", authorIds, rowsAffected);
+        logger.info("Author Approval process done for author ids {}", authorIds);
+
+        return rowsAffected;
     }
 }

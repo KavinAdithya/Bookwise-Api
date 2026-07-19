@@ -21,6 +21,8 @@ public class Author {
     @JoinColumn(unique = true)
     private Users user;
 
+    private boolean isActive;
+
     public Author() {
         super();
     }
@@ -29,6 +31,10 @@ public class Author {
         this.bio = bio;
         this.status = status;
         this.user = user;
+    }
+
+    public void initialize() {
+        isActive = true;
     }
 
     public String getBio() {
@@ -61,6 +67,14 @@ public class Author {
 
     public void setUser(Users user) {
         this.user = user;
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
     }
 
     @Override
