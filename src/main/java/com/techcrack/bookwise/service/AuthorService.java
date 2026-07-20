@@ -1,7 +1,10 @@
 package com.techcrack.bookwise.service;
 
+import com.techcrack.bookwise.constans.ApplicationData;
 import com.techcrack.bookwise.constans.Status;
+import com.techcrack.bookwise.constans.Subscriptions;
 import com.techcrack.bookwise.entity.Author;
+import com.techcrack.bookwise.entity.Subscription;
 import com.techcrack.bookwise.exceptions.customized.ObjectNotFoundException;
 import com.techcrack.bookwise.repository.AuthorRepository;
 import org.slf4j.Logger;
@@ -14,10 +17,12 @@ import java.util.List;
 public class AuthorService {
 
     private final AuthorRepository repo;
+    private final SubscriptionService subscriptionService;
     private final Logger logger;
 
-    public AuthorService(AuthorRepository repo) {
+    public AuthorService(AuthorRepository repo, SubscriptionService subscriptionService) {
         this.repo = repo;
+        this.subscriptionService = subscriptionService;
         this.logger = LoggerFactory.getLogger(AuthorService.class);
     }
 
@@ -54,6 +59,12 @@ public class AuthorService {
         logger.debug("Total Authors {} Affected rows {}", authorIds, rowsAffected);
         logger.info("Author Approval process done for author ids {}", authorIds);
 
+        for (long authorId : authorIds) {
+            Subscription subscription = subscriptionService.subscriptionPremiumForOneMonth(authorId, ApplicationData.SYSTEM_DATE);
+            logger.debug("Subscription info {}", subscription);
+        }
+
+        logger.info("One Month Free Premium Subscription activated successfully");
         return rowsAffected;
     }
 }

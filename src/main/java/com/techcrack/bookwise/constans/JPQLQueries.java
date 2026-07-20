@@ -6,4 +6,5 @@ public class JPQLQueries {
                 SET a.status = :status
                 WHERE a.id IN :ids
             """;
+
 }

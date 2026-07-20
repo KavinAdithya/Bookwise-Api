@@ -1,5 +1,6 @@
 package com.techcrack.bookwise.service;
 
+import com.techcrack.bookwise.abstractions.UserService;
 import com.techcrack.bookwise.entity.Subscription;
 import com.techcrack.bookwise.entity.Users;
 import com.techcrack.bookwise.responseHelper.RegistrationResult;
@@ -9,11 +10,11 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class UserRegistrationService {
-    private final UserServiceImpl service;
+    private final UserService service;
     private final SubscriptionService subscriptionService;
     private final Logger logger;
 
-    public UserRegistrationService(UserServiceImpl service, SubscriptionService subscriptionService ) {
+    public UserRegistrationService(UserService service, SubscriptionService subscriptionService ) {
         this.service = service;
         this.subscriptionService = subscriptionService;
         this.logger = LoggerFactory.getLogger(UserRegistrationService.class);

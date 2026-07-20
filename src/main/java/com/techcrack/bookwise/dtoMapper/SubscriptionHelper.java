@@ -1,6 +1,7 @@
 package com.techcrack.bookwise.dtoMapper;
 
 import com.techcrack.bookwise.constans.ApplicationData;
+import com.techcrack.bookwise.constans.Subscriptions;
 import com.techcrack.bookwise.dtos.SubscriptionRegisterDTO;
 import com.techcrack.bookwise.dtos.SubscriptionResponseDTO;
 import com.techcrack.bookwise.entity.Subscription;
@@ -11,7 +12,7 @@ public class SubscriptionHelper {
     public Subscription mapToSubscription(SubscriptionRegisterDTO source) {
         Subscription subscription = new Subscription();
 
-        subscription.setSubscriptions(source.getPlan());
+        subscription.setSubscriptions(Subscriptions.FREE);
         subscription.setStartDate(ApplicationData.SYSTEM_DATE);
         subscription.setEndDate(
                 ApplicationData.SYSTEM_DATE.plusDays(subscription.getSubscriptions().getDays())

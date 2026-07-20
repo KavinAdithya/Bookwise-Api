@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 public class CategoryHelper {
     public Category mapToCategory(CategoryRequestDTO categoryRequestDTO) {
         return new Category(categoryRequestDTO.getName(),
-               1, // Hard Code
+               ApplicationData.HARD_CODED_CURRENT_ID,
                 ApplicationData.SYSTEM_DATE);
     }
 
