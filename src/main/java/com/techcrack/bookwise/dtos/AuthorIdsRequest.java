@@ -2,7 +2,7 @@ package com.techcrack.bookwise.dtos;
 
 import java.util.List;
 
-public class AuthorApproveRequest {
+public class AuthorIdsRequest {
     private List<Long> authorIds;
 
     public List<Long> getAuthorIds() {

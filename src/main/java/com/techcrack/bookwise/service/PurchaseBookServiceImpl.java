@@ -37,8 +37,12 @@ public class PurchaseBookServiceImpl implements PurchaseBookService {
 
         logger.info("Book Quantity Available");
 
-        bookService.updateBookAvailability(entity.getBook().getId(), entity.getQuantity());
+        boolean res = bookService.updateBookAvailability(entity.getBook().getId(), entity.getQuantity());
 
+        if (!res) {
+            throw new InvalidDataException("Failed to update book count");
+        }
+        
         populateRelationships(entity);
 
         entity = repo.save(entity);

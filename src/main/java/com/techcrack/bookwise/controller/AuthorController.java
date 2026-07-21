@@ -1,6 +1,6 @@
 package com.techcrack.bookwise.controller;
 
-import com.techcrack.bookwise.dtos.AuthorApproveRequest;
+import com.techcrack.bookwise.dtos.AuthorIdsRequest;
 import com.techcrack.bookwise.dtos.AuthorRegisterDTO;
 import com.techcrack.bookwise.dtos.AuthorResponseDTO;
 import com.techcrack.bookwise.dtos.PendingAuthorDTO;
@@ -69,7 +69,7 @@ public class AuthorController {
     }
 
     @PostMapping("/approve")
-    public ResponseEntity<ApiResponseEntity<String>> approveAuthors(@RequestBody AuthorApproveRequest request) {
+    public ResponseEntity<ApiResponseEntity<String>> approveAuthors(@RequestBody AuthorIdsRequest request) {
         logger.info("Request Received to approve Authors");
 
         int authorsCount = service.approveAuthors(request.getAuthorIds());

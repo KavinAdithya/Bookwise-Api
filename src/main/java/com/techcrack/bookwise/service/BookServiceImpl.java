@@ -2,6 +2,7 @@ package com.techcrack.bookwise.service;
 
 import com.techcrack.bookwise.abstractions.BookService;
 import com.techcrack.bookwise.constans.ApplicationData;
+import com.techcrack.bookwise.constans.Status;
 import com.techcrack.bookwise.entity.Author;
 import com.techcrack.bookwise.entity.Book;
 import com.techcrack.bookwise.entity.Category;
@@ -14,6 +15,8 @@ import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class BookServiceImpl implements BookService {
@@ -45,6 +48,13 @@ public class BookServiceImpl implements BookService {
         }
 
         populateRelationships(entity);
+
+        errors = validations.validateAuthor(entity);
+
+        if (errors.hasErrors()) {
+            logger.error("Invalid Author Details : {} ", errors.getData());
+            throw new InvalidDataException("Invalid Author Details : " + errors.getData());
+        }
 
         entity = repo.save(entity);
 
@@ -103,4 +113,44 @@ public class BookServiceImpl implements BookService {
 
         return true;
     }
+
+    @Override
+    @Transactional
+    public List<Book> getAllApprovedAndAvailableBooks() {
+        return repo.findAllByBookStatusAndAvailableCopiesGreaterThanAndIsActiveTrue(
+                Status.APPROVED,
+                0
+        );
+    }
+
+    @Transactional
+    @Override
+    public List<Book> getAllPendingBooks() {
+        return repo.findAllByBookStatusAndAvailableCopiesGreaterThanAndIsActiveTrue(
+            Status.PENDING,
+            0
+        );
+    }
+
+    @Transactional
+    public void approveAllBooks(List<Long> bookIds) {
+        logger.info("Approving Books {}", bookIds);
+        int rowsAffected = repo.changeStatusOfAllBooks(
+                bookIds,
+                true,
+                Status.APPROVED,
+                ApplicationData.HARD_CODED_CURRENT_ID,
+                ApplicationData.SYSTEM_DATE);
+
+        logger.info("Books Approved for {}", rowsAffected);
+    }
+
+    @Transactional
+    public void rejectAllBooks(List<Long> bookIds) {
+        logger.info("Rejecting Books : {}", bookIds);
+        int rowsAffected = repo.changeStatusOfAllBooks(bookIds, false, Status.REJECTED, ApplicationData.HARD_CODED_CURRENT_ID, ApplicationData.SYSTEM_DATE);
+        logger.info("Books Rejected successfully : {}", rowsAffected);
+    }
+
+
 }

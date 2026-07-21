@@ -26,19 +26,13 @@ public class BookServiceValidations {
 
         Errors errors = new Errors();
 
-        if (!authorService.isAuthorValid(entity.getAuthor())) {
-            logger.error("Invalid Author {}", entity.getAuthor());
-            errors.addErrorMessage("Author : Author is Not Authorized to launch a book");
-        }
 
-        logger.info("Author data is validated successfully");
-
-        if (validateTitle(entity.getTitle())) {
+        if (!validateTitle(entity.getTitle())) {
             logger.error("Invalid Book Title");
             errors.addErrorMessage("Invalid Book Title : Ensure title is not empty.");
         }
 
-        if (validateISBN(entity.getISBN())) {
+        if (!validateISBN(entity.getISBN())) {
             logger.error("Invalid ISBN Number Length");
             errors.addErrorMessage("Invalid ISBN Number : Please make sure ISBN number is " + ApplicationData.ISBN_LENGTH + " length");
         }
@@ -75,5 +69,18 @@ public class BookServiceValidations {
     public boolean validateTitle(String title) {
         return title != null && !title.isEmpty()
                 && !repo.existsByTitle(title);
+    }
+
+    public Errors validateAuthor(Book entity) {
+        Errors errors = new Errors();
+
+        if (!authorService.isAuthorValid(entity.getAuthor())) {
+            logger.error("Invalid Author {}", entity.getAuthor());
+            errors.addErrorMessage("Author : Author is Not Authorized to launch a book");
+        }
+
+        logger.info("Author data is validated successfully");
+
+        return errors;
     }
 }

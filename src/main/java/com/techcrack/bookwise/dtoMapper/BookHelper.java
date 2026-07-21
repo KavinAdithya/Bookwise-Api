@@ -2,10 +2,14 @@ package com.techcrack.bookwise.dtoMapper;
 
 import com.techcrack.bookwise.dtos.BookRegisterDTO;
 import com.techcrack.bookwise.dtos.BookResponseDTO;
+import com.techcrack.bookwise.dtos.PendingBookDTO;
 import com.techcrack.bookwise.entity.Author;
 import com.techcrack.bookwise.entity.Book;
 import com.techcrack.bookwise.entity.Category;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class BookHelper {
@@ -54,4 +58,38 @@ public class BookHelper {
 
         return des;
     }
+
+    public List<BookResponseDTO> mapToBookResponseDTOs(List<Book> books) {
+        List<BookResponseDTO> bookResponse = new ArrayList<>();
+
+        for (Book book : books) {
+            bookResponse.add(mapToBookResponseDTO(book));
+        }
+
+        return bookResponse;
+    }
+
+    public PendingBookDTO mapToPendingBookDTO(Book book) {
+        return new PendingBookDTO(
+                book.getId(),
+                book.getTitle(),
+                book.getISBN(),
+                book.getAuthor().getUser().getName(),
+                book.getCategory().getName(),
+                book.getPurchasePrice(),
+                book.getBorrowFee(),
+                book.getCommissionPercentage()
+        );
+    }
+
+    public List<PendingBookDTO> mapToPendingBookDTOs(List<Book> books) {
+        List<PendingBookDTO> response = new ArrayList<>();
+
+        for (Book book : books) {
+            response.add(mapToPendingBookDTO(book));
+        }
+
+        return response;
+    }
+
 }

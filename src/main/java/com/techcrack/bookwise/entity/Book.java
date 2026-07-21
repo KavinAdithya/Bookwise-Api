@@ -1,6 +1,7 @@
 package com.techcrack.bookwise.entity;
 
 import com.techcrack.bookwise.constans.ApplicationData;
+import com.techcrack.bookwise.constans.Status;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -39,6 +40,7 @@ public class Book {
     private LocalDateTime updatedAt;
 
     private long updatedBy;
+    private Status bookStatus;
 
     public Book() {
     }
@@ -46,6 +48,15 @@ public class Book {
     public void initialize() {
         this.isActive = true;
         this.publishDate = ApplicationData.SYSTEM_DATE;
+        this.bookStatus = Status.PENDING;
+    }
+
+    public Status getBookStatus() {
+        return bookStatus;
+    }
+
+    public void setBookStatus(Status bookStatus) {
+        this.bookStatus = bookStatus;
     }
 
     public Author getAuthor() {
@@ -204,6 +215,7 @@ public class Book {
                 ", category=" + category +
                 ", borrowFee=" + borrowFee +
                 ", availableCopies=" + availableCopies +
+                ", BookStatus=" + bookStatus +
                 ", author=" + author +
                 '}';
     }
