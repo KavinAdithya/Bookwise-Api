@@ -40,6 +40,8 @@ public class Book {
     private LocalDateTime updatedAt;
 
     private long updatedBy;
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private Status bookStatus;
 
     public Book() {

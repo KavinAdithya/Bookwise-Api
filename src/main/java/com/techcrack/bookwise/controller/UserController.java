@@ -1,5 +1,6 @@
 package com.techcrack.bookwise.controller;
 
+import com.techcrack.bookwise.abstractions.UserService;
 import com.techcrack.bookwise.constans.Roles;
 import com.techcrack.bookwise.dtos.JwtAuthenticatedTokenResponseDTO;
 import com.techcrack.bookwise.dtos.UserAuthenticateDTO;
@@ -24,12 +25,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class UserController {
     private final UserRegistrationService userRegistrationService;
-    private final UserServiceImpl service;
+    private final UserService service;
     private final UserHelper helper;
     private final Logger logger;
     private final SubscriptionHelper subscriptionHelper;
 
-    public UserController(UserRegistrationService userRegistrationService, UserServiceImpl service, UserHelper helper, SubscriptionHelper subscriptionHelper) {
+    public UserController(UserRegistrationService userRegistrationService, UserService service, UserHelper helper, SubscriptionHelper subscriptionHelper) {
         this.userRegistrationService = userRegistrationService;
         this.service = service;
         this.helper = helper;

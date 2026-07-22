@@ -1,5 +1,6 @@
 package com.techcrack.bookwise.service;
 
+import com.techcrack.bookwise.abstractions.SubscriptionService;
 import com.techcrack.bookwise.abstractions.UserService;
 import com.techcrack.bookwise.entity.Subscription;
 import com.techcrack.bookwise.entity.Users;
@@ -14,7 +15,7 @@ public class UserRegistrationService {
     private final SubscriptionService subscriptionService;
     private final Logger logger;
 
-    public UserRegistrationService(UserService service, SubscriptionService subscriptionService ) {
+    public UserRegistrationService(UserService service, SubscriptionService subscriptionService) {
         this.service = service;
         this.subscriptionService = subscriptionService;
         this.logger = LoggerFactory.getLogger(UserRegistrationService.class);

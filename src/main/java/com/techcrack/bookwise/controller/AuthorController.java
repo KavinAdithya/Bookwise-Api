@@ -1,5 +1,6 @@
 package com.techcrack.bookwise.controller;
 
+import com.techcrack.bookwise.abstractions.AuthorService;
 import com.techcrack.bookwise.dtos.AuthorIdsRequest;
 import com.techcrack.bookwise.dtos.AuthorRegisterDTO;
 import com.techcrack.bookwise.dtos.AuthorResponseDTO;
@@ -12,7 +13,7 @@ import com.techcrack.bookwise.responseHelper.ApiResponseEntity;
 import com.techcrack.bookwise.dtoMapper.AuthorHelper;
 import com.techcrack.bookwise.responseHelper.RegistrationResult;
 import com.techcrack.bookwise.responseHelper.ResponseEntityHelper;
-import com.techcrack.bookwise.service.AuthorService;
+import com.techcrack.bookwise.service.AuthorServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -78,5 +79,17 @@ public class AuthorController {
 
         return ResponseEntityHelper
                 .buildSuccessResponse("Authors Approved Successfully", authorsCount + " author status is updated.");
+    }
+
+    @PostMapping("/reject")
+    public ResponseEntity<ApiResponseEntity<String>> rejectAuthors(@RequestBody AuthorIdsRequest request) {
+        logger.info("Request Received to reject Authors");
+
+        int authorsCount = service.rejectAuthors(request.getAuthorIds());
+
+        logger.info("Request Completed for reject Authors");
+
+        return ResponseEntityHelper
+                .buildSuccessResponse("Authors Rejected Successfully", authorsCount + " author status is updated.");
     }
 }

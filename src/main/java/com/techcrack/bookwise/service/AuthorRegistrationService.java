@@ -1,5 +1,6 @@
 package com.techcrack.bookwise.service;
 
+import com.techcrack.bookwise.abstractions.AuthorService;
 import com.techcrack.bookwise.entity.Author;
 import com.techcrack.bookwise.entity.Subscription;
 import com.techcrack.bookwise.entity.Users;

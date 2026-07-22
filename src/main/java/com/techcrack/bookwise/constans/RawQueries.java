@@ -9,12 +9,5 @@ public class RawQueries {
                 WHERE user_id = :userId
             """;
 
-    public static final String CHANGE_STATUS_ALL_BOOKS = """
-                Update Books
-                SET is_active = :isActive,
-                book_status = :status,
-                updated_by = :updatedBy,
-                updated_at = :updatedAt
-                WHERE id IN :bookIds
-            """;
+
 }

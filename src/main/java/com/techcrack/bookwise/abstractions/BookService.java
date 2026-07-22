@@ -9,6 +9,6 @@ public interface BookService extends BasicCRUD<Book> {
     boolean updateBookAvailability(long id, int quantity);
     List<Book> getAllApprovedAndAvailableBooks();
     List<Book> getAllPendingBooks();
-    void rejectAllBooks(List<Long> bookIds);
-    void approveAllBooks(List<Long> bookIds);
+    int rejectAllBooks(List<Long> bookIds);
+    int approveAllBooks(List<Long> bookIds);
 }

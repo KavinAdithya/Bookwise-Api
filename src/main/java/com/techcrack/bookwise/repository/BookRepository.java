@@ -2,14 +2,16 @@ package com.techcrack.bookwise.repository;
 
 import com.techcrack.bookwise.constans.Status;
 import com.techcrack.bookwise.entity.Book;
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static com.techcrack.bookwise.constans.RawQueries.CHANGE_STATUS_ALL_BOOKS;
+import static com.techcrack.bookwise.constans.JPQLQueries.CHANGE_STATUS_ALL_BOOKS;
 
 public interface BookRepository extends JpaRepository<Book, Long> {
     boolean existsByISBN(String ISBN);
@@ -17,7 +19,10 @@ public interface BookRepository extends JpaRepository<Book, Long> {
 
     List<Book> findAllByBookStatusAndAvailableCopiesGreaterThanAndIsActiveTrue(Status bookStatus, int availableCopies);
 
-    @Query(value = CHANGE_STATUS_ALL_BOOKS, nativeQuery = true)
+
+    @Modifying
+    @Transactional
+    @Query(value = CHANGE_STATUS_ALL_BOOKS)
     int changeStatusOfAllBooks(
             @Param("bookIds") List<Long> bookIds,
             @Param("isActive") boolean isActive,

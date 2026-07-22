@@ -1,10 +1,11 @@
 package com.techcrack.bookwise.validations;
 
+import com.techcrack.bookwise.abstractions.AuthorService;
 import com.techcrack.bookwise.constans.ApplicationData;
 import com.techcrack.bookwise.entity.Book;
 import com.techcrack.bookwise.exceptions.templates.Errors;
 import com.techcrack.bookwise.repository.BookRepository;
-import com.techcrack.bookwise.service.AuthorService;
+import com.techcrack.bookwise.service.AuthorServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;

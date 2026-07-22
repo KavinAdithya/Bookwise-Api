@@ -1,8 +1,9 @@
 package com.techcrack.bookwise.service;
 
+import com.techcrack.bookwise.abstractions.AuthorService;
+import com.techcrack.bookwise.abstractions.SubscriptionService;
 import com.techcrack.bookwise.constans.ApplicationData;
 import com.techcrack.bookwise.constans.Status;
-import com.techcrack.bookwise.constans.Subscriptions;
 import com.techcrack.bookwise.entity.Author;
 import com.techcrack.bookwise.entity.Subscription;
 import com.techcrack.bookwise.exceptions.customized.ObjectNotFoundException;
@@ -14,16 +15,16 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class AuthorService {
+public class AuthorServiceImpl implements AuthorService {
 
     private final AuthorRepository repo;
     private final SubscriptionService subscriptionService;
     private final Logger logger;
 
-    public AuthorService(AuthorRepository repo, SubscriptionService subscriptionService) {
+    public AuthorServiceImpl(AuthorRepository repo, SubscriptionService subscriptionService) {
         this.repo = repo;
         this.subscriptionService = subscriptionService;
-        this.logger = LoggerFactory.getLogger(AuthorService.class);
+        this.logger = LoggerFactory.getLogger(AuthorServiceImpl.class);
     }
 
     public Author register(Author author) {
@@ -35,6 +36,16 @@ public class AuthorService {
 
         logger.info("Registration process for author has completed {} and moved for admin verification", author.getUser().getUsername());
         return author;
+    }
+
+    @Override
+    public void remove(long key) {
+
+    }
+
+    @Override
+    public Author update(Author entity) {
+        return null;
     }
 
     public Author get(long id) {
@@ -65,6 +76,17 @@ public class AuthorService {
         }
 
         logger.info("One Month Free Premium Subscription activated successfully");
+        return rowsAffected;
+    }
+
+    public int rejectAuthors(List<Long> authorIds) {
+        logger.info("Rejecting Author status to approve process started");
+
+        int rowsAffected = repo.updateAuthorStatusByIds(Status.APPROVED, authorIds);
+
+        logger.debug("Total Authors Rejected {} Affected rows {}", authorIds, rowsAffected);
+        logger.info("Author Rejected process done for author ids {}", authorIds);
+
         return rowsAffected;
     }
 }

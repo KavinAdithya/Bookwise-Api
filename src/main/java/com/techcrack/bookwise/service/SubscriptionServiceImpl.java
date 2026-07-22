@@ -1,11 +1,11 @@
 package com.techcrack.bookwise.service;
 
+import com.techcrack.bookwise.abstractions.SubscriptionService;
 import com.techcrack.bookwise.abstractions.UserService;
 import com.techcrack.bookwise.constans.ApplicationData;
 import com.techcrack.bookwise.constans.Subscriptions;
 import com.techcrack.bookwise.entity.Subscription;
 import com.techcrack.bookwise.entity.Users;
-import com.techcrack.bookwise.exceptions.customized.ObjectNotFoundException;
 import com.techcrack.bookwise.repository.SubscriptionRepository;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
@@ -13,18 +13,17 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Service
-public class SubscriptionService {
+public class SubscriptionServiceImpl implements SubscriptionService {
     private final SubscriptionRepository repo;
     private final Logger logger;
     private final UserService userService;
 
-    public SubscriptionService(SubscriptionRepository repo, UserService userService) {
+    public SubscriptionServiceImpl(SubscriptionRepository repo, UserService userService) {
         this.repo = repo;
         this.userService = userService;
-        this.logger = LoggerFactory.getLogger(SubscriptionService.class);
+        this.logger = LoggerFactory.getLogger(SubscriptionServiceImpl.class);
     }
 
     @Transactional
@@ -34,6 +33,21 @@ public class SubscriptionService {
         logger.debug("Subscription Saved Info : {}", subscription);
         logger.info("{} User subscription process done {}", subscription.getUser().getUsername(), subscription.getSubscriptions());
         return subscription;
+    }
+
+    @Override
+    public void remove(long key) {
+
+    }
+
+    @Override
+    public Subscription update(Subscription entity) {
+        return null;
+    }
+
+    @Override
+    public Subscription get(long key) {
+        return null;
     }
 
     @Transactional

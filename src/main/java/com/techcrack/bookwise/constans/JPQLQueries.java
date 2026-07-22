@@ -7,4 +7,12 @@ public class JPQLQueries {
                 WHERE a.id IN :ids
             """;
 
+    public static final String CHANGE_STATUS_ALL_BOOKS = """
+                Update Book b
+                SET b.isActive = :isActive,
+                b.bookStatus = :status,
+                b.updatedBy = :updatedBy,
+                b.updatedAt = :updatedAt
+                WHERE b.id IN :bookIds
+            """;
 }

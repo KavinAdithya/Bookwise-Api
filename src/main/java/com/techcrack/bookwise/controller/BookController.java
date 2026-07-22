@@ -9,7 +9,6 @@ import com.techcrack.bookwise.dtos.PendingBookDTO;
 import com.techcrack.bookwise.entity.Book;
 import com.techcrack.bookwise.responseHelper.ApiResponseEntity;
 import com.techcrack.bookwise.responseHelper.ResponseEntityHelper;
-import org.hibernate.boot.model.source.spi.PluralAttributeIndexSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -82,23 +81,23 @@ public class BookController {
     public ResponseEntity<ApiResponseEntity<String>> approveAllBooks(@RequestBody BookIdsRequest request) {
         logger.info("Request Received to approve books {}", request.getBookIds());
 
-        service.approveAllBooks(request.getBookIds());
+        int booksCount = service.approveAllBooks(request.getBookIds());
 
         logger.info("Request Completed for approve books");
 
         return ResponseEntityHelper
-                .buildSuccessResponse("Books Status Updated", "All Books are Approved");
+                .buildSuccessResponse("Books Status Updated", "Totally " + booksCount + " Books are Rejected");
     }
 
     @PostMapping("/books/reject")
     public ResponseEntity<ApiResponseEntity<String>> rejectAllBooks(@RequestBody BookIdsRequest request) {
         logger.info("Request Received to Reject books {}", request.getBookIds());
 
-        service.rejectAllBooks(request.getBookIds());
+        int booksCount = service.rejectAllBooks(request.getBookIds());
 
         logger.info("Request Completed for Reject books");
 
         return ResponseEntityHelper
-                .buildSuccessResponse("Books Status Updated", "All Books are Rejected");
+                .buildSuccessResponse("Books Status Updated", "Totally " + booksCount + " Books are Rejected");
     }
 }

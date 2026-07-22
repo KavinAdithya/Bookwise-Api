@@ -1,5 +1,6 @@
 package com.techcrack.bookwise.service;
 
+import com.techcrack.bookwise.abstractions.CategoryService;
 import com.techcrack.bookwise.entity.Category;
 import com.techcrack.bookwise.exceptions.customized.InvalidDataException;
 import com.techcrack.bookwise.exceptions.customized.ObjectNotFoundException;
@@ -12,13 +13,13 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class CategoryService {
+public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository repo;
     private final Logger logger;
 
-    public CategoryService(CategoryRepository repo) {
+    public CategoryServiceImpl(CategoryRepository repo) {
         this.repo = repo;
-        this.logger  = LoggerFactory.getLogger(CategoryService.class);
+        this.logger  = LoggerFactory.getLogger(CategoryServiceImpl.class);
     }
 
     @Transactional
@@ -34,6 +35,16 @@ public class CategoryService {
 
         logger.info("Category Registered successfully with {}", category.getName());
         return category;
+    }
+
+    @Override
+    public void remove(long key) {
+
+    }
+
+    @Override
+    public Category update(Category entity) {
+        return null;
     }
 
     public List<Category> getAllCategories() {

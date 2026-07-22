@@ -1,6 +1,8 @@
 package com.techcrack.bookwise.service;
 
+import com.techcrack.bookwise.abstractions.AuthorService;
 import com.techcrack.bookwise.abstractions.BookService;
+import com.techcrack.bookwise.abstractions.CategoryService;
 import com.techcrack.bookwise.constans.ApplicationData;
 import com.techcrack.bookwise.constans.Status;
 import com.techcrack.bookwise.entity.Author;
@@ -133,7 +135,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Transactional
-    public void approveAllBooks(List<Long> bookIds) {
+    public int approveAllBooks(List<Long> bookIds) {
         logger.info("Approving Books {}", bookIds);
         int rowsAffected = repo.changeStatusOfAllBooks(
                 bookIds,
@@ -143,13 +145,15 @@ public class BookServiceImpl implements BookService {
                 ApplicationData.SYSTEM_DATE);
 
         logger.info("Books Approved for {}", rowsAffected);
+        return rowsAffected;
     }
 
     @Transactional
-    public void rejectAllBooks(List<Long> bookIds) {
+    public int rejectAllBooks(List<Long> bookIds) {
         logger.info("Rejecting Books : {}", bookIds);
         int rowsAffected = repo.changeStatusOfAllBooks(bookIds, false, Status.REJECTED, ApplicationData.HARD_CODED_CURRENT_ID, ApplicationData.SYSTEM_DATE);
         logger.info("Books Rejected successfully : {}", rowsAffected);
+        return rowsAffected;
     }
 
 
