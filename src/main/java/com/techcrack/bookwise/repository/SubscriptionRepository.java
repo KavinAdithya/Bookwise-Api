@@ -17,4 +17,7 @@ public interface SubscriptionRepository extends JpaRepository<Subscription, Long
     int deactivateActiveSubscription(@Param("userId") long userId,
                                      @Param("updatedBy") long updatedBy,
                                      @Param("updatedAt") LocalDateTime updatedAt);
+
+    @Query(value = RawQueries.BORROW_LIMIT_AVAILABLE, nativeQuery = true)
+    boolean existsLimitForBookBorrow(@Param("userId") long userId);
 }

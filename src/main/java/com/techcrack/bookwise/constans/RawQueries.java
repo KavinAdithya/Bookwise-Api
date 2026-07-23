@@ -9,5 +9,12 @@ public class RawQueries {
                 WHERE user_id = :userId
             """;
 
-
+    public static final String BORROW_LIMIT_AVAILABLE = """
+                SELECT EXISTS (
+                    SELECT 1
+                    FROM Subscriptions
+                    WHERE is_active = 1 AND
+                           user_id = :userId
+                )
+            """;
 }

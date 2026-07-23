@@ -75,4 +75,8 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         subscription.setStartDate(dateTime);
         subscription.setEndDate(dateTime.plusDays(subscription.getSubscriptions().getDays()));
     }
+
+    public boolean hasLimitToBorrowBook(long userId) {
+        return repo.existsLimitForBookBorrow(userId);
+    }
 }
