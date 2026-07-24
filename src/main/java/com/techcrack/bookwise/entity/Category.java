@@ -1,66 +1,22 @@
 package com.techcrack.bookwise.entity;
 
+import com.techcrack.bookwise.utils.BaseEntity;
 import jakarta.persistence.*;
-
-import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
 @Table(name = "Categories")
-public class Category {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class Category extends BaseEntity {
 
     @Column(unique = true)
     private String name;
-    @Column(nullable = false)
-    private LocalDateTime createdAt;
-    @Column(nullable = false)
-    private long createdBy;
-    private boolean isActive;
 
     public Category() {
         super();
     }
 
-    public Category(String name, long createdBy, LocalDateTime createAt) {
+    public Category(String name) {
         this.name = name;
-        this.createdBy = createdBy;
-        this.createdAt = createAt;
-        this.isActive  = true;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public long getCreatedBy() {
-        return createdBy;
-    }
-
-    public void setCreatedBy(long createdBy) {
-        this.createdBy = createdBy;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public boolean isActive() {
-        return isActive;
-    }
-
-    public void setActive(boolean active) {
-        isActive = active;
     }
 
     public String getName() {

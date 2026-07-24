@@ -1,18 +1,13 @@
 package com.techcrack.bookwise.entity;
 
-import com.techcrack.bookwise.constans.ApplicationData;
 import com.techcrack.bookwise.constans.Roles;
+import com.techcrack.bookwise.utils.BaseEntity;
 import jakarta.persistence.*;
-
-import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
 @Table(name = "users")
-public class Users {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class Users extends BaseEntity {
     @Column(nullable = false)
     private String name;
     @Column(unique = true, nullable = false)
@@ -27,19 +22,9 @@ public class Users {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Roles role;
-    private boolean isActive;
-    @Column(nullable = false)
-    private LocalDateTime createdAt;
-    private Long updatedBy;
-    private LocalDateTime updatedAt;
 
     public Users() {
         super();
-    }
-
-    public void initialize() {
-        isActive = true;
-        createdAt = ApplicationData.SYSTEM_DATE;
     }
 
     public String getAddress() {
@@ -58,36 +43,12 @@ public class Users {
         this.contact = contact;
     }
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
     public String getEmail() {
         return email;
     }
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public boolean isActive() {
-        return isActive;
-    }
-
-    public void setActive(boolean active) {
-        isActive = active;
     }
 
     public String getName() {
@@ -112,18 +73,6 @@ public class Users {
 
     public void setRole(Roles role) {
         this.role = role;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
-    public Long getUpdatedBy() {
-        return updatedBy;
     }
 
     public void setUpdatedBy(Long updatedBy) {

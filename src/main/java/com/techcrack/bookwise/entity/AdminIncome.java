@@ -1,5 +1,6 @@
 package com.techcrack.bookwise.entity;
 
+import com.techcrack.bookwise.utils.BaseEntity;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -7,10 +8,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "AdminIncomes")
-public class AdminIncome {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class AdminIncome extends BaseEntity {
     @Column(nullable = false)
     private String sourceType;
     @Column(nullable = false)
@@ -29,14 +27,6 @@ public class AdminIncome {
 
     public void setAmount(double amount) {
         this.amount = amount;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public LocalDateTime getIncomeDate() {

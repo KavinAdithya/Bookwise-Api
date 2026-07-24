@@ -17,7 +17,7 @@ public class SubscriptionHelper {
         subscription.setEndDate(
                 ApplicationData.SYSTEM_DATE.plusDays(subscription.getSubscriptions().getDays())
         );
-        subscription.initialize();
+        subscription.initialize(ApplicationData.HARD_CODED_CURRENT_ID);
 
         return subscription;
     }

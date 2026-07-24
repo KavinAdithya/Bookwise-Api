@@ -1,5 +1,6 @@
 package com.techcrack.bookwise.entity;
 
+import com.techcrack.bookwise.utils.BaseEntity;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -7,10 +8,8 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "AuditLogs")
-public class AuditLog {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class AuditLog extends BaseEntity {
+
     @Column(nullable = false)
     private String action;
     @Column(nullable = false)
@@ -52,14 +51,6 @@ public class AuditLog {
 
     public void setEntityType(String entityType) {
         this.entityType = entityType;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public LocalDateTime getLoggedAt() {

@@ -1,6 +1,7 @@
 package com.techcrack.bookwise.service;
 
 import com.techcrack.bookwise.abstractions.UserService;
+import com.techcrack.bookwise.constans.ApplicationData;
 import com.techcrack.bookwise.entity.Users;
 import com.techcrack.bookwise.exceptions.customized.InvalidDataException;
 import com.techcrack.bookwise.exceptions.customized.ObjectNotFoundException;
@@ -42,7 +43,7 @@ public class UserServiceImpl implements UserService {
             throw new InvalidDataException("User Data is invalid : " + errors.getData());
         }
 
-        user.initialize();
+        user.initialize(ApplicationData.HARD_CODED_CURRENT_ID);
         user.setPassword(encoder.encode(user.getPassword()));
 
         logger.info("User data is validated successfully.");

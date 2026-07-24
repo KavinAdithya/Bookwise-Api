@@ -1,5 +1,6 @@
 package com.techcrack.bookwise.dtoMapper;
 
+import com.techcrack.bookwise.constans.ApplicationData;
 import com.techcrack.bookwise.dtos.BookRegisterDTO;
 import com.techcrack.bookwise.dtos.BookResponseDTO;
 import com.techcrack.bookwise.dtos.PendingBookDTO;
@@ -15,7 +16,7 @@ import java.util.List;
 public class BookHelper {
     public Book mapToBook(BookRegisterDTO src) {
         Book des = new Book();
-        des.initialize();
+        des.initialize(ApplicationData.HARD_CODED_CURRENT_ID);
 
         Category category = new Category();
         category.setName(src.getCategoryName());

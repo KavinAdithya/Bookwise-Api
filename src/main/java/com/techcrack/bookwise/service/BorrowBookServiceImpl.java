@@ -10,8 +10,6 @@ import com.techcrack.bookwise.repository.BorrowBookRepository;
 import com.techcrack.bookwise.utils.BaseLoggerRepoValidation;
 import com.techcrack.bookwise.validations.BorrowBookValidations;
 import jakarta.transaction.Transactional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 @Service

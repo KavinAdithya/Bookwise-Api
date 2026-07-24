@@ -1,7 +1,7 @@
 package com.techcrack.bookwise.entity;
 
-import com.techcrack.bookwise.constans.ApplicationData;
 import com.techcrack.bookwise.constans.Status;
+import com.techcrack.bookwise.utils.BaseEntity;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -9,10 +9,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "Books")
-public class Book {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class Book extends BaseEntity {
 
     @Column(unique = true)
     private String title;
@@ -36,21 +33,11 @@ public class Book {
     private double purchasePrice;
     private double borrowFee;
     private double commissionPercentage;
-    private boolean isActive;
-    private LocalDateTime updatedAt;
-
-    private long updatedBy;
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Status bookStatus;
 
     public Book() {
-    }
-
-    public void initialize() {
-        this.isActive = true;
-        this.publishDate = ApplicationData.SYSTEM_DATE;
-        this.bookStatus = Status.PENDING;
     }
 
     public Status getBookStatus() {

@@ -1,5 +1,6 @@
 package com.techcrack.bookwise.dtoMapper;
 
+import com.techcrack.bookwise.constans.ApplicationData;
 import com.techcrack.bookwise.constans.Roles;
 import com.techcrack.bookwise.dtos.SubscriptionResponseDTO;
 import com.techcrack.bookwise.dtos.UserRegisterDTO;
@@ -22,6 +23,7 @@ public class UserHelper {
         user.setName(source.getName());
         user.setRole(role);
 
+        user.initialize(ApplicationData.HARD_CODED_CURRENT_ID);
         return user;
     }
 

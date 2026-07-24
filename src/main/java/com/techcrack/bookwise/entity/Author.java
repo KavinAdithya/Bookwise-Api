@@ -1,16 +1,14 @@
 package com.techcrack.bookwise.entity;
 
 import com.techcrack.bookwise.constans.Status;
+import com.techcrack.bookwise.utils.BaseEntity;
 import jakarta.persistence.*;
 
 import java.util.Objects;
 
 @Entity
 @Table(name = "authors")
-public class Author {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class Author extends BaseEntity {
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
@@ -20,8 +18,6 @@ public class Author {
     @OneToOne
     @JoinColumn(unique = true)
     private Users user;
-
-    private boolean isActive;
 
     public Author() {
         super();
@@ -33,24 +29,12 @@ public class Author {
         this.user = user;
     }
 
-    public void initialize() {
-        isActive = true;
-    }
-
     public String getBio() {
         return bio;
     }
 
     public void setBio(String bio) {
         this.bio = bio;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public Status getStatus() {
@@ -67,14 +51,6 @@ public class Author {
 
     public void setUser(Users user) {
         this.user = user;
-    }
-
-    public boolean isActive() {
-        return isActive;
-    }
-
-    public void setActive(boolean active) {
-        isActive = active;
     }
 
     @Override

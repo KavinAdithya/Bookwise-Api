@@ -2,6 +2,7 @@ package com.techcrack.bookwise.entity;
 
 import com.techcrack.bookwise.constans.ApplicationData;
 import com.techcrack.bookwise.constans.BorrowStatus;
+import com.techcrack.bookwise.utils.BaseEntity;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -9,10 +10,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "BorrowedBooks")
-public class BorrowBook {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class BorrowBook extends BaseEntity {
 
     @ManyToOne
     private Users user;
@@ -31,10 +29,7 @@ public class BorrowBook {
     @Enumerated(EnumType.STRING)
     private BorrowStatus status;
     private double totalAmountPaidOnReturn;
-    @Column(nullable = false)
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
-    private long updateBy;
+
 
     public BorrowBook() {
         super();
@@ -67,14 +62,6 @@ public class BorrowBook {
         this.borrowDate = borrowDate;
     }
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
     public LocalDateTime getDueDate() {
         return dueDate;
     }
@@ -89,14 +76,6 @@ public class BorrowBook {
 
     public void setFreeReturnDays(int freeReturnDays) {
         this.freeReturnDays = freeReturnDays;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public int getQuantity() {
@@ -129,22 +108,6 @@ public class BorrowBook {
 
     public void setTotalAmountPaidOnReturn(double totalAmountPaidOnReturn) {
         this.totalAmountPaidOnReturn = totalAmountPaidOnReturn;
-    }
-
-    public long getUpdateBy() {
-        return updateBy;
-    }
-
-    public void setUpdateBy(long updateBy) {
-        this.updateBy = updateBy;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
     }
 
     public Users getUser() {

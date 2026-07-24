@@ -1,5 +1,6 @@
 package com.techcrack.bookwise.dtoMapper;
 
+import com.techcrack.bookwise.constans.ApplicationData;
 import com.techcrack.bookwise.constans.Roles;
 import com.techcrack.bookwise.constans.Status;
 import com.techcrack.bookwise.dtos.AuthorRegisterDTO;
@@ -31,7 +32,7 @@ public class AuthorHelper {
                 )
         );
 
-        author.initialize();
+        author.initialize(ApplicationData.HARD_CODED_CURRENT_ID);
 
         author.setStatus(Status.PENDING);
 

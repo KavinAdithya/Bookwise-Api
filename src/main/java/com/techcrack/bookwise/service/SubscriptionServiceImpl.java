@@ -55,7 +55,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         logger.info("Activation Premium Subscription for {} has been started", userId);
 
         Subscription subscription = new Subscription();
-        subscription.initialize();
+        subscription.initialize(ApplicationData.HARD_CODED_CURRENT_ID);
 
         subscription.setSubscriptions(Subscriptions.PREMIUM);
         setValidationPeriodBasedOnType(subscription, startDate);

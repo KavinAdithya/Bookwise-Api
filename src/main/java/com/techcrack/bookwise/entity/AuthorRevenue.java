@@ -1,6 +1,7 @@
 package com.techcrack.bookwise.entity;
 
 import com.techcrack.bookwise.constans.ApplicationData;
+import com.techcrack.bookwise.utils.BaseEntity;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -8,11 +9,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "AuthorRevenues")
-public class AuthorRevenue {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+public class AuthorRevenue extends BaseEntity {
     @ManyToOne
     @JoinColumn(nullable = false)
     private Author author;
@@ -80,14 +77,6 @@ public class AuthorRevenue {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public PurchaseBook getPurchaseBook() {

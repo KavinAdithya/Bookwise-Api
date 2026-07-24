@@ -1,16 +1,13 @@
 package com.techcrack.bookwise.entity;
 
-import com.techcrack.bookwise.constans.ApplicationData;
+import com.techcrack.bookwise.utils.BaseEntity;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
 @Table(name="PurchasedBooks")
-public class PurchaseBook {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class PurchaseBook extends BaseEntity {
     @ManyToOne
     @JoinColumn(nullable = false)
     private Users user;
@@ -21,8 +18,6 @@ public class PurchaseBook {
 
     @Column(nullable = false)
     private LocalDateTime purchaseDate;
-    @Column(nullable = false)
-    private LocalDateTime createdAt;
     private double totalAmount;
 
     public PurchaseBook() {
@@ -35,7 +30,6 @@ public class PurchaseBook {
         this.quantity = quantity;
         this.totalAmount = totalAmount;
         this.user = user;
-        this.createdAt = ApplicationData.SYSTEM_DATE;
     }
 
     public Book getBook() {
@@ -44,22 +38,6 @@ public class PurchaseBook {
 
     public void setBook(Book book) {
         this.book = book;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public LocalDateTime getPurchaseDate() {
