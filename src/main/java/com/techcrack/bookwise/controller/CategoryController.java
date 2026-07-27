@@ -1,15 +1,13 @@
 package com.techcrack.bookwise.controller;
 
 import com.techcrack.bookwise.abstractions.CategoryService;
-import com.techcrack.bookwise.dtoMapper.CategoryHelper;
+import com.techcrack.bookwise.helper.CategoryHelper;
 import com.techcrack.bookwise.dtos.CategoryRequestDTO;
 import com.techcrack.bookwise.dtos.CategoryResponseDTO;
 import com.techcrack.bookwise.entity.Category;
 import com.techcrack.bookwise.responseHelper.ApiResponseEntity;
 import com.techcrack.bookwise.responseHelper.ResponseEntityHelper;
 import com.techcrack.bookwise.utils.BaseLoggerServiceHelper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

@@ -15,6 +15,20 @@ public class BorrowBookValidations extends BaseLoggerService<BorrowBookValidatio
         this.subscriptionService = subscriptionService;
     }
 
+    /**
+     * Validates whether a user is eligible to borrow a book.
+     * <p>
+     * Performs the following validations:
+     * <ul>
+     *     <li>Checks if the book exists and is available for borrowing.</li>
+     *     <li>Verifies that the requested borrow quantity is valid.</li>
+     *     <li>Ensures the author and book are in an approved state.</li>
+     *     <li>Checks whether the user is eligible to borrow the book based on business rules.</li>
+     * </ul>
+     *
+     * @param entity the borrow request containing the user and book details
+     * @return a list of validation errors; returns an empty list if all validations pass
+     */
     public Errors isValidBorrow(BorrowBook entity) {
         Errors errors = new Errors();
 

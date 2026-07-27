@@ -15,4 +15,10 @@ public class JPQLQueries {
                 b.updatedAt = :updatedAt
                 WHERE b.id IN :bookIds
             """;
+
+    public static final String FETCH_SUBSCRIPTIONS = """
+                SELECT s.subscriptions
+                FROM Subscription s
+                WHERE s.user.Id = :userId
+            """;
 }

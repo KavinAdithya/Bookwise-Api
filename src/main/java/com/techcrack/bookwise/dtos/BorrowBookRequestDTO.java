@@ -1,0 +1,48 @@
+package com.techcrack.bookwise.dtos;
+
+import com.techcrack.bookwise.entity.Book;
+import com.techcrack.bookwise.entity.BorrowBook;
+
+public class BorrowBookRequestDTO {
+    private long bookId;
+    private int quantity;
+
+    public BorrowBookRequestDTO() {
+        super();
+    }
+
+    public long getBookId() {
+        return bookId;
+    }
+
+    public void setBookId(long bookId) {
+        this.bookId = bookId;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
+    public BorrowBook buildBorrowBook() {
+        BorrowBook borrowBook = new BorrowBook();
+
+        borrowBook.setQuantity(quantity);
+        Book book = new Book();
+        book.setId(bookId);
+        borrowBook.setBook(book);
+
+        return borrowBook;
+    }
+
+    @Override
+    public String toString() {
+        return "BorrowBookRequestDTO{" +
+                "bookId=" + bookId +
+                ", quantity=" + quantity +
+                '}';
+    }
+}

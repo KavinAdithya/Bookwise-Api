@@ -2,7 +2,10 @@ package com.techcrack.bookwise.service;
 
 import com.techcrack.bookwise.abstractions.BookService;
 import com.techcrack.bookwise.abstractions.BorrowBookService;
+import com.techcrack.bookwise.abstractions.SubscriptionService;
 import com.techcrack.bookwise.abstractions.UserService;
+import com.techcrack.bookwise.constans.ApplicationData;
+import com.techcrack.bookwise.constans.BorrowStatus;
 import com.techcrack.bookwise.entity.BorrowBook;
 import com.techcrack.bookwise.exceptions.customized.InvalidDataException;
 import com.techcrack.bookwise.exceptions.templates.Errors;
@@ -17,13 +20,29 @@ public class BorrowBookServiceImpl extends BaseLoggerRepoValidation<BorrowBookSe
                                     implements BorrowBookService {
     private final UserService userService;
     private final BookService bookService;
+    private final SubscriptionService subscriptionService;
 
-    public BorrowBookServiceImpl(BorrowBookRepository repo, BorrowBookValidations validations, UserService userService, BookService bookService) {
+    public BorrowBookServiceImpl(BorrowBookRepository repo, BorrowBookValidations validations, UserService userService, BookService bookService, SubscriptionService subscriptionService) {
        super(BorrowBookServiceImpl.class, repo, validations);
        this.userService = userService;
        this.bookService = bookService;
+       this.subscriptionService = subscriptionService;
     }
 
+    /**
+     * Validate, sets borrow details and persist the data
+     *  <p>
+     *      Does following operations
+     *  </p>
+     *  <ul>
+     *      <li>Populated related entities</li>
+     *      <li>Validate all details</li>
+     *      <li>update borrow details like borrow date etc.</li>
+     *      <li>Stores and returns the stored entity</li>
+     *  </ul>
+     * @param entity the borrow request containing the user and book details
+     * @return Returns stored borrow entity
+     */
     public BorrowBook borrowBook(BorrowBook entity) {
         logger.info("Initiated Process for borrowing book");
 
@@ -39,13 +58,46 @@ public class BorrowBookServiceImpl extends BaseLoggerRepoValidation<BorrowBookSe
 
         setBorrowDetails(entity);
 
+        logger.info("Borrow Book details validated and added successfully");
         return register(entity);
     }
 
+    /**
+     * Sets borrow details
+     *  <p>
+     *      Sets following details :
+     *  </p>
+     *  <ul>
+     *      <li>Sets Borrow Date</li>
+     *      <li>Sets Due date to return</li>
+     *      <li>Update status as borrowed</li>
+     *  </ul>
+     * @param borrowBook the borrow request containing the user and book details
+     */
     public void setBorrowDetails(BorrowBook borrowBook) {
+        logger.info("Setting borrow details");
+
+        borrowBook.setBorrowDate(ApplicationData.SYSTEM_DATE);
+        borrowBook.setDueDate(ApplicationData.SYSTEM_DATE.plusDays(
+                subscriptionService.getFreeLimitDays(
+                        borrowBook.getUser().getId()
+                )
+        ));
+
+        borrowBook.setStatus(BorrowStatus.BORROWED);
 
     }
 
+    /**
+     * Populate Borrow Book Related entities
+     * <p>
+     * Populates Following Entities
+     * <ul>
+     *     <li>Based on book id populates Book entity</li>
+     *     <li>Based on user id populated User entity</li>
+     * </ul>
+     * @param borrowBook the borrow request containing the user and book details
+     */
     public void populateRelations(BorrowBook borrowBook) {
         borrowBook.setBook(
                 bookService.get(
@@ -62,6 +114,11 @@ public class BorrowBookServiceImpl extends BaseLoggerRepoValidation<BorrowBookSe
         logger.info("Borrow book related entities populated");
     }
 
+    /**
+     * Register the Borrow entity with @Transaction Annotation
+     * @param entity
+     * @return returns stored entity
+     */
     @Override
     @Transactional
     public BorrowBook register(BorrowBook entity) {

@@ -79,4 +79,9 @@ public class SubscriptionServiceImpl extends BaseLoggerRepository<SubscriptionSe
     public boolean hasLimitToBorrowBook(long userId) {
         return repo.existsLimitForBookBorrow(userId);
     }
+
+    @Override
+    public int getFreeLimitDays(long userId) {
+        return repo.getSubscription(userId).getDays();
+    }
 }

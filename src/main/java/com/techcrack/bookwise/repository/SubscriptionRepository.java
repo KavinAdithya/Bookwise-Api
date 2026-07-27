@@ -1,6 +1,8 @@
 package com.techcrack.bookwise.repository;
 
+import com.techcrack.bookwise.constans.JPQLQueries;
 import com.techcrack.bookwise.constans.RawQueries;
+import com.techcrack.bookwise.constans.Subscriptions;
 import com.techcrack.bookwise.entity.Subscription;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -20,4 +22,7 @@ public interface SubscriptionRepository extends JpaRepository<Subscription, Long
 
     @Query(value = RawQueries.BORROW_LIMIT_AVAILABLE, nativeQuery = true)
     boolean existsLimitForBookBorrow(@Param("userId") long userId);
+
+    @Query(JPQLQueries.FETCH_SUBSCRIPTIONS)
+    Subscriptions getSubscription(@Param("userId") long userId);
 }

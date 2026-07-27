@@ -23,8 +23,7 @@ public class BorrowBook extends BaseEntity {
     @Column(nullable = false)
     private LocalDateTime dueDate;
     private LocalDateTime returnDate;
-    @Column(nullable = false)
-    private int freeReturnDays;
+
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private BorrowStatus status;
@@ -35,11 +34,10 @@ public class BorrowBook extends BaseEntity {
         super();
     }
 
-    public BorrowBook(Book book, LocalDateTime borrowDate, LocalDateTime dueDate, int freeReturnDays, int quantity,  Users user) {
+    public BorrowBook(Book book, LocalDateTime borrowDate, LocalDateTime dueDate, int quantity,  Users user) {
         this.book = book;
         this.borrowDate = borrowDate;
         this.dueDate = dueDate;
-        this.freeReturnDays = freeReturnDays;
         this.quantity = quantity;
         this.user = user;
         this.status = BorrowStatus.PROCESSING;
@@ -68,14 +66,6 @@ public class BorrowBook extends BaseEntity {
 
     public void setDueDate(LocalDateTime dueDate) {
         this.dueDate = dueDate;
-    }
-
-    public int getFreeReturnDays() {
-        return freeReturnDays;
-    }
-
-    public void setFreeReturnDays(int freeReturnDays) {
-        this.freeReturnDays = freeReturnDays;
     }
 
     public int getQuantity() {
@@ -136,7 +126,6 @@ public class BorrowBook extends BaseEntity {
                 "book=" + book +
                 ", borrowDate=" + borrowDate +
                 ", dueDate=" + dueDate +
-                ", freeReturnDays=" + freeReturnDays +
                 ", quantity=" + quantity +
                 ", returnDate=" + returnDate +
                 ", status=" + status +
@@ -145,8 +134,3 @@ public class BorrowBook extends BaseEntity {
                 '}';
     }
 }
-
-//TotalAmountPaidOnReturn DECIMAL
-//CreatedAt TIMESTAMP
-//UpdatedAt timestamp
-//UpdatedBy INT

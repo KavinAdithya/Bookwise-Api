@@ -1,4 +1,4 @@
-package com.techcrack.bookwise.dtoMapper;
+package com.techcrack.bookwise.helper;
 
 import com.techcrack.bookwise.constans.ApplicationData;
 import com.techcrack.bookwise.dtos.BookRegisterDTO;

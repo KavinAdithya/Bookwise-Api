@@ -1,7 +1,7 @@
 package com.techcrack.bookwise.controller;
 
 import com.techcrack.bookwise.abstractions.BookService;
-import com.techcrack.bookwise.dtoMapper.BookHelper;
+import com.techcrack.bookwise.helper.BookHelper;
 import com.techcrack.bookwise.dtos.BookIdsRequest;
 import com.techcrack.bookwise.dtos.BookRegisterDTO;
 import com.techcrack.bookwise.dtos.BookResponseDTO;
