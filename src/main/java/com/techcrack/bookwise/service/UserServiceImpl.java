@@ -8,6 +8,8 @@ import com.techcrack.bookwise.exceptions.customized.ObjectNotFoundException;
 import com.techcrack.bookwise.jwt.JwtService;
 import com.techcrack.bookwise.repository.UserRepository;
 import com.techcrack.bookwise.exceptions.templates.Errors;
+import com.techcrack.bookwise.utils.BaseLoggerRepository;
+import com.techcrack.bookwise.utils.BaseLoggerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,19 +20,18 @@ import org.springframework.stereotype.Service;
 
 
 @Service
-public class UserServiceImpl implements UserService {
-    private final UserRepository repo;
+public class UserServiceImpl extends BaseLoggerRepository<UserServiceImpl, UserRepository>
+                            implements UserService {
+
     private final PasswordEncoder encoder;
     private final AuthenticationManager authManager;
     private final JwtService jwtService;
-    private final Logger logger;
 
     public UserServiceImpl(UserRepository repo, PasswordEncoder encoder, AuthenticationManager authManager, JwtService jwtService) {
-        this.repo = repo;
+        super(UserServiceImpl.class, repo);
         this.encoder = encoder;
         this.authManager = authManager;
         this.jwtService = jwtService;
-        this.logger = LoggerFactory.getLogger(UserServiceImpl.class);
     }
 
     public Users register(Users user) {

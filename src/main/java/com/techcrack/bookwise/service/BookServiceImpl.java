@@ -12,6 +12,8 @@ import com.techcrack.bookwise.exceptions.customized.InvalidDataException;
 import com.techcrack.bookwise.exceptions.customized.ObjectNotFoundException;
 import com.techcrack.bookwise.exceptions.templates.Errors;
 import com.techcrack.bookwise.repository.BookRepository;
+import com.techcrack.bookwise.utils.BaseLoggerRepoValidation;
+import com.techcrack.bookwise.utils.BaseLoggerRepository;
 import com.techcrack.bookwise.validations.BookServiceValidations;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
@@ -21,20 +23,16 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class BookServiceImpl implements BookService {
+public class BookServiceImpl extends BaseLoggerRepoValidation<BookServiceImpl, BookRepository, BookServiceValidations>
+                                implements BookService {
 
-    private final BookRepository repo;
     private final AuthorService authorService;
     private final CategoryService categoryService;
-    private final BookServiceValidations validations;
-    private final Logger logger;
 
     public BookServiceImpl(BookRepository repo, AuthorService authorService, CategoryService categoryService, BookServiceValidations validations) {
-        this.repo = repo;
+        super(BookServiceImpl.class, repo, validations);
         this.authorService = authorService;
         this.categoryService = categoryService;
-        this.validations = validations;
-        this.logger = LoggerFactory.getLogger(BookServiceImpl.class);
     }
 
     @Transactional

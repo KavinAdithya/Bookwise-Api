@@ -7,6 +7,7 @@ import com.techcrack.bookwise.constans.Subscriptions;
 import com.techcrack.bookwise.entity.Subscription;
 import com.techcrack.bookwise.entity.Users;
 import com.techcrack.bookwise.repository.SubscriptionRepository;
+import com.techcrack.bookwise.utils.BaseLoggerRepository;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,15 +16,14 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 
 @Service
-public class SubscriptionServiceImpl implements SubscriptionService {
-    private final SubscriptionRepository repo;
-    private final Logger logger;
+public class SubscriptionServiceImpl extends BaseLoggerRepository<SubscriptionServiceImpl, SubscriptionRepository>
+                                    implements SubscriptionService {
+
     private final UserService userService;
 
     public SubscriptionServiceImpl(SubscriptionRepository repo, UserService userService) {
-        this.repo = repo;
+        super(SubscriptionServiceImpl.class, repo);
         this.userService = userService;
-        this.logger = LoggerFactory.getLogger(SubscriptionServiceImpl.class);
     }
 
     @Transactional

@@ -8,22 +8,22 @@ import com.techcrack.bookwise.entity.PurchaseBook;
 import com.techcrack.bookwise.entity.Users;
 import com.techcrack.bookwise.exceptions.customized.InvalidDataException;
 import com.techcrack.bookwise.repository.PurchaseBookRepository;
+import com.techcrack.bookwise.utils.BaseLoggerRepository;
+import com.techcrack.bookwise.utils.BaseLoggerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 @Service
-public class PurchaseBookServiceImpl implements PurchaseBookService {
-    private final PurchaseBookRepository repo;
+public class PurchaseBookServiceImpl extends BaseLoggerRepository<PurchaseBookServiceImpl, PurchaseBookRepository>
+                                    implements PurchaseBookService {
     private final BookService bookService;
     private final UserService userService;
-    private final Logger logger;
 
     public PurchaseBookServiceImpl(PurchaseBookRepository repo, BookService bookService, UserService userService) {
-        this.repo = repo;
+        super(PurchaseBookServiceImpl.class, repo);
         this.bookService = bookService;
         this.userService = userService;
-        this.logger = LoggerFactory.getLogger(PurchaseBookServiceImpl.class);
     }
 
     @Override

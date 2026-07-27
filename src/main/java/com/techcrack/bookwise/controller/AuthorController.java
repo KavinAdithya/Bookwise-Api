@@ -13,9 +13,7 @@ import com.techcrack.bookwise.responseHelper.ApiResponseEntity;
 import com.techcrack.bookwise.dtoMapper.AuthorHelper;
 import com.techcrack.bookwise.responseHelper.RegistrationResult;
 import com.techcrack.bookwise.responseHelper.ResponseEntityHelper;
-import com.techcrack.bookwise.service.AuthorServiceImpl;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.techcrack.bookwise.utils.BaseLoggerServiceHelper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,20 +21,15 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/author")
-public class AuthorController {
+public class AuthorController extends BaseLoggerServiceHelper<AuthorController, AuthorService, AuthorHelper> {
 
     private final AuthorRegistrationService authorRegistrationService;
-    private final AuthorHelper helper;
     private final SubscriptionHelper subscriptionHelper;
-    private final Logger logger;
-    private final AuthorService service;
 
     public AuthorController(AuthorRegistrationService authorRegistrationService, AuthorHelper helper ,SubscriptionHelper subscriptionHelper, AuthorService service) {
+        super(AuthorController.class, service, helper);
         this.authorRegistrationService = authorRegistrationService;
-        this.service = service;
-        this.helper = helper;
         this.subscriptionHelper = subscriptionHelper;
-        this.logger = LoggerFactory.getLogger(AuthorController.class);
     }
 
     @PostMapping("/register")

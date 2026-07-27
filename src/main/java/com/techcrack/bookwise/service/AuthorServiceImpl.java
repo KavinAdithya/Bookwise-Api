@@ -8,6 +8,8 @@ import com.techcrack.bookwise.entity.Author;
 import com.techcrack.bookwise.entity.Subscription;
 import com.techcrack.bookwise.exceptions.customized.ObjectNotFoundException;
 import com.techcrack.bookwise.repository.AuthorRepository;
+import com.techcrack.bookwise.utils.BaseLoggerRepository;
+import com.techcrack.bookwise.utils.BaseLoggerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -15,16 +17,14 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class AuthorServiceImpl implements AuthorService {
+public class AuthorServiceImpl extends BaseLoggerRepository<AuthorServiceImpl, AuthorRepository>
+                            implements AuthorService {
 
-    private final AuthorRepository repo;
     private final SubscriptionService subscriptionService;
-    private final Logger logger;
 
     public AuthorServiceImpl(AuthorRepository repo, SubscriptionService subscriptionService) {
-        this.repo = repo;
+        super(AuthorServiceImpl.class, repo);
         this.subscriptionService = subscriptionService;
-        this.logger = LoggerFactory.getLogger(AuthorServiceImpl.class);
     }
 
     public Author register(Author author) {

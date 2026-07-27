@@ -9,8 +9,7 @@ import com.techcrack.bookwise.dtos.PendingBookDTO;
 import com.techcrack.bookwise.entity.Book;
 import com.techcrack.bookwise.responseHelper.ApiResponseEntity;
 import com.techcrack.bookwise.responseHelper.ResponseEntityHelper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.techcrack.bookwise.utils.BaseLoggerServiceHelper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,15 +17,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api")
-public class BookController {
-    private final BookService service;
-    private final BookHelper helper;
-    private final Logger logger;
+public class BookController extends BaseLoggerServiceHelper<BookController, BookService, BookHelper> {
 
     public BookController(BookService service, BookHelper helper) {
-        this.service = service;
-        this.helper = helper;
-        this.logger = LoggerFactory.getLogger(BookController.class);
+        super(BookController.class, service, helper);
     }
 
     @PostMapping("/book/register")

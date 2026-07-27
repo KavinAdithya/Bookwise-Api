@@ -15,6 +15,7 @@ import com.techcrack.bookwise.dtoMapper.SubscriptionHelper;
 import com.techcrack.bookwise.dtoMapper.UserHelper;
 import com.techcrack.bookwise.responseHelper.RegistrationResult;
 import com.techcrack.bookwise.responseHelper.ResponseEntityHelper;
+import com.techcrack.bookwise.utils.BaseLoggerServiceHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -23,18 +24,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class UserController {
+public class UserController extends BaseLoggerServiceHelper<UserController, UserService, UserHelper> {
     private final UserRegistrationService userRegistrationService;
-    private final UserService service;
-    private final UserHelper helper;
-    private final Logger logger;
     private final SubscriptionHelper subscriptionHelper;
 
     public UserController(UserRegistrationService userRegistrationService, UserService service, UserHelper helper, SubscriptionHelper subscriptionHelper) {
+        super(UserController.class, service, helper);
         this.userRegistrationService = userRegistrationService;
-        this.service = service;
-        this.helper = helper;
-        this.logger = LoggerFactory.getLogger(UserController.class);
         this.subscriptionHelper = subscriptionHelper;
     }
 
