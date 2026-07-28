@@ -1,6 +1,5 @@
 package com.techcrack.bookwise.entity;
 
-import com.techcrack.bookwise.constans.ApplicationData;
 import com.techcrack.bookwise.constans.Subscriptions;
 import com.techcrack.bookwise.utils.BaseEntity;
 import jakarta.persistence.*;
@@ -22,6 +21,8 @@ public class Subscription extends BaseEntity {
     @JoinColumn(name = "userId", nullable = false)
     private Users user;
 
+    private long booksAllowedPerMonth;
+    private long booksAllowedPerYear;
     public Subscription() {
         super();
     }
@@ -56,6 +57,22 @@ public class Subscription extends BaseEntity {
 
     public void setUser(Users user) {
         this.user = user;
+    }
+
+    public long getBooksAllowedPerMonth() {
+        return booksAllowedPerMonth;
+    }
+
+    public void setBooksAllowedPerMonth(long booksAllowedPerMonth) {
+        this.booksAllowedPerMonth = booksAllowedPerMonth;
+    }
+
+    public long getBooksAllowedPerYear() {
+        return booksAllowedPerYear;
+    }
+
+    public void setBooksAllowedPerYear(long booksAllowedPerYear) {
+        this.booksAllowedPerYear = booksAllowedPerYear;
     }
 
     @Override

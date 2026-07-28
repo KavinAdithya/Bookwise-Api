@@ -140,6 +140,7 @@ public class BookServiceImpl extends BaseLoggerRepoValidation<BookServiceImpl, B
                 true,
                 Status.APPROVED,
                 ApplicationData.HARD_CODED_CURRENT_ID,
+                ApplicationData.SYSTEM_DATE,
                 ApplicationData.SYSTEM_DATE);
 
         logger.info("Books Approved for {}", rowsAffected);
@@ -149,7 +150,7 @@ public class BookServiceImpl extends BaseLoggerRepoValidation<BookServiceImpl, B
     @Transactional
     public int rejectAllBooks(List<Long> bookIds) {
         logger.info("Rejecting Books : {}", bookIds);
-        int rowsAffected = repo.changeStatusOfAllBooks(bookIds, false, Status.REJECTED, ApplicationData.HARD_CODED_CURRENT_ID, ApplicationData.SYSTEM_DATE);
+        int rowsAffected = repo.changeStatusOfAllBooks(bookIds, false, Status.REJECTED, ApplicationData.HARD_CODED_CURRENT_ID, ApplicationData.SYSTEM_DATE, null);
         logger.info("Books Rejected successfully : {}", rowsAffected);
         return rowsAffected;
     }

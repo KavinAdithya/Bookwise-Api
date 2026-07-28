@@ -9,8 +9,6 @@ import com.techcrack.bookwise.entity.Users;
 import com.techcrack.bookwise.repository.SubscriptionRepository;
 import com.techcrack.bookwise.utils.BaseLoggerRepository;
 import jakarta.transaction.Transactional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -62,6 +60,7 @@ public class SubscriptionServiceImpl extends BaseLoggerRepository<SubscriptionSe
 
         Users user = userService.get(userId);
         subscription.setUser(user);
+        subscription.setBooksAllowedPerYear(subscription.getSubscriptions().getBooksAllowed());
         logger.info("User Found for subscription {}", user);
 
         int rowsAffected = repo.deactivateActiveSubscription(userId, ApplicationData.HARD_CODED_CURRENT_ID, ApplicationData.SYSTEM_DATE);

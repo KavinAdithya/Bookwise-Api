@@ -26,7 +26,6 @@ public class Book extends BaseEntity {
     private Category category;
     @Column(nullable = false)
     private String language;
-    @Column(nullable = false)
     private LocalDateTime publishDate;
     private int totalCopies;
     private int availableCopies;

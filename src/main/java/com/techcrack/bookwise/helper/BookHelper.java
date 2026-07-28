@@ -1,6 +1,7 @@
 package com.techcrack.bookwise.helper;
 
 import com.techcrack.bookwise.constans.ApplicationData;
+import com.techcrack.bookwise.constans.Status;
 import com.techcrack.bookwise.dtos.BookRegisterDTO;
 import com.techcrack.bookwise.dtos.BookResponseDTO;
 import com.techcrack.bookwise.dtos.PendingBookDTO;
@@ -34,6 +35,7 @@ public class BookHelper {
         des.setPurchasePrice(src.getPurchasePrice());
         des.setTitle(src.getTitle());
         des.setTotalCopies(src.getTotalCopies());
+        des.setBookStatus(Status.PENDING);
 
         return des;
     }

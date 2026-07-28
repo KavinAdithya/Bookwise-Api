@@ -11,13 +11,14 @@ import org.springframework.stereotype.Component;
 public class SubscriptionHelper {
     public Subscription mapToSubscription(SubscriptionRegisterDTO source) {
         Subscription subscription = new Subscription();
+        subscription.initialize(ApplicationData.HARD_CODED_CURRENT_ID);
 
         subscription.setSubscriptions(Subscriptions.FREE);
         subscription.setStartDate(ApplicationData.SYSTEM_DATE);
         subscription.setEndDate(
                 ApplicationData.SYSTEM_DATE.plusDays(subscription.getSubscriptions().getDays())
         );
-        subscription.initialize(ApplicationData.HARD_CODED_CURRENT_ID);
+        subscription.setBooksAllowedPerMonth(subscription.getSubscriptions().getBooksAllowed());
 
         return subscription;
     }

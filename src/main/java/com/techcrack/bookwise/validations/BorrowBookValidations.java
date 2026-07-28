@@ -68,6 +68,8 @@ public class BorrowBookValidations extends BaseLoggerService<BorrowBookValidatio
             errors.addErrorMessage(message);
         }
 
+        logger.info("Validating borrow book details completed");
+
         return errors;
     }
 }

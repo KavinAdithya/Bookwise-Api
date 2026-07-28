@@ -14,7 +14,9 @@ public class RawQueries {
                     SELECT 1
                     FROM Subscriptions
                     WHERE is_active = 1 AND
-                           user_id = :userId
+                           user_id = :userId AND
+                           (books_allowed_per_month > 0 OR
+                            books_allowed_per_year > 0)
                 )
             """;
 }

@@ -20,7 +20,7 @@ public interface SubscriptionRepository extends JpaRepository<Subscription, Long
                                      @Param("updatedBy") long updatedBy,
                                      @Param("updatedAt") LocalDateTime updatedAt);
 
-    @Query(value = RawQueries.BORROW_LIMIT_AVAILABLE, nativeQuery = true)
+    @Query(value = JPQLQueries.HAS_LIMIT_EXISTS_FOR_BORROW_BOOK)
     boolean existsLimitForBookBorrow(@Param("userId") long userId);
 
     @Query(JPQLQueries.FETCH_SUBSCRIPTIONS)

@@ -28,6 +28,7 @@ public interface BookRepository extends JpaRepository<Book, Long> {
             @Param("isActive") boolean isActive,
             @Param("status") Status status,
             @Param("updatedBy") long updatedBy,
-            @Param("updatedAt") LocalDateTime updatedAt
+            @Param("updatedAt") LocalDateTime updatedAt,
+            @Param("publishDate") LocalDateTime publishDate
             );
 }
