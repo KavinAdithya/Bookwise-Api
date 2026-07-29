@@ -1,4 +1,4 @@
-package com.techcrack.bookwise.dtos;
+package com.techcrack.bookwise.dtos.subscription.response;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.techcrack.bookwise.constans.Subscriptions;

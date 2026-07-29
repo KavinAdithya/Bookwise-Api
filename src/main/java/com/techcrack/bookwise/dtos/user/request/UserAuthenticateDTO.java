@@ -1,4 +1,4 @@
-package com.techcrack.bookwise.dtos;
+package com.techcrack.bookwise.dtos.user.request;
 
 public class UserAuthenticateDTO {
     private String username;

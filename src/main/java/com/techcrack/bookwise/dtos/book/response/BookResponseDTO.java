@@ -1,4 +1,4 @@
-package com.techcrack.bookwise.dtos;
+package com.techcrack.bookwise.dtos.book.response;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 

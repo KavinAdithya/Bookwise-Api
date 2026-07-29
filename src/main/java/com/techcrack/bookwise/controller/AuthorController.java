@@ -1,10 +1,10 @@
 package com.techcrack.bookwise.controller;
 
 import com.techcrack.bookwise.abstractions.AuthorService;
-import com.techcrack.bookwise.dtos.AuthorIdsRequest;
-import com.techcrack.bookwise.dtos.AuthorRegisterDTO;
-import com.techcrack.bookwise.dtos.AuthorResponseDTO;
-import com.techcrack.bookwise.dtos.PendingAuthorDTO;
+import com.techcrack.bookwise.dtos.author.request.AuthorIdsRequest;
+import com.techcrack.bookwise.dtos.author.request.AuthorRegisterDTO;
+import com.techcrack.bookwise.dtos.author.response.AuthorResponseDTO;
+import com.techcrack.bookwise.dtos.author.request.PendingAuthorDTO;
 import com.techcrack.bookwise.entity.Author;
 import com.techcrack.bookwise.entity.Subscription;
 import com.techcrack.bookwise.service.AuthorRegistrationService;
@@ -13,7 +13,7 @@ import com.techcrack.bookwise.responseHelper.ApiResponseEntity;
 import com.techcrack.bookwise.helper.AuthorHelper;
 import com.techcrack.bookwise.responseHelper.RegistrationResult;
 import com.techcrack.bookwise.responseHelper.ResponseEntityHelper;
-import com.techcrack.bookwise.utils.BaseLoggerServiceHelper;
+import com.techcrack.bookwise.utils.AbstractController;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,7 +21,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/author")
-public class AuthorController extends BaseLoggerServiceHelper<AuthorController, AuthorService, AuthorHelper> {
+public class AuthorController extends AbstractController<AuthorController, AuthorService, AuthorHelper> {
 
     private final AuthorRegistrationService authorRegistrationService;
     private final SubscriptionHelper subscriptionHelper;

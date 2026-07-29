@@ -2,9 +2,9 @@ package com.techcrack.bookwise.helper;
 
 import com.techcrack.bookwise.constans.ApplicationData;
 import com.techcrack.bookwise.constans.Status;
-import com.techcrack.bookwise.dtos.BookRegisterDTO;
-import com.techcrack.bookwise.dtos.BookResponseDTO;
-import com.techcrack.bookwise.dtos.PendingBookDTO;
+import com.techcrack.bookwise.dtos.book.request.BookRegisterDTO;
+import com.techcrack.bookwise.dtos.book.response.BookResponseDTO;
+import com.techcrack.bookwise.dtos.book.request.PendingBookDTO;
 import com.techcrack.bookwise.entity.Author;
 import com.techcrack.bookwise.entity.Book;
 import com.techcrack.bookwise.entity.Category;

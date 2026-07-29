@@ -5,16 +5,14 @@ import com.techcrack.bookwise.entity.Category;
 import com.techcrack.bookwise.exceptions.customized.InvalidDataException;
 import com.techcrack.bookwise.exceptions.customized.ObjectNotFoundException;
 import com.techcrack.bookwise.repository.CategoryRepository;
-import com.techcrack.bookwise.utils.BaseLoggerRepository;
+import com.techcrack.bookwise.utils.AbstractRepository;
 import jakarta.transaction.Transactional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class CategoryServiceImpl extends BaseLoggerRepository<CategoryServiceImpl, CategoryRepository>
+public class CategoryServiceImpl extends AbstractRepository<CategoryServiceImpl, CategoryRepository>
                                 implements CategoryService {
 
     public CategoryServiceImpl(CategoryRepository repo) {

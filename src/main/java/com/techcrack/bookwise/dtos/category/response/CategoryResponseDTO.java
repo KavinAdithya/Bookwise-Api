@@ -1,4 +1,4 @@
-package com.techcrack.bookwise.dtos;
+package com.techcrack.bookwise.dtos.category.response;
 
 
 public class CategoryResponseDTO {

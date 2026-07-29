@@ -1,28 +1,31 @@
-package com.techcrack.bookwise.dtos;
+package com.techcrack.bookwise.dtos.user.response;
 
-public class UserRegisterDTO {
-    private String name;
+
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.techcrack.bookwise.dtos.subscription.response.SubscriptionResponseDTO;
+
+@JsonPropertyOrder({
+        "id",
+        "username",
+        "email",
+        "contact",
+        "address",
+        "subscription"
+})
+public class UserResponseDTO {
+    private Long id;
     private String email;
     private String username;
-    private String password;
     private String address;
     private String contact;
-    private SubscriptionRegisterDTO subscription;
+    private SubscriptionResponseDTO subscription;
 
-    public UserRegisterDTO(String address, String contact, String email, String name, String password, String username) {
+    public UserResponseDTO(String address, String contact, String email, Long id, String username, SubscriptionResponseDTO subscription) {
         this.address = address;
         this.contact = contact;
         this.email = email;
-        this.name = name;
-        this.password = password;
+        this.id = id;
         this.username = username;
-    }
-
-    public SubscriptionRegisterDTO getSubscription() {
-        return subscription;
-    }
-
-    public void setSubscription(SubscriptionRegisterDTO subscription) {
         this.subscription = subscription;
     }
 
@@ -50,20 +53,12 @@ public class UserRegisterDTO {
         this.email = email;
     }
 
-    public String getName() {
-        return name;
+    public Long getId() {
+        return id;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getUsername() {
@@ -74,16 +69,23 @@ public class UserRegisterDTO {
         this.username = username;
     }
 
+    public SubscriptionResponseDTO getSubscription() {
+        return subscription;
+    }
+
+    public void setSubscription(SubscriptionResponseDTO subscription) {
+        this.subscription = subscription;
+    }
+
     @Override
     public String toString() {
-        return "UserCreateDTO{" +
+        return "UserResponseDTO{" +
                 "address='" + address + '\'' +
-                ", name='" + name + '\'' +
+                ", id=" + id +
                 ", email='" + email + '\'' +
                 ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
                 ", contact='" + contact + '\'' +
-                ", subscription=" + subscription +
+                ", subscription='" + subscription + '\'' +
                 '}';
     }
 }

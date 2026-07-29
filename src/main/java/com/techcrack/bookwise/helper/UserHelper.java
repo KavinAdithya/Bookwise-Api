@@ -2,9 +2,9 @@ package com.techcrack.bookwise.helper;
 
 import com.techcrack.bookwise.constans.ApplicationData;
 import com.techcrack.bookwise.constans.Roles;
-import com.techcrack.bookwise.dtos.SubscriptionResponseDTO;
-import com.techcrack.bookwise.dtos.UserRegisterDTO;
-import com.techcrack.bookwise.dtos.UserResponseDTO;
+import com.techcrack.bookwise.dtos.subscription.response.SubscriptionResponseDTO;
+import com.techcrack.bookwise.dtos.user.request.UserRegisterDTO;
+import com.techcrack.bookwise.dtos.user.response.UserResponseDTO;
 import com.techcrack.bookwise.entity.Users;
 import org.springframework.stereotype.Component;
 

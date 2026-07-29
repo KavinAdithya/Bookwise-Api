@@ -1,8 +1,8 @@
 package com.techcrack.bookwise.helper;
 
 import com.techcrack.bookwise.constans.ApplicationData;
-import com.techcrack.bookwise.dtos.CategoryRequestDTO;
-import com.techcrack.bookwise.dtos.CategoryResponseDTO;
+import com.techcrack.bookwise.dtos.category.request.CategoryRequestDTO;
+import com.techcrack.bookwise.dtos.category.response.CategoryResponseDTO;
 import com.techcrack.bookwise.entity.Category;
 import org.springframework.stereotype.Component;
 

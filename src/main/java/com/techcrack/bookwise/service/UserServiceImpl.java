@@ -8,10 +8,7 @@ import com.techcrack.bookwise.exceptions.customized.ObjectNotFoundException;
 import com.techcrack.bookwise.jwt.JwtService;
 import com.techcrack.bookwise.repository.UserRepository;
 import com.techcrack.bookwise.exceptions.templates.Errors;
-import com.techcrack.bookwise.utils.BaseLoggerRepository;
-import com.techcrack.bookwise.utils.BaseLoggerService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.techcrack.bookwise.utils.AbstractRepository;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -20,7 +17,7 @@ import org.springframework.stereotype.Service;
 
 
 @Service
-public class UserServiceImpl extends BaseLoggerRepository<UserServiceImpl, UserRepository>
+public class UserServiceImpl extends AbstractRepository<UserServiceImpl, UserRepository>
                             implements UserService {
 
     private final PasswordEncoder encoder;

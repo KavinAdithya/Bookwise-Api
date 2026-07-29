@@ -2,10 +2,10 @@ package com.techcrack.bookwise.controller;
 
 import com.techcrack.bookwise.abstractions.UserService;
 import com.techcrack.bookwise.constans.Roles;
-import com.techcrack.bookwise.dtos.JwtAuthenticatedTokenResponseDTO;
-import com.techcrack.bookwise.dtos.UserAuthenticateDTO;
-import com.techcrack.bookwise.dtos.UserRegisterDTO;
-import com.techcrack.bookwise.dtos.UserResponseDTO;
+import com.techcrack.bookwise.dtos.jwt.JwtAuthenticatedTokenResponseDTO;
+import com.techcrack.bookwise.dtos.user.request.UserAuthenticateDTO;
+import com.techcrack.bookwise.dtos.user.request.UserRegisterDTO;
+import com.techcrack.bookwise.dtos.user.response.UserResponseDTO;
 import com.techcrack.bookwise.entity.Subscription;
 import com.techcrack.bookwise.entity.Users;
 import com.techcrack.bookwise.service.UserRegistrationService;
@@ -14,14 +14,14 @@ import com.techcrack.bookwise.helper.SubscriptionHelper;
 import com.techcrack.bookwise.helper.UserHelper;
 import com.techcrack.bookwise.responseHelper.RegistrationResult;
 import com.techcrack.bookwise.responseHelper.ResponseEntityHelper;
-import com.techcrack.bookwise.utils.BaseLoggerServiceHelper;
+import com.techcrack.bookwise.utils.AbstractController;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class UserController extends BaseLoggerServiceHelper<UserController, UserService, UserHelper> {
+public class UserController extends AbstractController<UserController, UserService, UserHelper> {
     private final UserRegistrationService userRegistrationService;
     private final SubscriptionHelper subscriptionHelper;
 

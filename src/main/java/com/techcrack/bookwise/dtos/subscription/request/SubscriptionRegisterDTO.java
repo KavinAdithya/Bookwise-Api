@@ -1,4 +1,4 @@
-package com.techcrack.bookwise.dtos;
+package com.techcrack.bookwise.dtos.subscription.request;
 
 import com.techcrack.bookwise.constans.Subscriptions;
 

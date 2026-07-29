@@ -7,14 +7,14 @@ import com.techcrack.bookwise.constans.Subscriptions;
 import com.techcrack.bookwise.entity.Subscription;
 import com.techcrack.bookwise.entity.Users;
 import com.techcrack.bookwise.repository.SubscriptionRepository;
-import com.techcrack.bookwise.utils.BaseLoggerRepository;
+import com.techcrack.bookwise.utils.AbstractRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 
 @Service
-public class SubscriptionServiceImpl extends BaseLoggerRepository<SubscriptionServiceImpl, SubscriptionRepository>
+public class SubscriptionServiceImpl extends AbstractRepository<SubscriptionServiceImpl, SubscriptionRepository>
                                     implements SubscriptionService {
 
     private final UserService userService;

@@ -5,17 +5,17 @@ import com.techcrack.bookwise.entity.Author;
 import com.techcrack.bookwise.entity.Subscription;
 import com.techcrack.bookwise.entity.Users;
 import com.techcrack.bookwise.responseHelper.RegistrationResult;
-import com.techcrack.bookwise.utils.BaseLoggerService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.techcrack.bookwise.utils.AbstractLogger;
 import org.springframework.stereotype.Service;
 
 @Service
-public class AuthorRegistrationService extends BaseLoggerService<AuthorRegistrationService, AuthorService> {
+public class AuthorRegistrationService extends AbstractLogger<AuthorRegistrationService> {
+    private final AuthorService authorService;
     private final UserRegistrationService userRegistrationService;
 
-    public AuthorRegistrationService(AuthorService service, UserRegistrationService userRegistrationService) {
-        super(AuthorRegistrationService.class, service);
+    public AuthorRegistrationService(AuthorService authorService, UserRegistrationService userRegistrationService) {
+        super(AuthorRegistrationService.class);
+        this.authorService = authorService;
         this.userRegistrationService = userRegistrationService;
     }
 
@@ -27,7 +27,7 @@ public class AuthorRegistrationService extends BaseLoggerService<AuthorRegistrat
 
         logger.debug("User & Subscription Registered Info : {}", userRegistrationResult);
 
-        author = service.register(author);
+        author = authorService.register(author);
 
         logger.debug("Saved Author Info : {}" , author);
         logger.info("Author Registration Process done for {}", author.getUser().getUsername());

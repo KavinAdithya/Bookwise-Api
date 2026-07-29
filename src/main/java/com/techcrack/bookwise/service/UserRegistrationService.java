@@ -5,25 +5,25 @@ import com.techcrack.bookwise.abstractions.UserService;
 import com.techcrack.bookwise.entity.Subscription;
 import com.techcrack.bookwise.entity.Users;
 import com.techcrack.bookwise.responseHelper.RegistrationResult;
-import com.techcrack.bookwise.utils.BaseLoggerService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.techcrack.bookwise.utils.AbstractLogger;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UserRegistrationService extends BaseLoggerService<UserRegistrationService, UserService> {
+public class UserRegistrationService extends AbstractLogger<UserRegistrationService> {
 
+    private final UserService userService;
     private final SubscriptionService subscriptionService;
 
-    public UserRegistrationService(UserService service, SubscriptionService subscriptionService) {
-        super(UserRegistrationService.class, service);
+    public UserRegistrationService(UserService userService, SubscriptionService subscriptionService) {
+        super(UserRegistrationService.class);
+        this.userService = userService;
         this.subscriptionService = subscriptionService;
     }
 
     public RegistrationResult<Users, Subscription> register(Users user, Subscription subscription) {
         logger.info("User Registration for {} started ", user.getUsername());
 
-        user = service.register(user);
+        user = userService.register(user);
 
         logger.info("User Registration done  for {} ", user.getUsername());
 

@@ -1,14 +1,13 @@
 package com.techcrack.bookwise.controller;
 
 import com.techcrack.bookwise.abstractions.BorrowBookService;
-import com.techcrack.bookwise.dtos.BorrowBookRequestDTO;
-import com.techcrack.bookwise.dtos.BorrowBookResponseDTO;
+import com.techcrack.bookwise.dtos.borrowbook.request.BorrowBookRequestDTO;
+import com.techcrack.bookwise.dtos.borrowbook.response.BorrowBookResponseDTO;
 import com.techcrack.bookwise.entity.BorrowBook;
 import com.techcrack.bookwise.helper.BorrowBookHelper;
 import com.techcrack.bookwise.responseHelper.ApiResponseEntity;
 import com.techcrack.bookwise.responseHelper.ResponseEntityHelper;
-import com.techcrack.bookwise.utils.BaseLoggerService;
-import com.techcrack.bookwise.utils.BaseLoggerServiceHelper;
+import com.techcrack.bookwise.utils.AbstractController;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api")
-public class BorrowBookController extends BaseLoggerServiceHelper<BorrowBookController, BorrowBookService, BorrowBookHelper> {
+public class BorrowBookController extends AbstractController<BorrowBookController, BorrowBookService, BorrowBookHelper> {
     public BorrowBookController(BorrowBookService service, BorrowBookHelper helper) {
         super(BorrowBookController.class, service, helper);
     }

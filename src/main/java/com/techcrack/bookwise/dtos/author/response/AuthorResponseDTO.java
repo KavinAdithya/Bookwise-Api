@@ -1,7 +1,8 @@
-package com.techcrack.bookwise.dtos;
+package com.techcrack.bookwise.dtos.author.response;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.techcrack.bookwise.constans.Status;
+import com.techcrack.bookwise.dtos.user.response.UserResponseDTO;
 
 
 @JsonPropertyOrder({

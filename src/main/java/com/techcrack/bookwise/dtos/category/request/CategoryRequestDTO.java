@@ -1,4 +1,4 @@
-package com.techcrack.bookwise.dtos;
+package com.techcrack.bookwise.dtos.category.request;
 
 public class CategoryRequestDTO {
     private String name;

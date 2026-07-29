@@ -1,4 +1,4 @@
-package com.techcrack.bookwise.dtos;
+package com.techcrack.bookwise.dtos.borrowbook.request;
 
 import com.techcrack.bookwise.entity.Book;
 import com.techcrack.bookwise.entity.BorrowBook;

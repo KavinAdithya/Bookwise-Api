@@ -3,10 +3,10 @@ package com.techcrack.bookwise.helper;
 import com.techcrack.bookwise.constans.ApplicationData;
 import com.techcrack.bookwise.constans.Roles;
 import com.techcrack.bookwise.constans.Status;
-import com.techcrack.bookwise.dtos.AuthorRegisterDTO;
-import com.techcrack.bookwise.dtos.AuthorResponseDTO;
-import com.techcrack.bookwise.dtos.PendingAuthorDTO;
-import com.techcrack.bookwise.dtos.SubscriptionResponseDTO;
+import com.techcrack.bookwise.dtos.author.request.AuthorRegisterDTO;
+import com.techcrack.bookwise.dtos.author.response.AuthorResponseDTO;
+import com.techcrack.bookwise.dtos.author.request.PendingAuthorDTO;
+import com.techcrack.bookwise.dtos.subscription.response.SubscriptionResponseDTO;
 import com.techcrack.bookwise.entity.Author;
 import org.springframework.stereotype.Component;
 

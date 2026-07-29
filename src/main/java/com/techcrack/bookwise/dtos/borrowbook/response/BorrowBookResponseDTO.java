@@ -1,11 +1,7 @@
-package com.techcrack.bookwise.dtos;
+package com.techcrack.bookwise.dtos.borrowbook.response;
 
 import com.techcrack.bookwise.constans.BorrowStatus;
-import com.techcrack.bookwise.controller.BorrowBookController;
-import com.techcrack.bookwise.entity.Book;
 import com.techcrack.bookwise.entity.BorrowBook;
-import com.techcrack.bookwise.entity.Users;
-import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 

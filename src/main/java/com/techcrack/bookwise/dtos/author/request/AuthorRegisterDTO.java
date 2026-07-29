@@ -1,4 +1,6 @@
-package com.techcrack.bookwise.dtos;
+package com.techcrack.bookwise.dtos.author.request;
+
+import com.techcrack.bookwise.dtos.user.request.UserRegisterDTO;
 
 public class AuthorRegisterDTO {
     private String bio;

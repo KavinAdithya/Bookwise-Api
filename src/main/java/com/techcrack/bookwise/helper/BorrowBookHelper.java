@@ -1,8 +1,8 @@
 package com.techcrack.bookwise.helper;
 
 import com.techcrack.bookwise.constans.ApplicationData;
-import com.techcrack.bookwise.dtos.BorrowBookRequestDTO;
-import com.techcrack.bookwise.dtos.BorrowBookResponseDTO;
+import com.techcrack.bookwise.dtos.borrowbook.request.BorrowBookRequestDTO;
+import com.techcrack.bookwise.dtos.borrowbook.response.BorrowBookResponseDTO;
 import com.techcrack.bookwise.entity.Book;
 import com.techcrack.bookwise.entity.BorrowBook;
 import com.techcrack.bookwise.entity.Users;

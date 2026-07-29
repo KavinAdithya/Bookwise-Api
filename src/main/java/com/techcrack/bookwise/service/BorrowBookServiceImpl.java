@@ -10,13 +10,13 @@ import com.techcrack.bookwise.entity.BorrowBook;
 import com.techcrack.bookwise.exceptions.customized.InvalidDataException;
 import com.techcrack.bookwise.exceptions.templates.Errors;
 import com.techcrack.bookwise.repository.BorrowBookRepository;
-import com.techcrack.bookwise.utils.BaseLoggerRepoValidation;
+import com.techcrack.bookwise.utils.AbstractService;
 import com.techcrack.bookwise.validations.BorrowBookValidations;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 @Service
-public class BorrowBookServiceImpl extends BaseLoggerRepoValidation<BorrowBookServiceImpl, BorrowBookRepository, BorrowBookValidations>
+public class BorrowBookServiceImpl extends AbstractService<BorrowBookServiceImpl, BorrowBookRepository, BorrowBookValidations>
                                     implements BorrowBookService {
     private final UserService userService;
     private final BookService bookService;

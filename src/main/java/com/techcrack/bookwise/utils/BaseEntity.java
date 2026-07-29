@@ -8,6 +8,17 @@ import jakarta.persistence.MappedSuperclass;
 
 import java.time.LocalDateTime;
 
+/**
+ * It acts as a base entity for every in this application
+ * It Provides some basic fields such as
+ * <ul>
+ *     <li>1. CreatedBy</li>
+ *     <li>2. UpdateBy</li>
+ *     <li>3. CreatedAt</li>
+ *     <li>4. UpdateAt</li>
+ *     <li>5. IsActive</li>
+ * </ul>
+ */
 @MappedSuperclass
 public abstract class BaseEntity {
     @Id

@@ -4,14 +4,16 @@ import com.techcrack.bookwise.abstractions.BookService;
 import com.techcrack.bookwise.abstractions.SubscriptionService;
 import com.techcrack.bookwise.entity.BorrowBook;
 import com.techcrack.bookwise.exceptions.templates.Errors;
-import com.techcrack.bookwise.utils.BaseLoggerService;
+import com.techcrack.bookwise.utils.AbstractLogger;
 import org.springframework.stereotype.Component;
 
 @Component
-public class BorrowBookValidations extends BaseLoggerService<BorrowBookValidations, BookService> {
+public class BorrowBookValidations extends AbstractLogger<BorrowBookValidations> {
+    private final BookService bookService;
     private final SubscriptionService subscriptionService;
-    public BorrowBookValidations(BookService service, SubscriptionService subscriptionService) {
-        super(BorrowBookValidations.class, service);
+    public BorrowBookValidations(BookService bookService, SubscriptionService subscriptionService) {
+        super(BorrowBookValidations.class);
+        this.bookService = bookService;
         this.subscriptionService = subscriptionService;
     }
 
@@ -49,7 +51,7 @@ public class BorrowBookValidations extends BaseLoggerService<BorrowBookValidatio
             errors.addErrorMessage(message);
         }
 
-        if (hasNoError && !service.checkAvailability(entity.getBook().getId(), entity.getQuantity())) {
+        if (hasNoError && !bookService.checkAvailability(entity.getBook().getId(), entity.getQuantity())) {
             message = "Book is out of stock for Book Name " + entity.getBook().getTitle();
             logger.error(message);
             errors.addErrorMessage(message);

@@ -1,4 +1,4 @@
-package com.techcrack.bookwise.dtos;
+package com.techcrack.bookwise.dtos.author.request;
 
 public class PendingAuthorDTO {
     private long authorId;
