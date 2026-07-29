@@ -1,4 +1,4 @@
-package com.techcrack.bookwise.constans;
+package com.techcrack.bookwise.constans.queries;
 
 public class JPQLQueries {
     public static final String UPDATE_AUTHOR_STATUS = """

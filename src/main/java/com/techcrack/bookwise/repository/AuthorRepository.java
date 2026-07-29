@@ -1,6 +1,5 @@
 package com.techcrack.bookwise.repository;
 
-import com.techcrack.bookwise.constans.JPQLQueries;
 import com.techcrack.bookwise.constans.Status;
 import com.techcrack.bookwise.entity.Author;
 import jakarta.transaction.Transactional;
@@ -9,7 +8,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import static com.techcrack.bookwise.constans.JPQLQueries.UPDATE_AUTHOR_STATUS;
+import static com.techcrack.bookwise.constans.queries.JPQLQueries.UPDATE_AUTHOR_STATUS;
 
 import java.util.List;
 

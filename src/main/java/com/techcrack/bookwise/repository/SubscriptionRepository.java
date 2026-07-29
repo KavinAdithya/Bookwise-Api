@@ -1,7 +1,7 @@
 package com.techcrack.bookwise.repository;
 
-import com.techcrack.bookwise.constans.JPQLQueries;
-import com.techcrack.bookwise.constans.RawQueries;
+import com.techcrack.bookwise.constans.queries.JPQLQueries;
+import com.techcrack.bookwise.constans.queries.RawQueries;
 import com.techcrack.bookwise.constans.Subscriptions;
 import com.techcrack.bookwise.entity.Subscription;
 import jakarta.transaction.Transactional;
@@ -25,4 +25,8 @@ public interface SubscriptionRepository extends JpaRepository<Subscription, Long
 
     @Query(JPQLQueries.FETCH_SUBSCRIPTIONS)
     Subscriptions getSubscription(@Param("userId") long userId);
+
+    @Query(value = RawQueries.UPDATE_SUBSCRIPTION_BOOK_ALLOWED_COUNT, nativeQuery = true)
+    int updateBooksAllowed(@Param("userId") long userId,
+                           @Param("quantity") long quantity);
 }

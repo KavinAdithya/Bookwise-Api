@@ -11,7 +11,7 @@ import org.springframework.data.repository.query.Param;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static com.techcrack.bookwise.constans.JPQLQueries.CHANGE_STATUS_ALL_BOOKS;
+import static com.techcrack.bookwise.constans.queries.JPQLQueries.CHANGE_STATUS_ALL_BOOKS;
 
 public interface BookRepository extends JpaRepository<Book, Long> {
     boolean existsByISBN(String ISBN);

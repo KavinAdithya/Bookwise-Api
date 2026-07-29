@@ -8,4 +8,5 @@ public interface SubscriptionService extends BasicCRUD<Subscription> {
     Subscription subscriptionPremiumForOneMonth(long userId, LocalDateTime startDate);
     boolean hasLimitToBorrowBook(long userId);
     int getFreeLimitDays(long userId);
+    int updateBookAllowed(long userId, long quantity);
 }

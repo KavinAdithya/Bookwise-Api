@@ -59,7 +59,13 @@ public class BorrowBookServiceImpl extends AbstractService<BorrowBookServiceImpl
         setBorrowDetails(entity);
 
         logger.info("Borrow Book details validated and added successfully");
-        return register(entity);
+        BorrowBook borrowBook = register(entity);
+
+        logger.info("Updating Book limit for the user");
+        int rowsAffected = subscriptionService.updateBookAllowed(borrowBook.getUser().getId(), borrowBook.getQuantity());
+
+        logger.debug("On updating books allowed {} rows data changed", rowsAffected);
+        return borrowBook;
     }
 
     /**

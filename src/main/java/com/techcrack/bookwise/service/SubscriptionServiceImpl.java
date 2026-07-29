@@ -75,12 +75,20 @@ public class SubscriptionServiceImpl extends AbstractRepository<SubscriptionServ
         subscription.setEndDate(dateTime.plusDays(subscription.getSubscriptions().getDays()));
     }
 
+    @Transactional
     public boolean hasLimitToBorrowBook(long userId) {
         return repo.existsLimitForBookBorrow(userId);
     }
 
     @Override
+    @Transactional
     public int getFreeLimitDays(long userId) {
         return repo.getSubscription(userId).getDays();
+    }
+
+    @Override
+    @Transactional
+    public int updateBookAllowed(long userId, long quantity) {
+        return repo.updateBooksAllowed(userId, quantity);
     }
 }
