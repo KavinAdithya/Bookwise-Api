@@ -26,6 +26,8 @@ public interface SubscriptionRepository extends JpaRepository<Subscription, Long
     @Query(JPQLQueries.FETCH_SUBSCRIPTIONS)
     Subscriptions getSubscription(@Param("userId") long userId);
 
+    @Modifying
+    @Transactional
     @Query(value = RawQueries.UPDATE_SUBSCRIPTION_BOOK_ALLOWED_COUNT, nativeQuery = true)
     int updateBooksAllowed(@Param("userId") long userId,
                            @Param("quantity") long quantity);

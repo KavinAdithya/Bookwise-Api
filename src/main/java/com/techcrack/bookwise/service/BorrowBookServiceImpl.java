@@ -6,8 +6,10 @@ import com.techcrack.bookwise.abstractions.SubscriptionService;
 import com.techcrack.bookwise.abstractions.UserService;
 import com.techcrack.bookwise.constans.ApplicationData;
 import com.techcrack.bookwise.constans.BorrowStatus;
+import com.techcrack.bookwise.dtos.borrowbook.layer.BorrowBookContext;
 import com.techcrack.bookwise.entity.BorrowBook;
 import com.techcrack.bookwise.exceptions.customized.InvalidDataException;
+import com.techcrack.bookwise.exceptions.customized.ObjectNotFoundException;
 import com.techcrack.bookwise.exceptions.templates.Errors;
 import com.techcrack.bookwise.repository.BorrowBookRepository;
 import com.techcrack.bookwise.utils.AbstractService;
@@ -65,6 +67,24 @@ public class BorrowBookServiceImpl extends AbstractService<BorrowBookServiceImpl
         int rowsAffected = subscriptionService.updateBookAllowed(borrowBook.getUser().getId(), borrowBook.getQuantity());
 
         logger.debug("On updating books allowed {} rows data changed", rowsAffected);
+        return borrowBook;
+    }
+
+    @Override
+    public BorrowBook getBorrowDetails(BorrowBookContext context) {
+        logger.info("Getting Borrow details");
+
+        BorrowBook borrowBook = repo.findByBorrowDateAndBook_IdAndUser_Id(
+                context.bookId(),
+                context.userId(),
+                context.borrowDate()
+        ).orElseThrow(
+                () -> new ObjectNotFoundException(
+                        BorrowBook.class, "Borrow Details doesn't match with " + context
+                )
+        );
+
+        logger.info("Finished to fetch borrow details");
         return borrowBook;
     }
 
