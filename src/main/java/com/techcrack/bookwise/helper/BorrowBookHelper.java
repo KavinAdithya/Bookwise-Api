@@ -1,12 +1,18 @@
 package com.techcrack.bookwise.helper;
 
 import com.techcrack.bookwise.constans.ApplicationData;
+import com.techcrack.bookwise.dtos.borrowbook.layer.BorrowBookContext;
 import com.techcrack.bookwise.dtos.borrowbook.request.BorrowBookRequestDTO;
+import com.techcrack.bookwise.dtos.borrowbook.request.FetchBorrowBookRequest;
 import com.techcrack.bookwise.dtos.borrowbook.response.BorrowBookResponseDTO;
+import com.techcrack.bookwise.dtos.borrowbook.response.DueAmountResponse;
 import com.techcrack.bookwise.entity.Book;
 import com.techcrack.bookwise.entity.BorrowBook;
 import com.techcrack.bookwise.entity.Users;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class BorrowBookHelper {
@@ -28,5 +34,23 @@ public class BorrowBookHelper {
 
     public BorrowBookResponseDTO mapToBorrowBookResponseDTO(BorrowBook borrowBook) {
         return new BorrowBookResponseDTO(borrowBook);
+    }
+
+    public BorrowBookContext mapToBorrowBookContext(FetchBorrowBookRequest request) {
+        return request.buildContext(ApplicationData.HARD_CODED_CURRENT_ID);
+    }
+
+    public List<BorrowBookResponseDTO> mapToBorrowBookResponseDTOs(List<BorrowBook> borrowBooks) {
+        List<BorrowBookResponseDTO> borrowBookResponseDTOS = new ArrayList<>();
+
+        for (BorrowBook borrowBook : borrowBooks) {
+            borrowBookResponseDTOS.add(mapToBorrowBookResponseDTO(borrowBook));
+        }
+
+        return borrowBookResponseDTOS;
+    }
+
+    public DueAmountResponse mapToDueAmountResponse(double dueAmount) {
+        return new DueAmountResponse(dueAmount);
     }
 }

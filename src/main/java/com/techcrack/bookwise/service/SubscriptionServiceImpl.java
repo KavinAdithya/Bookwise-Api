@@ -91,4 +91,8 @@ public class SubscriptionServiceImpl extends AbstractRepository<SubscriptionServ
     public int updateBookAllowed(long userId, long quantity) {
         return repo.updateBooksAllowed(userId, quantity);
     }
+
+    public Subscriptions getSubscription(long userId) {
+        return repo.getSubscription(userId);
+    }
 }

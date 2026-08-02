@@ -17,6 +17,9 @@ import com.techcrack.bookwise.validations.BorrowBookValidations;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.time.temporal.ChronoUnit;
+import java.util.List;
+
 @Service
 public class BorrowBookServiceImpl extends AbstractService<BorrowBookServiceImpl, BorrowBookRepository, BorrowBookValidations>
                                     implements BorrowBookService {
@@ -75,9 +78,9 @@ public class BorrowBookServiceImpl extends AbstractService<BorrowBookServiceImpl
         logger.info("Getting Borrow details");
 
         BorrowBook borrowBook = repo.findByBorrowDateAndBook_IdAndUser_Id(
+                context.borrowDate(),
                 context.bookId(),
-                context.userId(),
-                context.borrowDate()
+                context.userId()
         ).orElseThrow(
                 () -> new ObjectNotFoundException(
                         BorrowBook.class, "Borrow Details doesn't match with " + context
@@ -151,6 +154,27 @@ public class BorrowBookServiceImpl extends AbstractService<BorrowBookServiceImpl
         return repo.save(entity);
     }
 
+    /**
+     * Calculate the due amount for a returning book.
+     * Based on System Date
+     * @param context
+     * @return
+     */
+    public double calculateDueAmount(BorrowBookContext context) {
+        BorrowBook entity = getBorrowDetails(context);
+
+        if (ApplicationData.SYSTEM_DATE.isBefore(entity.getDueDate())) {
+            return 0;
+        }
+
+        long daysDelayed = ChronoUnit.DAYS.between(entity.getDueDate(), ApplicationData.SYSTEM_DATE);
+
+        double dailyRent = subscriptionService.getSubscription(entity.getUser().getId())
+                .getDelayDailyFineAmount();
+
+        return dailyRent * daysDelayed;
+    }
+
     @Override
     public void remove(long key) {
 
@@ -161,8 +185,13 @@ public class BorrowBookServiceImpl extends AbstractService<BorrowBookServiceImpl
         return null;
     }
 
+    public List<BorrowBook> getBorrowDetails(long userId) {
+        return repo.findByUser_Id(userId);
+    }
+
     @Override
     public BorrowBook get(long key) {
         return null;
     }
+
 }

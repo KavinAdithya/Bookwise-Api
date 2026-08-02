@@ -4,8 +4,10 @@ import com.techcrack.bookwise.entity.BorrowBook;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 public interface BorrowBookRepository extends JpaRepository<BorrowBook, Long> {
-    Optional<BorrowBook> findByBorrowDateAndBook_IdAndUser_Id(long bookId, long userId, LocalDateTime borrowDate);
+    Optional<BorrowBook> findByBorrowDateAndBook_IdAndUser_Id(LocalDateTime borrowDate, long bookId, long userId);
+    List<BorrowBook> findByUser_Id(long userId);
 }

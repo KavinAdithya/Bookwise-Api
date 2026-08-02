@@ -1,5 +1,6 @@
 package com.techcrack.bookwise.abstractions;
 
+import com.techcrack.bookwise.constans.Subscriptions;
 import com.techcrack.bookwise.entity.Subscription;
 
 import java.time.LocalDateTime;
@@ -9,4 +10,5 @@ public interface SubscriptionService extends BasicCRUD<Subscription> {
     boolean hasLimitToBorrowBook(long userId);
     int getFreeLimitDays(long userId);
     int updateBookAllowed(long userId, long quantity);
+    Subscriptions getSubscription(long userId);
 }
