@@ -19,6 +19,8 @@ public class BorrowBookHelper {
     public BorrowBook mapToBorrowBook(BorrowBookRequestDTO borrowBookRequestDTO) {
         BorrowBook borrowBook = borrowBookRequestDTO.buildBorrowBook();
 
+        borrowBook.initialize(ApplicationData.HARD_CODED_CURRENT_ID);
+
         Users users = new Users();
 
         users.setId(ApplicationData.HARD_CODED_CURRENT_ID);

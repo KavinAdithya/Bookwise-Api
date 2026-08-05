@@ -8,6 +8,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface BorrowBookRepository extends JpaRepository<BorrowBook, Long> {
-    Optional<BorrowBook> findByBorrowDateAndBook_IdAndUser_Id(LocalDateTime borrowDate, long bookId, long userId);
-    List<BorrowBook> findByUser_Id(long userId);
+    Optional<BorrowBook> findByBorrowDateAndIsActiveTrueAndBook_IdAndUser_Id(LocalDateTime borrowDate, long bookId, long userId);
+    List<BorrowBook> findByIsActiveTrueAndUser_Id(long userId);
 }

@@ -26,7 +26,7 @@ public abstract class BaseEntity {
     protected Long id;
     protected boolean isActive;
     protected LocalDateTime updatedAt;
-    protected long updatedBy;
+    protected Long updatedBy;
     protected LocalDateTime createdAt;
     protected long createdBy;
 
@@ -74,11 +74,11 @@ public abstract class BaseEntity {
         this.updatedAt = updatedAt;
     }
 
-    public long getUpdatedBy() {
+    public Long getUpdatedBy() {
         return updatedBy;
     }
 
-    public void setUpdatedBy(long updatedBy) {
+    public void setUpdatedBy(Long updatedBy) {
         this.updatedBy = updatedBy;
     }
 

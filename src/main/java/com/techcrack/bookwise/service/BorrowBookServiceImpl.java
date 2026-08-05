@@ -77,7 +77,7 @@ public class BorrowBookServiceImpl extends AbstractService<BorrowBookServiceImpl
     public BorrowBook getBorrowDetails(BorrowBookContext context) {
         logger.info("Getting Borrow details");
 
-        BorrowBook borrowBook = repo.findByBorrowDateAndBook_IdAndUser_Id(
+        BorrowBook borrowBook = repo.findByBorrowDateAndIsActiveTrueAndBook_IdAndUser_Id(
                 context.borrowDate(),
                 context.bookId(),
                 context.userId()
@@ -186,7 +186,7 @@ public class BorrowBookServiceImpl extends AbstractService<BorrowBookServiceImpl
     }
 
     public List<BorrowBook> getBorrowDetails(long userId) {
-        return repo.findByUser_Id(userId);
+        return repo.findByIsActiveTrueAndUser_Id(userId);
     }
 
     @Override
