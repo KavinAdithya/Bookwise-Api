@@ -7,6 +7,7 @@ import com.techcrack.bookwise.abstractions.UserService;
 import com.techcrack.bookwise.constans.ApplicationData;
 import com.techcrack.bookwise.constans.BorrowStatus;
 import com.techcrack.bookwise.dtos.borrowbook.layer.BorrowBookContext;
+import com.techcrack.bookwise.dtos.borrowbook.layer.ReturnBookContext;
 import com.techcrack.bookwise.entity.BorrowBook;
 import com.techcrack.bookwise.exceptions.customized.InvalidDataException;
 import com.techcrack.bookwise.exceptions.customized.ObjectNotFoundException;
@@ -77,9 +78,8 @@ public class BorrowBookServiceImpl extends AbstractService<BorrowBookServiceImpl
     public BorrowBook getBorrowDetails(BorrowBookContext context) {
         logger.info("Getting Borrow details");
 
-        BorrowBook borrowBook = repo.findByBorrowDateAndIsActiveTrueAndBook_IdAndUser_Id(
-                context.borrowDate(),
-                context.bookId(),
+        BorrowBook borrowBook = repo.findByIdAndIsActiveTrueAndUser_Id(
+                context.borrowBookId(),
                 context.userId()
         ).orElseThrow(
                 () -> new ObjectNotFoundException(
@@ -163,6 +163,10 @@ public class BorrowBookServiceImpl extends AbstractService<BorrowBookServiceImpl
     public double calculateDueAmount(BorrowBookContext context) {
         BorrowBook entity = getBorrowDetails(context);
 
+        return calculateDueAmount(context, entity);
+    }
+
+    public double calculateDueAmount(BorrowBookContext context, BorrowBook entity) {
         if (ApplicationData.SYSTEM_DATE.isBefore(entity.getDueDate())) {
             return 0;
         }
@@ -189,9 +193,39 @@ public class BorrowBookServiceImpl extends AbstractService<BorrowBookServiceImpl
         return repo.findByIsActiveTrueAndUser_Id(userId);
     }
 
+    @Transactional
+    @Override
+    public void returnBook(ReturnBookContext context) {
+        logger.info("Return Book process has been started for Borrow Book Id : {}", context);
+
+        BorrowBookContext params = new BorrowBookContext(
+                context.borrowBookId(),
+                context.userId()
+        );
+
+        BorrowBook borrowBook = getBorrowDetails(params);
+
+        // Calculation of due amount
+        double dueAmount = calculateDueAmount(params, borrowBook);
+
+        if (dueAmount != context.amountPaying()) {
+            logger.warn("Amount Paying {} Amount Due {}", context.amountPaying(), dueAmount);
+            throw new InvalidDataException("Amount Paying is not equals to the due amount");
+        }
+
+        borrowBook.initializeUpdate(context.userId());
+        borrowBook.setActive(false);
+        borrowBook.setStatus(BorrowStatus.RETURNED);
+        borrowBook.setReturnDate(ApplicationData.SYSTEM_DATE);
+        borrowBook.setTotalAmountPaidOnReturn(dueAmount);
+
+        // Income Update Pending
+    }
+
     @Override
     public BorrowBook get(long key) {
-        return null;
+        return repo.findByIdAndIsActiveTrue(key)
+                .orElseThrow(() -> new ObjectNotFoundException(BorrowBook.class, "Borrow Book is Not available"));
     }
 
 }

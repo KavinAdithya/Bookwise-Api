@@ -1,12 +1,23 @@
 package com.techcrack.bookwise.dtos.borrowbook.response;
 
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.techcrack.bookwise.constans.BorrowStatus;
 import com.techcrack.bookwise.entity.BorrowBook;
 
 import java.time.LocalDateTime;
 
+@JsonPropertyOrder({
+        "borrowBookId",
+        "username",
+        "bookTitle",
+        "quantity",
+        "status",
+        "borrowDate",
+        "dueDate"
+})
 public class BorrowBookResponseDTO {
 
+    private long borrowBookId;
     private String username;
     private String bookTitle;
     private int quantity;
@@ -25,6 +36,7 @@ public class BorrowBookResponseDTO {
         this.borrowDate = borrowBook.getBorrowDate();
         this.dueDate = borrowBook.getDueDate();
         this.status = borrowBook.getStatus();
+        this.borrowBookId = borrowBook.getId();
     }
 
     public String getUsername() {
@@ -75,10 +87,19 @@ public class BorrowBookResponseDTO {
         this.status = status;
     }
 
+    public long getBorrowBookId() {
+        return borrowBookId;
+    }
+
+    public void setBorrowBookId(long borrowBookId) {
+        this.borrowBookId = borrowBookId;
+    }
+
     @Override
     public String toString() {
         return "BorrowBookResponseDTO{" +
-                "username='" + username + '\'' +
+                "borrowBookId=" + borrowBookId +
+                ", username='" + username + '\'' +
                 ", bookTitle='" + bookTitle + '\'' +
                 ", quantity=" + quantity +
                 ", borrowDate=" + borrowDate +

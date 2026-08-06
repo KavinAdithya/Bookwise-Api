@@ -41,7 +41,7 @@ public class BorrowBookRequestDTO {
     @Override
     public String toString() {
         return "BorrowBookRequestDTO{" +
-                "bookId=" + bookId +
+                "borrowBookId=" + bookId +
                 ", quantity=" + quantity +
                 '}';
     }

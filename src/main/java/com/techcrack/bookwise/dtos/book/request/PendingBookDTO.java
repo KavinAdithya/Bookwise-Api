@@ -89,7 +89,7 @@ public class PendingBookDTO {
     @Override
     public String toString() {
         return "PendingBookDTO{" +
-                "bookId=" + bookId +
+                "borrowBookId=" + bookId +
                 ", title='" + title + '\'' +
                 ", ISBN='" + ISBN + '\'' +
                 ", authorName='" + authorName + '\'' +

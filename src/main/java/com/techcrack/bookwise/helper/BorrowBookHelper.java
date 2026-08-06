@@ -2,10 +2,13 @@ package com.techcrack.bookwise.helper;
 
 import com.techcrack.bookwise.constans.ApplicationData;
 import com.techcrack.bookwise.dtos.borrowbook.layer.BorrowBookContext;
+import com.techcrack.bookwise.dtos.borrowbook.layer.ReturnBookContext;
 import com.techcrack.bookwise.dtos.borrowbook.request.BorrowBookRequestDTO;
 import com.techcrack.bookwise.dtos.borrowbook.request.FetchBorrowBookRequest;
+import com.techcrack.bookwise.dtos.borrowbook.request.ReturnBookRequest;
 import com.techcrack.bookwise.dtos.borrowbook.response.BorrowBookResponseDTO;
 import com.techcrack.bookwise.dtos.borrowbook.response.DueAmountResponse;
+import com.techcrack.bookwise.dtos.borrowbook.response.ReturnBookResponse;
 import com.techcrack.bookwise.entity.Book;
 import com.techcrack.bookwise.entity.BorrowBook;
 import com.techcrack.bookwise.entity.Users;
@@ -38,8 +41,8 @@ public class BorrowBookHelper {
         return new BorrowBookResponseDTO(borrowBook);
     }
 
-    public BorrowBookContext mapToBorrowBookContext(FetchBorrowBookRequest request) {
-        return request.buildContext(ApplicationData.HARD_CODED_CURRENT_ID);
+    public BorrowBookContext mapToBorrowBookContext(long borrowBookId) {
+        return new BorrowBookContext(borrowBookId, ApplicationData.HARD_CODED_CURRENT_ID);
     }
 
     public List<BorrowBookResponseDTO> mapToBorrowBookResponseDTOs(List<BorrowBook> borrowBooks) {
@@ -54,5 +57,15 @@ public class BorrowBookHelper {
 
     public DueAmountResponse mapToDueAmountResponse(double dueAmount) {
         return new DueAmountResponse(dueAmount);
+    }
+
+    public ReturnBookContext mapToReturnBookContext(ReturnBookRequest request) {
+        return request.buildContext(
+                ApplicationData.HARD_CODED_CURRENT_ID
+        );
+    }
+
+    public ReturnBookResponse mapToReturnBookResponse(String message) {
+        return new ReturnBookResponse(message);
     }
 }
