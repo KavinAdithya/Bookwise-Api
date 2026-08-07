@@ -5,6 +5,7 @@ import com.techcrack.bookwise.helper.CategoryHelper;
 import com.techcrack.bookwise.dtos.category.request.CategoryRequestDTO;
 import com.techcrack.bookwise.dtos.category.response.CategoryResponseDTO;
 import com.techcrack.bookwise.entity.Category;
+import com.techcrack.bookwise.jwt.CurrentUserService;
 import com.techcrack.bookwise.responseHelper.ApiResponseEntity;
 import com.techcrack.bookwise.responseHelper.ResponseEntityHelper;
 import com.techcrack.bookwise.utils.AbstractController;
@@ -16,8 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class CategoryController extends AbstractController<CategoryController, CategoryService, CategoryHelper> {
 
-    public CategoryController(CategoryService service, CategoryHelper helper) {
-       super(CategoryController.class, service, helper);
+    public CategoryController(CategoryService service, CategoryHelper helper, CurrentUserService userSession) {
+       super(CategoryController.class, service, helper, userSession);
     }
 
     @PostMapping("/admin/category/register")

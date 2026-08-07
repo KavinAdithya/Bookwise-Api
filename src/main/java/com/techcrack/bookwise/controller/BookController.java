@@ -7,6 +7,7 @@ import com.techcrack.bookwise.dtos.book.request.BookRegisterDTO;
 import com.techcrack.bookwise.dtos.book.response.BookResponseDTO;
 import com.techcrack.bookwise.dtos.book.request.PendingBookDTO;
 import com.techcrack.bookwise.entity.Book;
+import com.techcrack.bookwise.jwt.CurrentUserService;
 import com.techcrack.bookwise.responseHelper.ApiResponseEntity;
 import com.techcrack.bookwise.responseHelper.ResponseEntityHelper;
 import com.techcrack.bookwise.utils.AbstractController;
@@ -19,8 +20,8 @@ import java.util.List;
 @RequestMapping("/api")
 public class BookController extends AbstractController<BookController, BookService, BookHelper> {
 
-    public BookController(BookService service, BookHelper helper) {
-        super(BookController.class, service, helper);
+    public BookController(BookService service, BookHelper helper, CurrentUserService userSession) {
+        super(BookController.class, service, helper, userSession);
     }
 
     @PostMapping("/book/register")

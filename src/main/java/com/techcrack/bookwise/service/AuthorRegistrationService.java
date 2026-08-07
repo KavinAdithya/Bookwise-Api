@@ -4,6 +4,7 @@ import com.techcrack.bookwise.abstractions.AuthorService;
 import com.techcrack.bookwise.entity.Author;
 import com.techcrack.bookwise.entity.Subscription;
 import com.techcrack.bookwise.entity.Users;
+import com.techcrack.bookwise.jwt.CurrentUserService;
 import com.techcrack.bookwise.responseHelper.RegistrationResult;
 import com.techcrack.bookwise.utils.AbstractLogger;
 import org.springframework.stereotype.Service;
@@ -12,10 +13,12 @@ import org.springframework.stereotype.Service;
 public class AuthorRegistrationService extends AbstractLogger<AuthorRegistrationService> {
     private final AuthorService authorService;
     private final UserRegistrationService userRegistrationService;
+    private final CurrentUserService userSession;
 
-    public AuthorRegistrationService(AuthorService authorService, UserRegistrationService userRegistrationService) {
+    public AuthorRegistrationService(AuthorService authorService, UserRegistrationService userRegistrationService, CurrentUserService userSession) {
         super(AuthorRegistrationService.class);
         this.authorService = authorService;
+        this.userSession = userSession;
         this.userRegistrationService = userRegistrationService;
     }
 

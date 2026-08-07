@@ -6,6 +6,7 @@ import com.techcrack.bookwise.constans.ApplicationData;
 import com.techcrack.bookwise.constans.Subscriptions;
 import com.techcrack.bookwise.entity.Subscription;
 import com.techcrack.bookwise.entity.Users;
+import com.techcrack.bookwise.jwt.CurrentUserService;
 import com.techcrack.bookwise.repository.SubscriptionRepository;
 import com.techcrack.bookwise.utils.AbstractRepository;
 import jakarta.transaction.Transactional;
@@ -19,8 +20,8 @@ public class SubscriptionServiceImpl extends AbstractRepository<SubscriptionServ
 
     private final UserService userService;
 
-    public SubscriptionServiceImpl(SubscriptionRepository repo, UserService userService) {
-        super(SubscriptionServiceImpl.class, repo);
+    public SubscriptionServiceImpl(SubscriptionRepository repo, UserService userService, CurrentUserService userSession) {
+        super(SubscriptionServiceImpl.class, repo, userSession);
         this.userService = userService;
     }
 

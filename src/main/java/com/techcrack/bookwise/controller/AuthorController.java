@@ -7,6 +7,7 @@ import com.techcrack.bookwise.dtos.author.response.AuthorResponseDTO;
 import com.techcrack.bookwise.dtos.author.request.PendingAuthorDTO;
 import com.techcrack.bookwise.entity.Author;
 import com.techcrack.bookwise.entity.Subscription;
+import com.techcrack.bookwise.jwt.CurrentUserService;
 import com.techcrack.bookwise.service.AuthorRegistrationService;
 import com.techcrack.bookwise.helper.SubscriptionHelper;
 import com.techcrack.bookwise.responseHelper.ApiResponseEntity;
@@ -26,8 +27,8 @@ public class AuthorController extends AbstractController<AuthorController, Autho
     private final AuthorRegistrationService authorRegistrationService;
     private final SubscriptionHelper subscriptionHelper;
 
-    public AuthorController(AuthorRegistrationService authorRegistrationService, AuthorHelper helper ,SubscriptionHelper subscriptionHelper, AuthorService service) {
-        super(AuthorController.class, service, helper);
+    public AuthorController(AuthorRegistrationService authorRegistrationService, AuthorHelper helper ,SubscriptionHelper subscriptionHelper, AuthorService service, CurrentUserService userSession) {
+        super(AuthorController.class, service, helper, userSession);
         this.authorRegistrationService = authorRegistrationService;
         this.subscriptionHelper = subscriptionHelper;
     }

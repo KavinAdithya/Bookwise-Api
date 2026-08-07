@@ -4,6 +4,7 @@ import com.techcrack.bookwise.abstractions.CategoryService;
 import com.techcrack.bookwise.entity.Category;
 import com.techcrack.bookwise.exceptions.customized.InvalidDataException;
 import com.techcrack.bookwise.exceptions.customized.ObjectNotFoundException;
+import com.techcrack.bookwise.jwt.CurrentUserService;
 import com.techcrack.bookwise.repository.CategoryRepository;
 import com.techcrack.bookwise.utils.AbstractRepository;
 import jakarta.transaction.Transactional;
@@ -15,8 +16,8 @@ import java.util.List;
 public class CategoryServiceImpl extends AbstractRepository<CategoryServiceImpl, CategoryRepository>
                                 implements CategoryService {
 
-    public CategoryServiceImpl(CategoryRepository repo) {
-        super(CategoryServiceImpl.class, repo);
+    public CategoryServiceImpl(CategoryRepository repo, CurrentUserService userSession) {
+        super(CategoryServiceImpl.class, repo, userSession);
     }
 
     @Transactional

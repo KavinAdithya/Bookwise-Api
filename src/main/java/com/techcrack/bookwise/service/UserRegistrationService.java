@@ -4,6 +4,7 @@ import com.techcrack.bookwise.abstractions.SubscriptionService;
 import com.techcrack.bookwise.abstractions.UserService;
 import com.techcrack.bookwise.entity.Subscription;
 import com.techcrack.bookwise.entity.Users;
+import com.techcrack.bookwise.jwt.CurrentUserService;
 import com.techcrack.bookwise.responseHelper.RegistrationResult;
 import com.techcrack.bookwise.utils.AbstractLogger;
 import org.springframework.stereotype.Service;
@@ -13,10 +14,12 @@ public class UserRegistrationService extends AbstractLogger<UserRegistrationServ
 
     private final UserService userService;
     private final SubscriptionService subscriptionService;
+    private final CurrentUserService userSession;
 
-    public UserRegistrationService(UserService userService, SubscriptionService subscriptionService) {
+    public UserRegistrationService(UserService userService, SubscriptionService subscriptionService, CurrentUserService userSession) {
         super(UserRegistrationService.class);
         this.userService = userService;
+        this.userSession = userSession;
         this.subscriptionService = subscriptionService;
     }
 

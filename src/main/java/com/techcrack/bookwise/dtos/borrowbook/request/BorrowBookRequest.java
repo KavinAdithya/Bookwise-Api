@@ -3,11 +3,11 @@ package com.techcrack.bookwise.dtos.borrowbook.request;
 import com.techcrack.bookwise.entity.Book;
 import com.techcrack.bookwise.entity.BorrowBook;
 
-public class BorrowBookRequestDTO {
+public class BorrowBookRequest {
     private long bookId;
     private int quantity;
 
-    public BorrowBookRequestDTO() {
+    public BorrowBookRequest() {
         super();
     }
 
@@ -31,9 +31,6 @@ public class BorrowBookRequestDTO {
         BorrowBook borrowBook = new BorrowBook();
 
         borrowBook.setQuantity(quantity);
-        Book book = new Book();
-        book.setId(bookId);
-        borrowBook.setBook(book);
 
         return borrowBook;
     }

@@ -5,6 +5,7 @@ import com.techcrack.bookwise.constans.ApplicationData;
 import com.techcrack.bookwise.entity.Users;
 import com.techcrack.bookwise.exceptions.customized.InvalidDataException;
 import com.techcrack.bookwise.exceptions.customized.ObjectNotFoundException;
+import com.techcrack.bookwise.jwt.CurrentUserService;
 import com.techcrack.bookwise.jwt.JwtService;
 import com.techcrack.bookwise.repository.UserRepository;
 import com.techcrack.bookwise.exceptions.templates.Errors;
@@ -24,8 +25,8 @@ public class UserServiceImpl extends AbstractRepository<UserServiceImpl, UserRep
     private final AuthenticationManager authManager;
     private final JwtService jwtService;
 
-    public UserServiceImpl(UserRepository repo, PasswordEncoder encoder, AuthenticationManager authManager, JwtService jwtService) {
-        super(UserServiceImpl.class, repo);
+    public UserServiceImpl(UserRepository repo, PasswordEncoder encoder, AuthenticationManager authManager, JwtService jwtService, CurrentUserService userSession) {
+        super(UserServiceImpl.class, repo, userSession);
         this.encoder = encoder;
         this.authManager = authManager;
         this.jwtService = jwtService;
@@ -41,7 +42,7 @@ public class UserServiceImpl extends AbstractRepository<UserServiceImpl, UserRep
             throw new InvalidDataException("User Data is invalid : " + errors.getData());
         }
 
-        user.initialize(ApplicationData.HARD_CODED_CURRENT_ID);
+        user.initialize(null);
         user.setPassword(encoder.encode(user.getPassword()));
 
         logger.info("User data is validated successfully.");

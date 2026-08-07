@@ -11,6 +11,7 @@ import com.techcrack.bookwise.entity.Category;
 import com.techcrack.bookwise.exceptions.customized.InvalidDataException;
 import com.techcrack.bookwise.exceptions.customized.ObjectNotFoundException;
 import com.techcrack.bookwise.exceptions.templates.Errors;
+import com.techcrack.bookwise.jwt.CurrentUserService;
 import com.techcrack.bookwise.repository.BookRepository;
 import com.techcrack.bookwise.utils.AbstractService;
 import com.techcrack.bookwise.validations.BookServiceValidations;
@@ -26,8 +27,8 @@ public class BookServiceImpl extends AbstractService<BookServiceImpl, BookReposi
     private final AuthorService authorService;
     private final CategoryService categoryService;
 
-    public BookServiceImpl(BookRepository repo, AuthorService authorService, CategoryService categoryService, BookServiceValidations validations) {
-        super(BookServiceImpl.class, repo, validations);
+    public BookServiceImpl(BookRepository repo, AuthorService authorService, CategoryService categoryService, BookServiceValidations validations, CurrentUserService userSession) {
+        super(BookServiceImpl.class, repo, validations, userSession);
         this.authorService = authorService;
         this.categoryService = categoryService;
     }

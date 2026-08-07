@@ -7,6 +7,7 @@ import com.techcrack.bookwise.constans.Status;
 import com.techcrack.bookwise.entity.Author;
 import com.techcrack.bookwise.entity.Subscription;
 import com.techcrack.bookwise.exceptions.customized.ObjectNotFoundException;
+import com.techcrack.bookwise.jwt.CurrentUserService;
 import com.techcrack.bookwise.repository.AuthorRepository;
 import com.techcrack.bookwise.utils.AbstractRepository;
 import org.springframework.stereotype.Service;
@@ -19,8 +20,8 @@ public class AuthorServiceImpl extends AbstractRepository<AuthorServiceImpl, Aut
 
     private final SubscriptionService subscriptionService;
 
-    public AuthorServiceImpl(AuthorRepository repo, SubscriptionService subscriptionService) {
-        super(AuthorServiceImpl.class, repo);
+    public AuthorServiceImpl(AuthorRepository repo, SubscriptionService subscriptionService, CurrentUserService userSession) {
+        super(AuthorServiceImpl.class, repo, userSession);
         this.subscriptionService = subscriptionService;
     }
 

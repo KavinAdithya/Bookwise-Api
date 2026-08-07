@@ -7,6 +7,7 @@ import com.techcrack.bookwise.entity.Book;
 import com.techcrack.bookwise.entity.PurchaseBook;
 import com.techcrack.bookwise.entity.Users;
 import com.techcrack.bookwise.exceptions.customized.InvalidDataException;
+import com.techcrack.bookwise.jwt.CurrentUserService;
 import com.techcrack.bookwise.repository.PurchaseBookRepository;
 import com.techcrack.bookwise.utils.AbstractRepository;
 import org.springframework.stereotype.Service;
@@ -17,8 +18,8 @@ public class PurchaseBookServiceImpl extends AbstractRepository<PurchaseBookServ
     private final BookService bookService;
     private final UserService userService;
 
-    public PurchaseBookServiceImpl(PurchaseBookRepository repo, BookService bookService, UserService userService) {
-        super(PurchaseBookServiceImpl.class, repo);
+    public PurchaseBookServiceImpl(PurchaseBookRepository repo, BookService bookService, UserService userService, CurrentUserService userSession) {
+        super(PurchaseBookServiceImpl.class, repo, userSession);
         this.bookService = bookService;
         this.userService = userService;
     }

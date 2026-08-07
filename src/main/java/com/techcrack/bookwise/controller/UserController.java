@@ -8,6 +8,7 @@ import com.techcrack.bookwise.dtos.user.request.UserRegisterDTO;
 import com.techcrack.bookwise.dtos.user.response.UserResponseDTO;
 import com.techcrack.bookwise.entity.Subscription;
 import com.techcrack.bookwise.entity.Users;
+import com.techcrack.bookwise.jwt.CurrentUserService;
 import com.techcrack.bookwise.service.UserRegistrationService;
 import com.techcrack.bookwise.responseHelper.ApiResponseEntity;
 import com.techcrack.bookwise.helper.SubscriptionHelper;
@@ -25,8 +26,8 @@ public class UserController extends AbstractController<UserController, UserServi
     private final UserRegistrationService userRegistrationService;
     private final SubscriptionHelper subscriptionHelper;
 
-    public UserController(UserRegistrationService userRegistrationService, UserService service, UserHelper helper, SubscriptionHelper subscriptionHelper) {
-        super(UserController.class, service, helper);
+    public UserController(UserRegistrationService userRegistrationService, UserService service, UserHelper helper, SubscriptionHelper subscriptionHelper, CurrentUserService userSession) {
+        super(UserController.class, service, helper, userSession);
         this.userRegistrationService = userRegistrationService;
         this.subscriptionHelper = subscriptionHelper;
     }
