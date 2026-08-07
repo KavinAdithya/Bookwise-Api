@@ -28,7 +28,7 @@ public abstract class BaseEntity {
     protected LocalDateTime updatedAt;
     protected Long updatedBy;
     protected LocalDateTime createdAt;
-    protected long createdBy;
+    protected Long createdBy;
 
     public BaseEntity() {
     }
@@ -36,7 +36,7 @@ public abstract class BaseEntity {
     /***
      * For New Object Creation Only use this
      */
-    public void initialize(long createdBy) {
+    public void initialize(Long createdBy) {
         this.createdAt = ApplicationData.SYSTEM_DATE;
         this.createdBy = createdBy;
         this.isActive = true;
@@ -45,7 +45,7 @@ public abstract class BaseEntity {
     /***
      * For Update Only Invoke this method
      */
-    public void initializeUpdate(long updatedBy) {
+    public void initializeUpdate(Long updatedBy) {
         this.updatedAt = ApplicationData.SYSTEM_DATE;
         this.updatedBy = updatedBy;
     }

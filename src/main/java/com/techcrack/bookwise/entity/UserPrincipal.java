@@ -18,6 +18,10 @@ public class UserPrincipal implements UserDetails {
         this.user = user;
     }
 
+    public long getUserId() {
+        return user.getId();
+    }
+
     @Override
     @NonNull
     public Collection<? extends GrantedAuthority> getAuthorities() {

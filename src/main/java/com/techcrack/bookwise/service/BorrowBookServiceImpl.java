@@ -6,12 +6,13 @@ import com.techcrack.bookwise.abstractions.SubscriptionService;
 import com.techcrack.bookwise.abstractions.UserService;
 import com.techcrack.bookwise.constans.ApplicationData;
 import com.techcrack.bookwise.constans.BorrowStatus;
-import com.techcrack.bookwise.dtos.borrowbook.layer.BorrowBookContext;
 import com.techcrack.bookwise.dtos.borrowbook.layer.ReturnBookContext;
+import com.techcrack.bookwise.dtos.borrowbook.request.BorrowBookRequest;
 import com.techcrack.bookwise.entity.BorrowBook;
 import com.techcrack.bookwise.exceptions.customized.InvalidDataException;
 import com.techcrack.bookwise.exceptions.customized.ObjectNotFoundException;
 import com.techcrack.bookwise.exceptions.templates.Errors;
+import com.techcrack.bookwise.jwt.CurrentUserService;
 import com.techcrack.bookwise.repository.BorrowBookRepository;
 import com.techcrack.bookwise.utils.AbstractService;
 import com.techcrack.bookwise.validations.BorrowBookValidations;
@@ -28,8 +29,8 @@ public class BorrowBookServiceImpl extends AbstractService<BorrowBookServiceImpl
     private final BookService bookService;
     private final SubscriptionService subscriptionService;
 
-    public BorrowBookServiceImpl(BorrowBookRepository repo, BorrowBookValidations validations, UserService userService, BookService bookService, SubscriptionService subscriptionService) {
-       super(BorrowBookServiceImpl.class, repo, validations);
+    public BorrowBookServiceImpl(BorrowBookRepository repo, BorrowBookValidations validations, UserService userService, BookService bookService, SubscriptionService subscriptionService,  CurrentUserService userSession) {
+       super(BorrowBookServiceImpl.class, repo, validations, userSession);
        this.userService = userService;
        this.bookService = bookService;
        this.subscriptionService = subscriptionService;
@@ -46,13 +47,15 @@ public class BorrowBookServiceImpl extends AbstractService<BorrowBookServiceImpl
      *      <li>update borrow details like borrow date etc.</li>
      *      <li>Stores and returns the stored entity</li>
      *  </ul>
-     * @param entity the borrow request containing the user and book details
+     * @param request the borrow request containing the user and book details
      * @return Returns stored borrow entity
      */
-    public BorrowBook borrowBook(BorrowBook entity) {
+    public BorrowBook borrowBook(BorrowBookRequest request) {
         logger.info("Initiated Process for borrowing book");
 
-        populateRelations(entity);
+        BorrowBook entity = request.buildBorrowBook();
+
+        populateRelations(entity, request);
 
         Errors errors = validations.isValidBorrow(entity);
 
@@ -75,15 +78,15 @@ public class BorrowBookServiceImpl extends AbstractService<BorrowBookServiceImpl
     }
 
     @Override
-    public BorrowBook getBorrowDetails(BorrowBookContext context) {
+    public BorrowBook getBorrowDetails(long borrowBookId) {
         logger.info("Getting Borrow details");
 
         BorrowBook borrowBook = repo.findByIdAndIsActiveTrueAndUser_Id(
-                context.borrowBookId(),
-                context.userId()
+                borrowBookId,
+                userSession.getCurrentUserId()
         ).orElseThrow(
                 () -> new ObjectNotFoundException(
-                        BorrowBook.class, "Borrow Details doesn't match with " + context
+                        BorrowBook.class, "Borrow Details doesn't match with " + borrowBookId
                 )
         );
 
@@ -106,10 +109,11 @@ public class BorrowBookServiceImpl extends AbstractService<BorrowBookServiceImpl
     public void setBorrowDetails(BorrowBook borrowBook) {
         logger.info("Setting borrow details");
 
+        borrowBook.initialize(userSession.getCurrentUserId());
         borrowBook.setBorrowDate(ApplicationData.SYSTEM_DATE);
         borrowBook.setDueDate(ApplicationData.SYSTEM_DATE.plusDays(
                 subscriptionService.getFreeLimitDays(
-                        borrowBook.getUser().getId()
+                        userSession.getCurrentUserId()
                 )
         ));
 
@@ -127,16 +131,16 @@ public class BorrowBookServiceImpl extends AbstractService<BorrowBookServiceImpl
      * </ul>
      * @param borrowBook the borrow request containing the user and book details
      */
-    public void populateRelations(BorrowBook borrowBook) {
+    public void populateRelations(BorrowBook borrowBook, BorrowBookRequest request) {
         borrowBook.setBook(
                 bookService.get(
-                        borrowBook.getBook().getId()
+                        request.getBookId()
                 )
         );
 
         borrowBook.setUser(
                 userService.get(
-                        borrowBook.getUser().getId()
+                       userSession.getCurrentUserId()
                 )
         );
 
@@ -157,16 +161,16 @@ public class BorrowBookServiceImpl extends AbstractService<BorrowBookServiceImpl
     /**
      * Calculate the due amount for a returning book.
      * Based on System Date
-     * @param context
+     * @param borrowBookId
      * @return
      */
-    public double calculateDueAmount(BorrowBookContext context) {
-        BorrowBook entity = getBorrowDetails(context);
+    public double calculateDueAmount(long borrowBookId) {
+        BorrowBook entity = getBorrowDetails(borrowBookId);
 
-        return calculateDueAmount(context, entity);
+        return calculateDueAmount(entity);
     }
 
-    public double calculateDueAmount(BorrowBookContext context, BorrowBook entity) {
+    public double calculateDueAmount(BorrowBook entity) {
         if (ApplicationData.SYSTEM_DATE.isBefore(entity.getDueDate())) {
             return 0;
         }
@@ -189,8 +193,9 @@ public class BorrowBookServiceImpl extends AbstractService<BorrowBookServiceImpl
         return null;
     }
 
-    public List<BorrowBook> getBorrowDetails(long userId) {
-        return repo.findByIsActiveTrueAndUser_Id(userId);
+    @Override
+    public List<BorrowBook> getAllBorrowDetails() {
+        return repo.findByIsActiveTrueAndUser_Id(userSession.getCurrentUserId());
     }
 
     @Transactional
@@ -198,22 +203,17 @@ public class BorrowBookServiceImpl extends AbstractService<BorrowBookServiceImpl
     public void returnBook(ReturnBookContext context) {
         logger.info("Return Book process has been started for Borrow Book Id : {}", context);
 
-        BorrowBookContext params = new BorrowBookContext(
-                context.borrowBookId(),
-                context.userId()
-        );
-
-        BorrowBook borrowBook = getBorrowDetails(params);
+        BorrowBook borrowBook = getBorrowDetails(context.borrowBookId());
 
         // Calculation of due amount
-        double dueAmount = calculateDueAmount(params, borrowBook);
+        double dueAmount = calculateDueAmount(borrowBook);
 
         if (dueAmount != context.amountPaying()) {
             logger.warn("Amount Paying {} Amount Due {}", context.amountPaying(), dueAmount);
             throw new InvalidDataException("Amount Paying is not equals to the due amount");
         }
 
-        borrowBook.initializeUpdate(context.userId());
+        borrowBook.initializeUpdate(userSession.getCurrentUserId());
         borrowBook.setActive(false);
         borrowBook.setStatus(BorrowStatus.RETURNED);
         borrowBook.setReturnDate(ApplicationData.SYSTEM_DATE);

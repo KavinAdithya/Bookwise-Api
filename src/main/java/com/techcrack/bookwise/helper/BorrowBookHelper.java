@@ -3,8 +3,7 @@ package com.techcrack.bookwise.helper;
 import com.techcrack.bookwise.constans.ApplicationData;
 import com.techcrack.bookwise.dtos.borrowbook.layer.BorrowBookContext;
 import com.techcrack.bookwise.dtos.borrowbook.layer.ReturnBookContext;
-import com.techcrack.bookwise.dtos.borrowbook.request.BorrowBookRequestDTO;
-import com.techcrack.bookwise.dtos.borrowbook.request.FetchBorrowBookRequest;
+import com.techcrack.bookwise.dtos.borrowbook.request.BorrowBookRequest;
 import com.techcrack.bookwise.dtos.borrowbook.request.ReturnBookRequest;
 import com.techcrack.bookwise.dtos.borrowbook.response.BorrowBookResponseDTO;
 import com.techcrack.bookwise.dtos.borrowbook.response.DueAmountResponse;
@@ -19,7 +18,7 @@ import java.util.List;
 
 @Component
 public class BorrowBookHelper {
-    public BorrowBook mapToBorrowBook(BorrowBookRequestDTO borrowBookRequestDTO) {
+    public BorrowBook mapToBorrowBook(BorrowBookRequest borrowBookRequestDTO) {
         BorrowBook borrowBook = borrowBookRequestDTO.buildBorrowBook();
 
         borrowBook.initialize(ApplicationData.HARD_CODED_CURRENT_ID);
