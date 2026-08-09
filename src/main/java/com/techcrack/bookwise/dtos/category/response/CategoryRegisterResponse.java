@@ -1,14 +1,21 @@
 package com.techcrack.bookwise.dtos.category.response;
 
 
-public class CategoryResponseDTO {
+import com.techcrack.bookwise.entity.Category;
+
+public class CategoryRegisterResponse {
 
     private Long id;
     private String name;
 
-    public CategoryResponseDTO(Long id, String name) {
+    public CategoryRegisterResponse(Long id, String name) {
         this.id = id;
         this.name = name;
+    }
+
+    public CategoryRegisterResponse(Category category) {
+        this.id = category.getId();
+        this.name = category.getName();
     }
 
     public Long getId() {

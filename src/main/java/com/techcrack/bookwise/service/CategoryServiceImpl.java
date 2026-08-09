@@ -37,12 +37,12 @@ public class CategoryServiceImpl extends AbstractRepository<CategoryServiceImpl,
 
     @Override
     public void remove(long key) {
-
+        repo.deleteById(key);
     }
 
     @Override
     public Category update(Category entity) {
-        return null;
+        return repo.save(entity);
     }
 
     public List<Category> getAllCategories() {

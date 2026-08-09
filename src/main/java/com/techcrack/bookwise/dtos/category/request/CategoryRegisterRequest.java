@@ -1,13 +1,15 @@
 package com.techcrack.bookwise.dtos.category.request;
 
-public class CategoryRequestDTO {
+import com.techcrack.bookwise.entity.Category;
+
+public class CategoryRegisterRequest {
     private String name;
 
-    public CategoryRequestDTO() {
+    public CategoryRegisterRequest() {
         super();
     }
 
-    public CategoryRequestDTO(String name) {
+    public CategoryRegisterRequest(String name) {
         this.name = name;;
     }
 
@@ -19,6 +21,14 @@ public class CategoryRequestDTO {
         this.name = name;
     }
 
+    public Category buildCategory(long userId) {
+        Category category = new Category();
+
+        category.initialize(userId);
+
+        category.setName(name);
+        return category;
+    }
     @Override
     public String toString() {
         return "CategoryRequestDTO{" +
