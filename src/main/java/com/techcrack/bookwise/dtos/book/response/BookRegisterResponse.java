@@ -1,6 +1,7 @@
 package com.techcrack.bookwise.dtos.book.response;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.techcrack.bookwise.entity.Book;
 
 import java.time.LocalDateTime;
 
@@ -19,7 +20,7 @@ import java.time.LocalDateTime;
         "borrowFee",
         "commissionPercentage"
 })
-public class BookResponseDTO {
+public class BookRegisterResponse {
 
     private Long id;
     private String title;
@@ -35,8 +36,24 @@ public class BookResponseDTO {
     private double borrowFee;
     private double commissionPercentage;
 
-    public BookResponseDTO() {
+    public BookRegisterResponse() {
         super();
+    }
+
+    public BookRegisterResponse(Book book){
+        this.id = book.getId();
+        this.title = book.getTitle();
+        this.ISBN = book.getISBN();
+        this.authorName = book.getAuthor().getUser().getName();
+        this.description = book.getDescription();
+        this.categoryName = book.getCategory().getName();
+        this.language = book.getLanguage();
+        this.publishDate = book.getPublishDate();
+        this.totalCopies = book.getTotalCopies();
+        this.availableCopies = book.getAvailableCopies();
+        this.purchasePrice = book.getPurchasePrice();
+        this.borrowFee = book.getBorrowFee();
+        this.commissionPercentage = book.getCommissionPercentage();
     }
 
     public Long getId() {

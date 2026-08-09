@@ -27,8 +27,8 @@ public class PurchaseBookServiceImpl extends AbstractRepository<PurchaseBookServ
     @Override
     public PurchaseBook register(PurchaseBook entity) {
         logger.info("Book Purchase Process Started for User {} Book {}", entity.getUser().getId(), entity.getBook().getId());
-
-        if (!bookService.checkAvailability(entity.getBook().getId(), entity.getQuantity())) {
+        boolean available = bookService.checkAvailability(entity.getBook().getId(), entity.getQuantity());
+        if (!available) {
             logger.error("Requested book stock is not available");
             throw new InvalidDataException("Book Quantity not available as you requested Quantity : "+ entity.getQuantity());
         }

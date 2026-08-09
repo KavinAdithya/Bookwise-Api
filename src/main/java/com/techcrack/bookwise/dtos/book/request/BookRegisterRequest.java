@@ -1,6 +1,8 @@
 package com.techcrack.bookwise.dtos.book.request;
 
-public class BookRegisterDTO {
+import com.techcrack.bookwise.entity.Book;
+
+public class BookRegisterRequest {
 
     private String title;
     private String ISBN;
@@ -12,7 +14,7 @@ public class BookRegisterDTO {
     private double purchasePrice;
     private double borrowFee;
 
-    public BookRegisterDTO() {
+    public BookRegisterRequest() {
         super();
     }
 
@@ -88,6 +90,22 @@ public class BookRegisterDTO {
     public void setBorrowFee(double borrowFee) {
         this.borrowFee = borrowFee;
     }
+
+    public Book buildBook() {
+        Book book = new Book();
+
+        book.setTitle(title);
+        book.setISBN(ISBN);
+        book.setDescription(description);
+        book.setLanguage(language);
+        book.setTotalCopies(totalCopies);
+        book.setAvailableCopies(availableCopies);
+        book.setPurchasePrice(purchasePrice);
+        book.setBorrowFee(borrowFee);
+
+        return book;
+    }
+
 
     @Override
     public String toString() {

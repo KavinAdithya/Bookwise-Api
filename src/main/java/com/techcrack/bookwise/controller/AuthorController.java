@@ -36,7 +36,7 @@ public class AuthorController extends AbstractController<AuthorController, Autho
 
         Author author = mapper.mapToAuthor(authorRegisterRequest);
 
-        RegistrationResult<Author, Subscription> authorSubscriptionRegistrationResult = authorRegistrationService.register(author, authorRegisterRequest.getUser().getSubscription().getPlan());
+        RegistrationResult<Author, Subscription> authorSubscriptionRegistrationResult = authorRegistrationService.register(author);
 
         AuthorRegisterResponse response = mapper.mapToAuthorRegisterResponse(authorSubscriptionRegistrationResult.entity(),
                                 authorSubscriptionRegistrationResult.relatedEntity());

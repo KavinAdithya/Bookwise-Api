@@ -25,13 +25,13 @@ public class AuthorRegistrationService extends AbstractLogger<AuthorRegistration
         this.userRegistrationService = userRegistrationService;
     }
 
-    public RegistrationResult<Author, Subscription> register(Author author, Subscriptions subscriptions) {
+    public RegistrationResult<Author, Subscription> register(Author author) {
         logger.info("Author Registration process started {}", author.getUser().getUsername());
 
         author.getUser().setRole(Roles.AUTHOR);
         author.setStatus(Status.PENDING);
 
-        RegistrationResult<Users, Subscription> userRegistrationResult = userRegistrationService.register(author.getUser(), subscriptions);
+        RegistrationResult<Users, Subscription> userRegistrationResult = userRegistrationService.register(author.getUser(), Subscriptions.FREE);
         author.setUser(userRegistrationResult.entity());
 
         logger.debug("User & Subscription Registered Info : {}", userRegistrationResult);

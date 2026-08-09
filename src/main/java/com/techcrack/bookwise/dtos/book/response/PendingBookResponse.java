@@ -1,7 +1,9 @@
-package com.techcrack.bookwise.dtos.book.request;
+package com.techcrack.bookwise.dtos.book.response;
 
 
-public class PendingBookDTO {
+import com.techcrack.bookwise.entity.Book;
+
+public class PendingBookResponse {
     private Long bookId;
     private String title;
     private String ISBN;
@@ -11,15 +13,19 @@ public class PendingBookDTO {
     private double borrowFee;
     private double commissionPercentage;
 
-    public PendingBookDTO(Long bookId, String title, String ISBN, String authorName, String categoryName, double purchasePrice, double borrowFee, double commissionPercentage) {
-        this.bookId = bookId;
-        this.title = title;
-        this.ISBN = ISBN;
-        this.authorName = authorName;
-        this.categoryName = categoryName;
-        this.purchasePrice = purchasePrice;
-        this.borrowFee = borrowFee;
-        this.commissionPercentage = commissionPercentage;
+    public PendingBookResponse(Book book) {
+        this.bookId = book.getId();
+        this.title = book.getTitle();
+        this.ISBN = book.getISBN();
+        this.authorName = book.getAuthor().getUser().getName();
+        this.categoryName = book.getCategory().getName();
+        this.purchasePrice = book.getPurchasePrice();
+        this.borrowFee = book.getBorrowFee();
+        this.commissionPercentage = book.getCommissionPercentage();
+    }
+
+    public PendingBookResponse() {
+        super();
     }
 
     public Long getBookId() {
