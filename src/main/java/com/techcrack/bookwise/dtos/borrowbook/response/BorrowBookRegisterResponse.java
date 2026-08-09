@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
         "borrowDate",
         "dueDate"
 })
-public class BorrowBookResponseDTO {
+public class BorrowBookRegisterResponse {
 
     private long borrowBookId;
     private String username;
@@ -25,11 +25,11 @@ public class BorrowBookResponseDTO {
     private LocalDateTime dueDate;
     private BorrowStatus status;
 
-    public BorrowBookResponseDTO() {
+    public BorrowBookRegisterResponse() {
         super();
     }
 
-    public BorrowBookResponseDTO(BorrowBook borrowBook) {
+    public BorrowBookRegisterResponse(BorrowBook borrowBook) {
         this.username = borrowBook.getUser().getUsername();
         this.bookTitle = borrowBook.getBook().getTitle();
         this.quantity = borrowBook.getQuantity();

@@ -5,11 +5,11 @@ import com.techcrack.bookwise.constans.ApplicationData;
 import com.techcrack.bookwise.dtos.borrowbook.layer.ReturnBookContext;
 import com.techcrack.bookwise.dtos.borrowbook.request.BorrowBookRequest;
 import com.techcrack.bookwise.dtos.borrowbook.request.ReturnBookRequest;
-import com.techcrack.bookwise.dtos.borrowbook.response.BorrowBookResponseDTO;
+import com.techcrack.bookwise.dtos.borrowbook.response.BorrowBookRegisterResponse;
 import com.techcrack.bookwise.dtos.borrowbook.response.DueAmountResponse;
 import com.techcrack.bookwise.dtos.borrowbook.response.ReturnBookResponse;
 import com.techcrack.bookwise.entity.BorrowBook;
-import com.techcrack.bookwise.mapper.BorrowBookHelper;
+import com.techcrack.bookwise.mapper.BorrowBookMapper;
 import com.techcrack.bookwise.abstractions.CurrentUserService;
 import com.techcrack.bookwise.responseHelper.ApiResponseEntity;
 import com.techcrack.bookwise.responseHelper.ResponseEntityHelper;
@@ -20,33 +20,33 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api")
-public class BorrowBookController extends AbstractController<BorrowBookController, BorrowBookService, BorrowBookHelper> {
-    public BorrowBookController(BorrowBookService service, BorrowBookHelper helper, CurrentUserService userSession) {
+@RequestMapping("/api/borrow-books")
+public class BorrowBookController extends AbstractController<BorrowBookController, BorrowBookService, BorrowBookMapper> {
+    public BorrowBookController(BorrowBookService service, BorrowBookMapper helper, CurrentUserService userSession) {
         super(BorrowBookController.class, service, helper, userSession);
     }
 
-    @PostMapping("/borrow-book")
-    public ResponseEntity<ApiResponseEntity<BorrowBookResponseDTO>> borrowBook(@RequestBody BorrowBookRequest request) {
+    @PostMapping("/register")
+    public ResponseEntity<ApiResponseEntity<BorrowBookRegisterResponse>> borrowBook(@RequestBody BorrowBookRequest request) {
         logger.info("Request Received to borrow book {}", request);
 
         BorrowBook borrowBook = service.borrowBook(request);
         logger.info("Book has been Borrowed");
 
-        BorrowBookResponseDTO responseDTO = mapper.mapToBorrowBookResponseDTO(borrowBook);
+        BorrowBookRegisterResponse response = mapper.mapToBorrowBookRegisterResponse(borrowBook);
 
         logger.info("Request completed for borrow book {}", request);
         return ResponseEntityHelper
-                .buildSuccessResponse("Book Borrowed Successfully", responseDTO);
+                .buildSuccessResponse("Book Borrowed Successfully", response);
     }
 
-    @GetMapping("/borrow-books/{borrowBookId}/fetch-book")
-    public ResponseEntity<ApiResponseEntity<BorrowBookResponseDTO>> borrowBook(@PathVariable long borrowBookId) {
+    @GetMapping("/{borrowBookId}")
+    public ResponseEntity<ApiResponseEntity<BorrowBookRegisterResponse>> borrowBook(@PathVariable long borrowBookId) {
         logger.info("Request received to get borrow details for {}", borrowBookId);
 
         BorrowBook book = service.getBorrowDetails(borrowBookId);
 
-        BorrowBookResponseDTO response = mapper.mapToBorrowBookResponseDTO(book);
+        BorrowBookRegisterResponse response = mapper.mapToBorrowBookRegisterResponse(book);
 
         logger.info("Request completed for get borrow details for {}", borrowBookId);
         return ResponseEntityHelper
@@ -56,7 +56,7 @@ public class BorrowBookController extends AbstractController<BorrowBookControlle
                     );
     }
 
-    @GetMapping("/borrow-books/{borrowBookId}/calculate-due")
+    @GetMapping("/{borrowBookId}/calculate-due")
     public ResponseEntity<ApiResponseEntity<DueAmountResponse>> getDueAmount(@PathVariable long borrowBookId) {
         logger.info("Request received to calculate due amount for {}", borrowBookId);
         double dueAmount = service.calculateDueAmount(borrowBookId);
@@ -68,13 +68,13 @@ public class BorrowBookController extends AbstractController<BorrowBookControlle
                 .buildSuccessResponse("Due Amount Fetched", response);
     }
 
-    @GetMapping("/borrow-books")
-    public ResponseEntity<ApiResponseEntity<List<BorrowBookResponseDTO>>> fetchBorrowRequests() {
-        logger.info("Request Received to fetch all borrow details of the user {}", ApplicationData.HARD_CODED_CURRENT_ID);
+    @GetMapping
+    public ResponseEntity<ApiResponseEntity<List<BorrowBookRegisterResponse>>> fetchBorrowRequests() {
+        logger.info("Request Received to fetch all borrow details of the user {}", userSession.getCurrentUser());
 
         List<BorrowBook> borrowBooks = service.getAllBorrowDetails();
 
-        List<BorrowBookResponseDTO> responseDTOS = mapper.mapToBorrowBookResponseDTOs(borrowBooks);
+        List<BorrowBookRegisterResponse> responseDTOS = mapper.mapToBorrowBookRegisterResponses(borrowBooks);
 
         logger.info("Request completed to fetch borrow details of a user");
 
@@ -82,7 +82,7 @@ public class BorrowBookController extends AbstractController<BorrowBookControlle
                 .buildSuccessResponse("Borrow Books Fetched Successfully", responseDTOS);
     }
 
-    @PostMapping("/return-book")
+    @PatchMapping("/return-book")
     public ResponseEntity<ApiResponseEntity<ReturnBookResponse>> returnBook(@RequestBody ReturnBookRequest request) {
         logger.info("Request received to return a book with {}", request);
 
