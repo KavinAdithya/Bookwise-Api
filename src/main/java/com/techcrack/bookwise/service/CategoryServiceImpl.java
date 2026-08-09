@@ -4,7 +4,7 @@ import com.techcrack.bookwise.abstractions.CategoryService;
 import com.techcrack.bookwise.entity.Category;
 import com.techcrack.bookwise.exceptions.customized.InvalidDataException;
 import com.techcrack.bookwise.exceptions.customized.ObjectNotFoundException;
-import com.techcrack.bookwise.jwt.CurrentUserService;
+import com.techcrack.bookwise.abstractions.CurrentUserService;
 import com.techcrack.bookwise.repository.CategoryRepository;
 import com.techcrack.bookwise.utils.AbstractRepository;
 import jakarta.transaction.Transactional;

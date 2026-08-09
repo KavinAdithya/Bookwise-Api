@@ -1,7 +1,7 @@
 package com.techcrack.bookwise.entity;
 
 import com.techcrack.bookwise.constans.ApplicationData;
-import com.techcrack.bookwise.constans.BorrowStatus;
+import com.techcrack.bookwise.constans.enums.BorrowStatus;
 import com.techcrack.bookwise.utils.BaseEntity;
 import jakarta.persistence.*;
 

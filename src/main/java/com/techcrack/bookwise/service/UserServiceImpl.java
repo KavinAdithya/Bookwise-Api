@@ -1,11 +1,10 @@
 package com.techcrack.bookwise.service;
 
 import com.techcrack.bookwise.abstractions.UserService;
-import com.techcrack.bookwise.constans.ApplicationData;
 import com.techcrack.bookwise.entity.Users;
 import com.techcrack.bookwise.exceptions.customized.InvalidDataException;
 import com.techcrack.bookwise.exceptions.customized.ObjectNotFoundException;
-import com.techcrack.bookwise.jwt.CurrentUserService;
+import com.techcrack.bookwise.abstractions.CurrentUserService;
 import com.techcrack.bookwise.jwt.JwtService;
 import com.techcrack.bookwise.repository.UserRepository;
 import com.techcrack.bookwise.exceptions.templates.Errors;

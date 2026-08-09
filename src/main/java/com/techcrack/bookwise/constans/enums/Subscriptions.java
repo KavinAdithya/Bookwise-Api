@@ -1,4 +1,4 @@
-package com.techcrack.bookwise.constans;
+package com.techcrack.bookwise.constans.enums;
 
 public enum Subscriptions {
     FREE(5, 0, 3, 20),

@@ -1,17 +1,17 @@
-package com.techcrack.bookwise.helper;
+package com.techcrack.bookwise.mapper;
 
 import com.techcrack.bookwise.constans.ApplicationData;
-import com.techcrack.bookwise.constans.Roles;
-import com.techcrack.bookwise.dtos.subscription.response.SubscriptionResponseDTO;
-import com.techcrack.bookwise.dtos.user.request.UserRegisterDTO;
-import com.techcrack.bookwise.dtos.user.response.UserResponseDTO;
+import com.techcrack.bookwise.constans.enums.Roles;
+import com.techcrack.bookwise.dtos.subscription.response.SubscriptionResponse;
+import com.techcrack.bookwise.dtos.user.request.UserRegisterRequest;
+import com.techcrack.bookwise.dtos.user.response.UserRegisterResponse;
 import com.techcrack.bookwise.entity.Users;
 import org.springframework.stereotype.Component;
 
 @Component
 public class UserHelper {
 
-    public Users mapToUser(UserRegisterDTO source, Roles role) {
+    public Users mapToUser(UserRegisterRequest source, Roles role) {
         Users user = new Users();
 
         user.setAddress(source.getAddress());
@@ -27,14 +27,14 @@ public class UserHelper {
         return user;
     }
 
-    public UserResponseDTO mapToUserResponse(Users user, SubscriptionResponseDTO subscriptionResponseDTO) {
-        return new UserResponseDTO(
+    public UserRegisterResponse mapToUserResponse(Users user, SubscriptionResponse subscriptionResponse) {
+        return new UserRegisterResponse(
                 user.getAddress(),
                 user.getContact(),
                 user.getEmail(),
                 user.getId(),
                 user.getUsername(),
-                subscriptionResponseDTO
+                subscriptionResponse
         );
     }
 }

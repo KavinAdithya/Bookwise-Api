@@ -1,8 +1,10 @@
 package com.techcrack.bookwise.dtos.author.response;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.techcrack.bookwise.constans.Status;
-import com.techcrack.bookwise.dtos.user.response.UserResponseDTO;
+import com.techcrack.bookwise.constans.enums.Status;
+import com.techcrack.bookwise.dtos.user.response.UserRegisterResponse;
+import com.techcrack.bookwise.entity.Author;
+import com.techcrack.bookwise.entity.Subscription;
 
 
 @JsonPropertyOrder({
@@ -11,17 +13,24 @@ import com.techcrack.bookwise.dtos.user.response.UserResponseDTO;
         "status",
         "user"
 })
-public class AuthorResponseDTO {
+public class AuthorRegisterResponse {
     private Long id;
     private String bio;
-    private UserResponseDTO user;
+    private UserRegisterResponse user;
     private Status status;
 
-    public AuthorResponseDTO(Long id, String bio, UserResponseDTO user, Status status) {
+    public AuthorRegisterResponse(Long id, String bio, UserRegisterResponse user, Status status) {
         this.id = id;
         this.bio = bio;
         this.user = user;
         this.status = status;
+    }
+
+    public AuthorRegisterResponse(Author author, Subscription subscription) {
+        this.id = author.getId();
+        this.bio = author.getBio();
+        this.status = author.getStatus();
+        this.user = new UserRegisterResponse(author.getUser(), subscription);
     }
 
     public String getBio() {
@@ -48,11 +57,11 @@ public class AuthorResponseDTO {
         this.status = status;
     }
 
-    public UserResponseDTO getUser() {
+    public UserRegisterResponse getUser() {
         return user;
     }
 
-    public void setUser(UserResponseDTO user) {
+    public void setUser(UserRegisterResponse user) {
         this.user = user;
     }
 

@@ -4,7 +4,7 @@ import com.techcrack.bookwise.abstractions.SubscriptionService;
 import com.techcrack.bookwise.abstractions.UserService;
 import com.techcrack.bookwise.entity.Subscription;
 import com.techcrack.bookwise.entity.Users;
-import com.techcrack.bookwise.jwt.CurrentUserService;
+import com.techcrack.bookwise.abstractions.CurrentUserService;
 import com.techcrack.bookwise.responseHelper.RegistrationResult;
 import com.techcrack.bookwise.utils.AbstractLogger;
 import org.springframework.stereotype.Service;

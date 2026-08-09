@@ -1,6 +1,6 @@
 package com.techcrack.bookwise.abstractions;
 
-import com.techcrack.bookwise.constans.Subscriptions;
+import com.techcrack.bookwise.constans.enums.Subscriptions;
 import com.techcrack.bookwise.entity.Subscription;
 
 import java.time.LocalDateTime;

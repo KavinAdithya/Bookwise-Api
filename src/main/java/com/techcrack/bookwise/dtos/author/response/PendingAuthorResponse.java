@@ -1,18 +1,28 @@
-package com.techcrack.bookwise.dtos.author.request;
+package com.techcrack.bookwise.dtos.author.response;
 
-public class PendingAuthorDTO {
+import com.techcrack.bookwise.entity.Author;
+
+public class PendingAuthorResponse {
     private long authorId;
     private String authorName;
     private String bio;
     private String username;
     private String email;
 
-    public PendingAuthorDTO(long authorId, String authorName, String bio, String username, String email) {
+    public PendingAuthorResponse(long authorId, String authorName, String bio, String username, String email) {
         this.authorId = authorId;
         this.authorName = authorName;
         this.bio = bio;
         this.username = username;
         this.email = email;
+    }
+
+    public PendingAuthorResponse(Author author) {
+        this.authorId = author.getId();
+        this.authorName = author.getUser().getName();
+        this.bio = author.getBio();
+        this.username = author.getUser().getUsername();
+        this.email = author.getUser().getEmail();
     }
 
     public long getAuthorId() {

@@ -9,8 +9,8 @@ import com.techcrack.bookwise.dtos.borrowbook.response.BorrowBookResponseDTO;
 import com.techcrack.bookwise.dtos.borrowbook.response.DueAmountResponse;
 import com.techcrack.bookwise.dtos.borrowbook.response.ReturnBookResponse;
 import com.techcrack.bookwise.entity.BorrowBook;
-import com.techcrack.bookwise.helper.BorrowBookHelper;
-import com.techcrack.bookwise.jwt.CurrentUserService;
+import com.techcrack.bookwise.mapper.BorrowBookHelper;
+import com.techcrack.bookwise.abstractions.CurrentUserService;
 import com.techcrack.bookwise.responseHelper.ApiResponseEntity;
 import com.techcrack.bookwise.responseHelper.ResponseEntityHelper;
 import com.techcrack.bookwise.utils.AbstractController;
@@ -33,7 +33,7 @@ public class BorrowBookController extends AbstractController<BorrowBookControlle
         BorrowBook borrowBook = service.borrowBook(request);
         logger.info("Book has been Borrowed");
 
-        BorrowBookResponseDTO responseDTO = helper.mapToBorrowBookResponseDTO(borrowBook);
+        BorrowBookResponseDTO responseDTO = mapper.mapToBorrowBookResponseDTO(borrowBook);
 
         logger.info("Request completed for borrow book {}", request);
         return ResponseEntityHelper
@@ -46,7 +46,7 @@ public class BorrowBookController extends AbstractController<BorrowBookControlle
 
         BorrowBook book = service.getBorrowDetails(borrowBookId);
 
-        BorrowBookResponseDTO response = helper.mapToBorrowBookResponseDTO(book);
+        BorrowBookResponseDTO response = mapper.mapToBorrowBookResponseDTO(book);
 
         logger.info("Request completed for get borrow details for {}", borrowBookId);
         return ResponseEntityHelper
@@ -61,7 +61,7 @@ public class BorrowBookController extends AbstractController<BorrowBookControlle
         logger.info("Request received to calculate due amount for {}", borrowBookId);
         double dueAmount = service.calculateDueAmount(borrowBookId);
 
-        DueAmountResponse response = helper.mapToDueAmountResponse(dueAmount);
+        DueAmountResponse response = mapper.mapToDueAmountResponse(dueAmount);
 
         logger.info("Request Completed to calculate due amount");
         return ResponseEntityHelper
@@ -74,7 +74,7 @@ public class BorrowBookController extends AbstractController<BorrowBookControlle
 
         List<BorrowBook> borrowBooks = service.getAllBorrowDetails();
 
-        List<BorrowBookResponseDTO> responseDTOS = helper.mapToBorrowBookResponseDTOs(borrowBooks);
+        List<BorrowBookResponseDTO> responseDTOS = mapper.mapToBorrowBookResponseDTOs(borrowBooks);
 
         logger.info("Request completed to fetch borrow details of a user");
 
@@ -87,11 +87,11 @@ public class BorrowBookController extends AbstractController<BorrowBookControlle
         logger.info("Request received to return a book with {}", request);
 
 
-        ReturnBookContext context = helper.mapToReturnBookContext(request);
+        ReturnBookContext context = mapper.mapToReturnBookContext(request);
 
         service.returnBook(context);
 
-        ReturnBookResponse response = helper.mapToReturnBookResponse("Return Completed for borrow id " + context.borrowBookId());
+        ReturnBookResponse response = mapper.mapToReturnBookResponse("Return Completed for borrow id " + context.borrowBookId());
 
         logger.info("Request Completed to return a book {}", request);
         return ResponseEntityHelper

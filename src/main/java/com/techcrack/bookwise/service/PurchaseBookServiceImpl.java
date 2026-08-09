@@ -7,7 +7,7 @@ import com.techcrack.bookwise.entity.Book;
 import com.techcrack.bookwise.entity.PurchaseBook;
 import com.techcrack.bookwise.entity.Users;
 import com.techcrack.bookwise.exceptions.customized.InvalidDataException;
-import com.techcrack.bookwise.jwt.CurrentUserService;
+import com.techcrack.bookwise.abstractions.CurrentUserService;
 import com.techcrack.bookwise.repository.PurchaseBookRepository;
 import com.techcrack.bookwise.utils.AbstractRepository;
 import org.springframework.stereotype.Service;

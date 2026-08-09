@@ -1,7 +1,7 @@
-package com.techcrack.bookwise.helper;
+package com.techcrack.bookwise.mapper;
 
 import com.techcrack.bookwise.constans.ApplicationData;
-import com.techcrack.bookwise.constans.Status;
+import com.techcrack.bookwise.constans.enums.Status;
 import com.techcrack.bookwise.dtos.book.request.BookRegisterDTO;
 import com.techcrack.bookwise.dtos.book.response.BookResponseDTO;
 import com.techcrack.bookwise.dtos.book.request.PendingBookDTO;

@@ -1,4 +1,4 @@
-package com.techcrack.bookwise.jwt;
+package com.techcrack.bookwise.abstractions;
 
 import com.techcrack.bookwise.entity.UserPrincipal;
 

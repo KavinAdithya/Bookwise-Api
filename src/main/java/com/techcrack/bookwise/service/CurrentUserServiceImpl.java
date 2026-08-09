@@ -1,12 +1,13 @@
-package com.techcrack.bookwise.jwt;
+package com.techcrack.bookwise.service;
 
+import com.techcrack.bookwise.abstractions.CurrentUserService;
 import com.techcrack.bookwise.entity.UserPrincipal;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 @Component
-public class CurrentUserServiceImpl implements CurrentUserService{
+public class CurrentUserServiceImpl implements CurrentUserService {
     @Override
     public long getCurrentUserId() {
 //        Authentication authentication = SecurityContextHolder

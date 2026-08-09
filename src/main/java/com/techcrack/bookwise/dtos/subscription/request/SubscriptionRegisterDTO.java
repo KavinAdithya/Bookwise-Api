@@ -1,6 +1,6 @@
 package com.techcrack.bookwise.dtos.subscription.request;
 
-import com.techcrack.bookwise.constans.Subscriptions;
+import com.techcrack.bookwise.constans.enums.Subscriptions;
 
 public class SubscriptionRegisterDTO {
     private Subscriptions plan;

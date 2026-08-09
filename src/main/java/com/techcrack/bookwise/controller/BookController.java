@@ -1,13 +1,13 @@
 package com.techcrack.bookwise.controller;
 
 import com.techcrack.bookwise.abstractions.BookService;
-import com.techcrack.bookwise.helper.BookHelper;
+import com.techcrack.bookwise.mapper.BookHelper;
 import com.techcrack.bookwise.dtos.book.request.BookIdsRequest;
 import com.techcrack.bookwise.dtos.book.request.BookRegisterDTO;
 import com.techcrack.bookwise.dtos.book.response.BookResponseDTO;
 import com.techcrack.bookwise.dtos.book.request.PendingBookDTO;
 import com.techcrack.bookwise.entity.Book;
-import com.techcrack.bookwise.jwt.CurrentUserService;
+import com.techcrack.bookwise.abstractions.CurrentUserService;
 import com.techcrack.bookwise.responseHelper.ApiResponseEntity;
 import com.techcrack.bookwise.responseHelper.ResponseEntityHelper;
 import com.techcrack.bookwise.utils.AbstractController;
@@ -28,11 +28,11 @@ public class BookController extends AbstractController<BookController, BookServi
     public ResponseEntity<ApiResponseEntity<BookResponseDTO>> register(@RequestBody BookRegisterDTO bookRegisterDTO)  {
         logger.info("Request Received for register a new book with {}", bookRegisterDTO.getTitle());
 
-        Book book = helper.mapToBook(bookRegisterDTO);
+        Book book = mapper.mapToBook(bookRegisterDTO);
 
         book = service.register(book);
 
-        BookResponseDTO responseDTO = helper.mapToBookResponseDTO(book);
+        BookResponseDTO responseDTO = mapper.mapToBookResponseDTO(book);
 
         logger.info("Request Completed for register a new book with {}", bookRegisterDTO.getTitle());
 
@@ -45,7 +45,7 @@ public class BookController extends AbstractController<BookController, BookServi
 
         List<Book> books = service.getAllApprovedAndAvailableBooks();
 
-        List<BookResponseDTO> response = helper.mapToBookResponseDTOs(books);
+        List<BookResponseDTO> response = mapper.mapToBookResponseDTOs(books);
 
         logger.info("Get All Books request completed");
         return ResponseEntityHelper
@@ -61,7 +61,7 @@ public class BookController extends AbstractController<BookController, BookServi
 
         List<Book> books = service.getAllPendingBooks();
 
-        List<PendingBookDTO> response = helper.mapToPendingBookDTOs(books);
+        List<PendingBookDTO> response = mapper.mapToPendingBookDTOs(books);
 
         logger.info("Request Completed to get all pending books");
 

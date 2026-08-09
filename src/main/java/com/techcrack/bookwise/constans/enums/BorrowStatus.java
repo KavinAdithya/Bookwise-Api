@@ -1,4 +1,4 @@
-package com.techcrack.bookwise.constans;
+package com.techcrack.bookwise.constans.enums;
 
 public enum BorrowStatus {
     PROCESSING,

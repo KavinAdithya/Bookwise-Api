@@ -3,11 +3,11 @@ package com.techcrack.bookwise.service;
 import com.techcrack.bookwise.abstractions.AuthorService;
 import com.techcrack.bookwise.abstractions.SubscriptionService;
 import com.techcrack.bookwise.constans.ApplicationData;
-import com.techcrack.bookwise.constans.Status;
+import com.techcrack.bookwise.constans.enums.Status;
 import com.techcrack.bookwise.entity.Author;
 import com.techcrack.bookwise.entity.Subscription;
 import com.techcrack.bookwise.exceptions.customized.ObjectNotFoundException;
-import com.techcrack.bookwise.jwt.CurrentUserService;
+import com.techcrack.bookwise.abstractions.CurrentUserService;
 import com.techcrack.bookwise.repository.AuthorRepository;
 import com.techcrack.bookwise.utils.AbstractRepository;
 import org.springframework.stereotype.Service;
@@ -38,12 +38,12 @@ public class AuthorServiceImpl extends AbstractRepository<AuthorServiceImpl, Aut
 
     @Override
     public void remove(long key) {
-
+        repo.deleteById(key);
     }
 
     @Override
     public Author update(Author entity) {
-        return null;
+       return register(entity);
     }
 
     public Author get(long id) {
@@ -68,6 +68,7 @@ public class AuthorServiceImpl extends AbstractRepository<AuthorServiceImpl, Aut
         logger.debug("Total Authors {} Affected rows {}", authorIds, rowsAffected);
         logger.info("Author Approval process done for author ids {}", authorIds);
 
+        // For new Authors enabling one-month premium subscription free
         for (long authorId : authorIds) {
             Subscription subscription = subscriptionService.subscriptionPremiumForOneMonth(authorId, ApplicationData.SYSTEM_DATE);
             logger.debug("Subscription info {}", subscription);

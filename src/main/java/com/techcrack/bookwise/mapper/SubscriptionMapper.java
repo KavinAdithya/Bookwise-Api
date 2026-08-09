@@ -1,14 +1,14 @@
-package com.techcrack.bookwise.helper;
+package com.techcrack.bookwise.mapper;
 
 import com.techcrack.bookwise.constans.ApplicationData;
-import com.techcrack.bookwise.constans.Subscriptions;
+import com.techcrack.bookwise.constans.enums.Subscriptions;
 import com.techcrack.bookwise.dtos.subscription.request.SubscriptionRegisterDTO;
-import com.techcrack.bookwise.dtos.subscription.response.SubscriptionResponseDTO;
+import com.techcrack.bookwise.dtos.subscription.response.SubscriptionResponse;
 import com.techcrack.bookwise.entity.Subscription;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SubscriptionHelper {
+public class SubscriptionMapper {
     public Subscription mapToSubscription(SubscriptionRegisterDTO source) {
         Subscription subscription = new Subscription();
         subscription.initialize(ApplicationData.HARD_CODED_CURRENT_ID);
@@ -23,8 +23,8 @@ public class SubscriptionHelper {
         return subscription;
     }
 
-    public SubscriptionResponseDTO mapToSubscriptionResponse(Subscription subscription) {
-        return new SubscriptionResponseDTO(
+    public SubscriptionResponse mapToSubscriptionResponse(Subscription subscription) {
+        return new SubscriptionResponse(
             subscription.getEndDate(),
             subscription.getStartDate(),
             subscription.getSubscriptions()

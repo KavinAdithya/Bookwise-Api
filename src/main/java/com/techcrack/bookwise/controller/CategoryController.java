@@ -1,11 +1,11 @@
 package com.techcrack.bookwise.controller;
 
 import com.techcrack.bookwise.abstractions.CategoryService;
-import com.techcrack.bookwise.helper.CategoryHelper;
+import com.techcrack.bookwise.mapper.CategoryHelper;
 import com.techcrack.bookwise.dtos.category.request.CategoryRequestDTO;
 import com.techcrack.bookwise.dtos.category.response.CategoryResponseDTO;
 import com.techcrack.bookwise.entity.Category;
-import com.techcrack.bookwise.jwt.CurrentUserService;
+import com.techcrack.bookwise.abstractions.CurrentUserService;
 import com.techcrack.bookwise.responseHelper.ApiResponseEntity;
 import com.techcrack.bookwise.responseHelper.ResponseEntityHelper;
 import com.techcrack.bookwise.utils.AbstractController;
@@ -25,13 +25,13 @@ public class CategoryController extends AbstractController<CategoryController, C
     public ResponseEntity<ApiResponseEntity<CategoryResponseDTO>> register(@RequestBody CategoryRequestDTO categoryRequestDTO) {
         logger.info("Request Received for category register with {}", categoryRequestDTO.getName());
 
-        Category category = helper.mapToCategory(categoryRequestDTO);
+        Category category = mapper.mapToCategory(categoryRequestDTO);
 
         category = service.register(category);
 
         logger.info("Request for category registered completed with {}", category.getName());
 
-        CategoryResponseDTO response = helper.mapToResponse(category);
+        CategoryResponseDTO response = mapper.mapToResponse(category);
 
         return ResponseEntityHelper.buildSuccessResponse("Category Registered Successfully", response);
     }

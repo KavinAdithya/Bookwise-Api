@@ -1,7 +1,7 @@
 package com.techcrack.bookwise.dtos.borrowbook.response;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.techcrack.bookwise.constans.BorrowStatus;
+import com.techcrack.bookwise.constans.enums.BorrowStatus;
 import com.techcrack.bookwise.entity.BorrowBook;
 
 import java.time.LocalDateTime;
