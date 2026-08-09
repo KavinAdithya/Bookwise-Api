@@ -1,10 +1,10 @@
 package com.techcrack.bookwise.dtos.user.request;
 
-public class UserAuthenticateDTO {
+public class UserAuthenticateRequest {
     private String username;
     private String password;
 
-    public UserAuthenticateDTO(String password, String username) {
+    public UserAuthenticateRequest(String password, String username) {
         this.password = password;
         this.username = username;
     }

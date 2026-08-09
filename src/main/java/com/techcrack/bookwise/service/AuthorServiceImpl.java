@@ -70,7 +70,7 @@ public class AuthorServiceImpl extends AbstractRepository<AuthorServiceImpl, Aut
 
         // For new Authors enabling one-month premium subscription free
         for (long authorId : authorIds) {
-            Subscription subscription = subscriptionService.subscriptionPremiumForOneMonth(authorId, ApplicationData.SYSTEM_DATE);
+            Subscription subscription = subscriptionService.subscriptionPremiumForOneMonth(authorId);
             logger.debug("Subscription info {}", subscription);
         }
 

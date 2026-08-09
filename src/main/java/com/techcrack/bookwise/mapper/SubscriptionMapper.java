@@ -10,17 +10,14 @@ import org.springframework.stereotype.Component;
 @Component
 public class SubscriptionMapper {
     public Subscription mapToSubscription(SubscriptionRegisterDTO source) {
-        Subscription subscription = new Subscription();
-        subscription.initialize(ApplicationData.HARD_CODED_CURRENT_ID);
 
-        subscription.setSubscriptions(Subscriptions.FREE);
-        subscription.setStartDate(ApplicationData.SYSTEM_DATE);
-        subscription.setEndDate(
-                ApplicationData.SYSTEM_DATE.plusDays(subscription.getSubscriptions().getDays())
-        );
-        subscription.setBooksAllowedPerMonth(subscription.getSubscriptions().getBooksAllowed());
+//        subscription.setStartDate(ApplicationData.SYSTEM_DATE);
+//        subscription.setEndDate(
+//                ApplicationData.SYSTEM_DATE.plusDays(subscription.getSubscriptions().getDays())
+//        );
+//        subscription.setBooksAllowedPerMonth(subscription.getSubscriptions().getBooksAllowed());
 
-        return subscription;
+        return source.buildSubscription();
     }
 
     public SubscriptionResponse mapToSubscriptionResponse(Subscription subscription) {

@@ -2,9 +2,10 @@ package com.techcrack.bookwise.service;
 
 import com.techcrack.bookwise.abstractions.SubscriptionService;
 import com.techcrack.bookwise.abstractions.UserService;
+import com.techcrack.bookwise.constans.enums.Roles;
+import com.techcrack.bookwise.constans.enums.Subscriptions;
 import com.techcrack.bookwise.entity.Subscription;
 import com.techcrack.bookwise.entity.Users;
-import com.techcrack.bookwise.abstractions.CurrentUserService;
 import com.techcrack.bookwise.responseHelper.RegistrationResult;
 import com.techcrack.bookwise.utils.AbstractLogger;
 import org.springframework.stereotype.Service;
@@ -14,24 +15,22 @@ public class UserRegistrationService extends AbstractLogger<UserRegistrationServ
 
     private final UserService userService;
     private final SubscriptionService subscriptionService;
-    private final CurrentUserService userSession;
 
-    public UserRegistrationService(UserService userService, SubscriptionService subscriptionService, CurrentUserService userSession) {
+    public UserRegistrationService(UserService userService, SubscriptionService subscriptionService) {
         super(UserRegistrationService.class);
         this.userService = userService;
-        this.userSession = userSession;
         this.subscriptionService = subscriptionService;
     }
 
-    public RegistrationResult<Users, Subscription> register(Users user, Subscription subscription) {
+    public RegistrationResult<Users, Subscription> register(Users user, Subscriptions subscriptions) {
         logger.info("User Registration for {} started ", user.getUsername());
 
+        user.setRole(Roles.USER);
         user = userService.register(user);
 
         logger.info("User Registration done  for {} ", user.getUsername());
 
-        subscription.setUser(user);
-        subscription = subscriptionService.register(subscription);
+        Subscription subscription = subscriptionService.activateSubscription(user, subscriptions);
 
         logger.info("Subscription Registration done. Completed Registration Process");
         return new RegistrationResult<>(user, subscription);

@@ -7,6 +7,7 @@ import com.techcrack.bookwise.constans.enums.Subscriptions;
 import com.techcrack.bookwise.entity.Subscription;
 import com.techcrack.bookwise.entity.Users;
 import com.techcrack.bookwise.abstractions.CurrentUserService;
+import com.techcrack.bookwise.exceptions.customized.ObjectNotFoundException;
 import com.techcrack.bookwise.repository.SubscriptionRepository;
 import com.techcrack.bookwise.utils.AbstractRepository;
 import jakarta.transaction.Transactional;
@@ -36,44 +37,93 @@ public class SubscriptionServiceImpl extends AbstractRepository<SubscriptionServ
 
     @Override
     public void remove(long key) {
-
+        repo.deleteById(key);
     }
 
     @Override
     public Subscription update(Subscription entity) {
-        return null;
+        return repo.save(entity);
     }
 
     @Override
     public Subscription get(long key) {
-        return null;
+        return repo.findById(key)
+                .orElseThrow(() -> new ObjectNotFoundException(Subscription.class, "Subscription doesn't exists with id : " + key));
     }
 
+    /**
+     * It will Activate premium for user one month without considering existing plan
+     * @param userId User wants to activate premium plan
+     * @return Activated subscription details
+     */
     @Transactional
-    public Subscription subscriptionPremiumForOneMonth(long userId, LocalDateTime startDate) {
+    public Subscription subscriptionPremiumForOneMonth(long userId) {
         logger.info("Activation Premium Subscription for {} has been started", userId);
 
-        Subscription subscription = new Subscription();
-        subscription.initialize(ApplicationData.HARD_CODED_CURRENT_ID);
+        Users user = userService.get(userId);
 
-        subscription.setSubscriptions(Subscriptions.PREMIUM);
-        setValidationPeriodBasedOnType(subscription, startDate);
+        Subscription subscription = activateSubscription(user, Subscriptions.PREMIUM);
+
+        logger.info("User Found for Premium subscription {}", user);
+
+        return subscription;
+    }
+
+    public Subscription subscriptionFreeForOneMonth(long userId) {
+        logger.info("Activation Free Subscription for {} has been started", userId);
 
         Users user = userService.get(userId);
+
+        Subscription subscription = activateSubscription(user, Subscriptions.FREE);
+
+        logger.info("User Found for Free subscription {}", user);
+
+        return subscription;
+    }
+
+    /**
+     * IMPORTANT Overloaded Method it assumes plan start date is system date
+     * @param user User where we want to activate subscription
+     * @param subscriptions Plan Type
+     * @return Activate subscription details
+     */
+    public Subscription activateSubscription(Users user, Subscriptions subscriptions) {
+        return activateSubscription(user, subscriptions, ApplicationData.SYSTEM_DATE);
+    }
+
+    /**
+     * This method responsible for activating one month free or premium or lifetime subscription
+     * IMPORTANT It will Automatically inactivate exists plan
+     * @param user User where we create a one-month subscription
+     * @param subscriptions Subscription Plan
+     * @param startDate Plan Start Date
+     * @return Returns subscription details related current user
+     */
+    public Subscription activateSubscription(Users user, Subscriptions subscriptions, LocalDateTime startDate) {
+        logger.info("Activating One Month free subscription process started.");
+
+        Subscription subscription = new Subscription();
+        subscription.initialize(user.getId());
+
+        subscription.setSubscriptions(subscriptions);
+        setValidationPeriodBasedOnType(subscription, startDate);
         subscription.setUser(user);
-        subscription.setBooksAllowedPerYear(subscription.getSubscriptions().getBooksAllowed());
-        logger.info("User Found for subscription {}", user);
 
-        int rowsAffected = repo.deactivateActiveSubscription(userId, ApplicationData.HARD_CODED_CURRENT_ID, ApplicationData.SYSTEM_DATE);
+        subscription = register(subscription);
 
-        logger.debug("Subscription Deactivation {} rows affected", rowsAffected);
+        logger.info("Activating One Month free Subscription process completed");
 
-        return register(subscription);
+        int rowsAffected = repo.deactivateActiveSubscription(user.getId(), userSession.getCurrentUserId(), ApplicationData.SYSTEM_DATE);
+
+        logger.debug("Trying Subscription Deactivation {} rows affected", rowsAffected);
+
+        return subscription;
     }
 
     public void setValidationPeriodBasedOnType(Subscription subscription, LocalDateTime dateTime) {
         subscription.setStartDate(dateTime);
         subscription.setEndDate(dateTime.plusDays(subscription.getSubscriptions().getDays()));
+        subscription.setBooksAllowedPerYear(subscription.getSubscriptions().getBooksAllowed());
     }
 
     @Transactional

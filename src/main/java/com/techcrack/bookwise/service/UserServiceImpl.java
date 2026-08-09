@@ -8,7 +8,8 @@ import com.techcrack.bookwise.abstractions.CurrentUserService;
 import com.techcrack.bookwise.jwt.JwtService;
 import com.techcrack.bookwise.repository.UserRepository;
 import com.techcrack.bookwise.exceptions.templates.Errors;
-import com.techcrack.bookwise.utils.AbstractRepository;
+import com.techcrack.bookwise.utils.AbstractService;
+import com.techcrack.bookwise.validations.UserServiceValidation;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -17,15 +18,20 @@ import org.springframework.stereotype.Service;
 
 
 @Service
-public class UserServiceImpl extends AbstractRepository<UserServiceImpl, UserRepository>
+public class UserServiceImpl extends AbstractService<UserServiceImpl, UserRepository, UserServiceValidation>
                             implements UserService {
 
     private final PasswordEncoder encoder;
     private final AuthenticationManager authManager;
     private final JwtService jwtService;
 
-    public UserServiceImpl(UserRepository repo, PasswordEncoder encoder, AuthenticationManager authManager, JwtService jwtService, CurrentUserService userSession) {
-        super(UserServiceImpl.class, repo, userSession);
+    public UserServiceImpl(UserRepository repo,
+                           PasswordEncoder encoder,
+                           AuthenticationManager authManager,
+                           JwtService jwtService,
+                           UserServiceValidation validation,
+                           CurrentUserService userSession) {
+        super(UserServiceImpl.class, repo, validation, userSession);
         this.encoder = encoder;
         this.authManager = authManager;
         this.jwtService = jwtService;
@@ -34,7 +40,7 @@ public class UserServiceImpl extends AbstractRepository<UserServiceImpl, UserRep
     public Users register(Users user) {
         logger.info("User registration started with {}", user.getUsername());
 
-        Errors errors = validateData(user);
+        Errors errors = validations.validateUserData(user);
 
         if (errors.hasErrors()) {
             logger.error("Errors : {}", errors.getData());
@@ -50,12 +56,12 @@ public class UserServiceImpl extends AbstractRepository<UserServiceImpl, UserRep
 
     @Override
     public void remove(long key) {
-
+        repo.deleteById(key);
     }
 
     @Override
     public Users update(Users entity) {
-        return null;
+        return repo.save(entity);
     }
 
     @Override
@@ -64,46 +70,6 @@ public class UserServiceImpl extends AbstractRepository<UserServiceImpl, UserRep
                 .orElseThrow(() -> new ObjectNotFoundException(Users.class, "User Not Found"));
     }
 
-    private Errors validateData(Users user) {
-        logger.debug("Validating User data process started");
-        Errors errors = new Errors();
-
-        if (!isValidPassWord(user.getPassword())) {
-            errors.addErrorMessage("Invalid Password : Ensure Password length is min 8 and contains alphanumeric and special letters");
-        }
-
-        logger.debug("Validating user data is completed");
-        return errors;
-    }
-
-    private boolean isValidPassWord(String password) {
-        logger.debug("Password Validating Process Started for {}", password);
-
-        if (password.length() < 8) {
-            return false;
-        }
-
-        boolean isDigit = false, isAlpha = false, isSpl = false;
-
-        for (char ch : password.toCharArray()) {
-            if (Character.isDigit(ch)) {
-                isDigit = true;
-            } else if (Character.isAlphabetic(ch))  {
-                isAlpha = true;
-            } else {
-                isSpl = true;
-            }
-
-            if (isDigit && isAlpha && isSpl) {
-                logger.debug("Password is Validated successfully.");
-                return true;
-            }
-        }
-
-        logger.debug("Password Validation Failed Due to IsDigit = {}, IsAlpha = {}, IsSpecialCharacter = {}", isDigit, isAlpha, isSpl);
-
-        return false;
-    }
 
     public String authenticate(String username, String password) {
 

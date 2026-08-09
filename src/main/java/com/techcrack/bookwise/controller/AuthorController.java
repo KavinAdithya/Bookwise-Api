@@ -8,8 +8,7 @@ import com.techcrack.bookwise.dtos.author.response.PendingAuthorResponse;
 import com.techcrack.bookwise.entity.Author;
 import com.techcrack.bookwise.entity.Subscription;
 import com.techcrack.bookwise.abstractions.CurrentUserService;
-import com.techcrack.bookwise.service.AuthorRegistrationService;
-import com.techcrack.bookwise.mapper.SubscriptionMapper;
+import com.techcrack.bookwise.service.AuthorRegistrationService; 
 import com.techcrack.bookwise.responseHelper.ApiResponseEntity;
 import com.techcrack.bookwise.mapper.AuthorMapper;
 import com.techcrack.bookwise.responseHelper.RegistrationResult;
@@ -25,12 +24,10 @@ import java.util.List;
 public class AuthorController extends AbstractController<AuthorController, AuthorService, AuthorMapper> {
 
     private final AuthorRegistrationService authorRegistrationService;
-    private final SubscriptionMapper subscriptionMapper;
 
-    public AuthorController(AuthorRegistrationService authorRegistrationService, AuthorMapper mapper , SubscriptionMapper subscriptionMapper, AuthorService service, CurrentUserService userSession) {
+    public AuthorController(AuthorRegistrationService authorRegistrationService, AuthorMapper mapper , AuthorService service, CurrentUserService userSession) {
         super(AuthorController.class, service, mapper, userSession);
         this.authorRegistrationService = authorRegistrationService;
-        this.subscriptionMapper = subscriptionMapper;
     }
 
     @PostMapping("/register")
@@ -38,9 +35,8 @@ public class AuthorController extends AbstractController<AuthorController, Autho
         logger.info("Request received for author registration {}", authorRegisterRequest.getUser().getUsername());
 
         Author author = mapper.mapToAuthor(authorRegisterRequest);
-        Subscription subscription = subscriptionMapper.mapToSubscription(authorRegisterRequest.getUser().getSubscription());
 
-        RegistrationResult<Author, Subscription> authorSubscriptionRegistrationResult = authorRegistrationService.register(author, subscription);
+        RegistrationResult<Author, Subscription> authorSubscriptionRegistrationResult = authorRegistrationService.register(author, authorRegisterRequest.getUser().getSubscription().getPlan());
 
         AuthorRegisterResponse response = mapper.mapToAuthorRegisterResponse(authorSubscriptionRegistrationResult.entity(),
                                 authorSubscriptionRegistrationResult.relatedEntity());
