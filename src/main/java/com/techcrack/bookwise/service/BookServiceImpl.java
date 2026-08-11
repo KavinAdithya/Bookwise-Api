@@ -160,4 +160,10 @@ public class BookServiceImpl extends AbstractService<BookServiceImpl, BookReposi
         logger.info("Books Rejected successfully : {}", rowsAffected);
         return rowsAffected;
     }
+
+    @Transactional
+    public boolean updateBookQuantity(long bookId, int quantity) {
+        return repo.updateBookQuantity(bookId, quantity, userSession.getCurrentUserId(), ApplicationData.SYSTEM_DATE) >= 1;
+    }
+
 }

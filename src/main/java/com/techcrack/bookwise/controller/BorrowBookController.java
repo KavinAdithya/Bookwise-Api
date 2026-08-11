@@ -70,7 +70,7 @@ public class BorrowBookController extends AbstractController<BorrowBookControlle
 
     @GetMapping
     public ResponseEntity<ApiResponseEntity<List<BorrowBookRegisterResponse>>> fetchBorrowRequests() {
-        logger.info("Request Received to fetch all borrow details of the user {}", userSession.getCurrentUser());
+        logger.info("Request Received to fetch all borrow details of the user {}", userSession.getCurrentUserId());
 
         List<BorrowBook> borrowBooks = service.getAllBorrowDetails();
 

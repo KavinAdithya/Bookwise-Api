@@ -13,4 +13,5 @@ public interface BookService extends BasicCRUD<Book> {
     int rejectAllBooks(List<Long> bookIds);
     int approveAllBooks(List<Long> bookIds);
     Book createBook(BookRegisterRequest request);
+    boolean updateBookQuantity(long bookId, int quantity);
 }

@@ -99,6 +99,7 @@ public class SubscriptionServiceImpl extends AbstractRepository<SubscriptionServ
      * @param startDate Plan Start Date
      * @return Returns subscription details related current user
      */
+    @Transactional
     public Subscription activateSubscription(Users user, Subscriptions subscriptions, LocalDateTime startDate) {
         logger.info("Activating One Month free subscription process started.");
 
@@ -109,13 +110,13 @@ public class SubscriptionServiceImpl extends AbstractRepository<SubscriptionServ
         setValidationPeriodBasedOnType(subscription, startDate);
         subscription.setUser(user);
 
-        subscription = register(subscription);
-
         logger.info("Activating One Month free Subscription process completed");
 
         int rowsAffected = repo.deactivateActiveSubscription(user.getId(), userSession.getCurrentUserId(), ApplicationData.SYSTEM_DATE);
 
         logger.debug("Trying Subscription Deactivation {} rows affected", rowsAffected);
+
+        subscription = register(subscription);
 
         return subscription;
     }
@@ -123,7 +124,7 @@ public class SubscriptionServiceImpl extends AbstractRepository<SubscriptionServ
     public void setValidationPeriodBasedOnType(Subscription subscription, LocalDateTime dateTime) {
         subscription.setStartDate(dateTime);
         subscription.setEndDate(dateTime.plusDays(subscription.getSubscriptions().getDays()));
-        subscription.setBooksAllowedPerYear(subscription.getSubscriptions().getBooksAllowed());
+        subscription.setBooksAllowedPerMonth(subscription.getSubscriptions().getBooksAllowed());
     }
 
     @Transactional

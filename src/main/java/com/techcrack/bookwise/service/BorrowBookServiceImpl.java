@@ -11,6 +11,7 @@ import com.techcrack.bookwise.dtos.borrowbook.request.BorrowBookRequest;
 import com.techcrack.bookwise.entity.BorrowBook;
 import com.techcrack.bookwise.exceptions.customized.InvalidDataException;
 import com.techcrack.bookwise.exceptions.customized.ObjectNotFoundException;
+import com.techcrack.bookwise.exceptions.customized.TransactionFailedException;
 import com.techcrack.bookwise.exceptions.templates.Errors;
 import com.techcrack.bookwise.abstractions.CurrentUserService;
 import com.techcrack.bookwise.repository.BorrowBookRepository;
@@ -50,6 +51,7 @@ public class BorrowBookServiceImpl extends AbstractService<BorrowBookServiceImpl
      * @param request the borrow request containing the user and book details
      * @return Returns stored borrow entity
      */
+    @Transactional
     public BorrowBook borrowBook(BorrowBookRequest request) {
         logger.info("Initiated Process for borrowing book");
 
@@ -74,6 +76,12 @@ public class BorrowBookServiceImpl extends AbstractService<BorrowBookServiceImpl
         int rowsAffected = subscriptionService.updateBookAllowed(borrowBook.getUser().getId(), borrowBook.getQuantity());
 
         logger.debug("On updating books allowed {} rows data changed", rowsAffected);
+        boolean updated = bookService.updateBookQuantity(request.getBookId(), -request.getQuantity());
+        if (!updated) {
+            logger.warn("Failed to update book quantity after borrow book");
+            throw new TransactionFailedException("Failed for update book quantity");
+        }
+
         return borrowBook;
     }
 
@@ -149,7 +157,7 @@ public class BorrowBookServiceImpl extends AbstractService<BorrowBookServiceImpl
 
     /**
      * Register the Borrow entity with @Transaction Annotation
-     * @param entity
+     * @param entity Saves Borrow Entity
      * @return returns stored entity
      */
     @Override
@@ -161,8 +169,8 @@ public class BorrowBookServiceImpl extends AbstractService<BorrowBookServiceImpl
     /**
      * Calculate the due amount for a returning book.
      * Based on System Date
-     * @param borrowBookId
-     * @return
+     * @param borrowBookId refers to borrow-book where we will compute due amount
+     * @return returns calculated due amount
      */
     public double calculateDueAmount(long borrowBookId) {
         BorrowBook entity = getBorrowDetails(borrowBookId);
@@ -219,6 +227,11 @@ public class BorrowBookServiceImpl extends AbstractService<BorrowBookServiceImpl
         borrowBook.setReturnDate(ApplicationData.SYSTEM_DATE);
         borrowBook.setTotalAmountPaidOnReturn(dueAmount);
 
+        boolean updated = bookService.updateBookQuantity(borrowBook.getBook().getId(), borrowBook.getQuantity());
+        if (!updated) {
+            logger.warn("Failed to update book quantity after return book");
+            throw new TransactionFailedException("Failed for update book quantity");
+        }
         // Income Update Pending
     }
 

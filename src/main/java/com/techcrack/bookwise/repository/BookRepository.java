@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.techcrack.bookwise.constans.queries.JPQLQueries.CHANGE_STATUS_ALL_BOOKS;
+import static com.techcrack.bookwise.constans.queries.JPQLQueries.UPDATE_BOOK_QUANTITY;
 
 public interface BookRepository extends JpaRepository<Book, Long> {
     boolean existsByISBN(String ISBN);
@@ -31,4 +32,13 @@ public interface BookRepository extends JpaRepository<Book, Long> {
             @Param("updatedAt") LocalDateTime updatedAt,
             @Param("publishDate") LocalDateTime publishDate
             );
+
+    @Modifying
+    @Transactional
+    @Query(value = UPDATE_BOOK_QUANTITY)
+    int updateBookQuantity(
+            @Param("bookId") long bookId,
+            @Param("quantity") int quantity,
+            @Param("updatedBy") long updatedBy,
+            @Param("updatedAt") LocalDateTime updatedAt);
 }
