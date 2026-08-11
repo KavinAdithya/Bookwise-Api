@@ -1,5 +1,6 @@
 package com.techcrack.bookwise.entity;
 
+import com.techcrack.bookwise.constans.enums.IncomeType;
 import com.techcrack.bookwise.utils.BaseEntity;
 import jakarta.persistence.*;
 
@@ -7,17 +8,20 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
-@Table(name = "AdminIncomes")
-public class AdminIncome extends BaseEntity {
+@Table(name = "AdminRevenues")
+public class AdminRevenue extends BaseEntity {
+
+    private Long adminId;
     @Column(nullable = false)
-    private String sourceType;
+    @Enumerated(EnumType.STRING)
+    private IncomeType sourceType;
     @Column(nullable = false)
     private Long sourceId;
     private double amount;
     @Column(nullable = false)
     private LocalDateTime incomeDate;
 
-    public AdminIncome() {
+    public AdminRevenue() {
         super();
     }
 
@@ -45,18 +49,26 @@ public class AdminIncome extends BaseEntity {
         this.sourceId = sourceId;
     }
 
-    public String getSourceType() {
+    public IncomeType getSourceType() {
         return sourceType;
     }
 
-    public void setSourceType(String sourceType) {
+    public void setSourceType(IncomeType sourceType) {
         this.sourceType = sourceType;
+    }
+
+    public Long getAdminId() {
+        return adminId;
+    }
+
+    public void setAdminId(Long adminId) {
+        this.adminId = adminId;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof AdminIncome that)) return false;
+        if (!(o instanceof AdminRevenue that)) return false;
         return Double.compare(getAmount(), that.getAmount()) == 0 && Objects.equals(getId(), that.getId()) && Objects.equals(getSourceType(), that.getSourceType()) && Objects.equals(getSourceId(), that.getSourceId()) && Objects.equals(getIncomeDate(), that.getIncomeDate());
     }
 
