@@ -1,9 +1,6 @@
 package com.techcrack.bookwise.service;
 
-import com.techcrack.bookwise.abstractions.BookService;
-import com.techcrack.bookwise.abstractions.BorrowBookService;
-import com.techcrack.bookwise.abstractions.SubscriptionService;
-import com.techcrack.bookwise.abstractions.UserService;
+import com.techcrack.bookwise.abstractions.*;
 import com.techcrack.bookwise.constans.ApplicationData;
 import com.techcrack.bookwise.constans.enums.BorrowStatus;
 import com.techcrack.bookwise.dtos.borrowbook.layer.ReturnBookContext;
@@ -13,7 +10,6 @@ import com.techcrack.bookwise.exceptions.customized.InvalidDataException;
 import com.techcrack.bookwise.exceptions.customized.ObjectNotFoundException;
 import com.techcrack.bookwise.exceptions.customized.TransactionFailedException;
 import com.techcrack.bookwise.exceptions.templates.Errors;
-import com.techcrack.bookwise.abstractions.CurrentUserService;
 import com.techcrack.bookwise.repository.BorrowBookRepository;
 import com.techcrack.bookwise.utils.AbstractService;
 import com.techcrack.bookwise.validations.BorrowBookValidations;
@@ -29,12 +25,20 @@ public class BorrowBookServiceImpl extends AbstractService<BorrowBookServiceImpl
     private final UserService userService;
     private final BookService bookService;
     private final SubscriptionService subscriptionService;
+    private final AuthorRevenueService authorRevenueService;
 
-    public BorrowBookServiceImpl(BorrowBookRepository repo, BorrowBookValidations validations, UserService userService, BookService bookService, SubscriptionService subscriptionService,  CurrentUserService userSession) {
+    public BorrowBookServiceImpl(BorrowBookRepository repo,
+                                 BorrowBookValidations validations,
+                                 UserService userService,
+                                 BookService bookService,
+                                 SubscriptionService subscriptionService,
+                                 CurrentUserService userSession,
+                                 AuthorRevenueService authorRevenueService) {
        super(BorrowBookServiceImpl.class, repo, validations, userSession);
        this.userService = userService;
        this.bookService = bookService;
        this.subscriptionService = subscriptionService;
+       this.authorRevenueService = authorRevenueService;
     }
 
     /**
@@ -232,7 +236,18 @@ public class BorrowBookServiceImpl extends AbstractService<BorrowBookServiceImpl
             logger.warn("Failed to update book quantity after return book");
             throw new TransactionFailedException("Failed for update book quantity");
         }
-        // Income Update Pending
+
+        boolean isAuthorRevenueGenerated = authorRevenueService.createFromBorrowBook(borrowBook);
+
+        if (!isAuthorRevenueGenerated) {
+            logger.warn("Failed to generate Author Revenue for borrow details {}" , borrowBook);
+        }
+
+        if (isAuthorRevenueGenerated) {
+            logger.info("Author Revenue Generated Successfully");
+        }
+
+        // Income Update Pending for admin
     }
 
     @Override
