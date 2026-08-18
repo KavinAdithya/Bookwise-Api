@@ -1,13 +1,17 @@
 package com.techcrack.bookwise.service;
 
+import com.techcrack.bookwise.abstractions.AdminRevenueService;
 import com.techcrack.bookwise.abstractions.SubscriptionService;
 import com.techcrack.bookwise.abstractions.UserService;
 import com.techcrack.bookwise.constans.ApplicationData;
 import com.techcrack.bookwise.constans.enums.Subscriptions;
+import com.techcrack.bookwise.dtos.subscription.DiscountDetails;
+import com.techcrack.bookwise.entity.AdminRevenue;
 import com.techcrack.bookwise.entity.Subscription;
 import com.techcrack.bookwise.entity.Users;
 import com.techcrack.bookwise.abstractions.CurrentUserService;
 import com.techcrack.bookwise.exceptions.customized.ObjectNotFoundException;
+import com.techcrack.bookwise.helper.DiscountHelper;
 import com.techcrack.bookwise.repository.SubscriptionRepository;
 import com.techcrack.bookwise.utils.AbstractRepository;
 import jakarta.transaction.Transactional;
@@ -20,10 +24,18 @@ public class SubscriptionServiceImpl extends AbstractRepository<SubscriptionServ
                                     implements SubscriptionService {
 
     private final UserService userService;
+    private final AdminRevenueService adminRevenueService;
+    private final DiscountHelper discountHelper;
 
-    public SubscriptionServiceImpl(SubscriptionRepository repo, UserService userService, CurrentUserService userSession) {
+    public SubscriptionServiceImpl(SubscriptionRepository repo,
+                                   UserService userService,
+                                   CurrentUserService userSession,
+                                   AdminRevenueService adminRevenueService,
+                                   DiscountHelper discountHelper) {
         super(SubscriptionServiceImpl.class, repo, userSession);
         this.userService = userService;
+        this.adminRevenueService = adminRevenueService;
+        this.discountHelper = discountHelper;
     }
 
     @Transactional
@@ -57,28 +69,37 @@ public class SubscriptionServiceImpl extends AbstractRepository<SubscriptionServ
      * @return Activated subscription details
      */
     @Transactional
-    public Subscription subscriptionPremiumForOneMonth(long userId) {
+    public Subscription subscriptionPremiumPlanForOneMonth(long userId, DiscountDetails discountDetails) {
         logger.info("Activation Premium Subscription for {} has been started", userId);
 
         Users user = userService.get(userId);
 
-        Subscription subscription = activateSubscription(user, Subscriptions.PREMIUM);
+        Subscription subscription = activateSubscription(user, Subscriptions.PREMIUM, discountDetails);
 
         logger.info("User Found for Premium subscription {}", user);
 
         return subscription;
     }
 
-    public Subscription subscriptionFreeForOneMonth(long userId) {
+    public Subscription subscriptionFreePlan(Users user) {
+        return activateSubscription(user, Subscriptions.FREE, new DiscountDetails(0));
+    }
+
+    public Subscription subscriptionBasicPlanForOneMonth(long userId, DiscountDetails discountDetails) {
         logger.info("Activation Free Subscription for {} has been started", userId);
 
         Users user = userService.get(userId);
 
-        Subscription subscription = activateSubscription(user, Subscriptions.FREE);
+        Subscription subscription = activateSubscription(user, Subscriptions.BASE, discountDetails);
 
         logger.info("User Found for Free subscription {}", user);
 
         return subscription;
+    }
+
+    public Subscription activateSubscription(long userId, Subscriptions subscriptions, DiscountDetails discountDetails) {
+        Users user = userService.get(userId);
+        return activateSubscription(user, subscriptions, discountDetails);
     }
 
     /**
@@ -87,8 +108,8 @@ public class SubscriptionServiceImpl extends AbstractRepository<SubscriptionServ
      * @param subscriptions Plan Type
      * @return Activate subscription details
      */
-    public Subscription activateSubscription(Users user, Subscriptions subscriptions) {
-        return activateSubscription(user, subscriptions, ApplicationData.SYSTEM_DATE);
+    public Subscription activateSubscription(Users user, Subscriptions subscriptions, DiscountDetails discountDetails) {
+        return activateSubscription(user, subscriptions, ApplicationData.SYSTEM_DATE, discountDetails);
     }
 
     /**
@@ -100,7 +121,7 @@ public class SubscriptionServiceImpl extends AbstractRepository<SubscriptionServ
      * @return Returns subscription details related current user
      */
     @Transactional
-    public Subscription activateSubscription(Users user, Subscriptions subscriptions, LocalDateTime startDate) {
+    public Subscription activateSubscription(Users user, Subscriptions subscriptions, LocalDateTime startDate, DiscountDetails discountDetails) {
         logger.info("Activating One Month free subscription process started.");
 
         Subscription subscription = new Subscription();
@@ -108,6 +129,7 @@ public class SubscriptionServiceImpl extends AbstractRepository<SubscriptionServ
 
         subscription.setSubscriptions(subscriptions);
         setValidationPeriodBasedOnType(subscription, startDate);
+        setTotalAmountBasedOnDiscount(subscription, discountDetails);
         subscription.setUser(user);
 
         logger.info("Activating One Month free Subscription process completed");
@@ -118,7 +140,21 @@ public class SubscriptionServiceImpl extends AbstractRepository<SubscriptionServ
 
         subscription = register(subscription);
 
+        boolean isRevenueGenerated = adminRevenueService.createRevenueFromSubscription(subscription);
+
+        if (isRevenueGenerated) {
+            logger.info("Revenue Generate for admin on subscription");
+        } else {
+            logger.warn("Failed to Generate admin revenue on subscription");
+        }
+
         return subscription;
+    }
+
+    private void setTotalAmountBasedOnDiscount(Subscription subscription, DiscountDetails discountDetails) {
+        double discountAmount = discountHelper.discountAmountOnSubscription(subscription, discountDetails);
+        double totalRent = subscription.getSubscriptions().getRent();
+        subscription.setSubscriptionAmount(totalRent - discountAmount);
     }
 
     public void setValidationPeriodBasedOnType(Subscription subscription, LocalDateTime dateTime) {

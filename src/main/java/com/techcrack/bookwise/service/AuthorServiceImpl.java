@@ -2,8 +2,8 @@ package com.techcrack.bookwise.service;
 
 import com.techcrack.bookwise.abstractions.AuthorService;
 import com.techcrack.bookwise.abstractions.SubscriptionService;
-import com.techcrack.bookwise.constans.ApplicationData;
 import com.techcrack.bookwise.constans.enums.Status;
+import com.techcrack.bookwise.dtos.subscription.DiscountDetails;
 import com.techcrack.bookwise.entity.Author;
 import com.techcrack.bookwise.entity.Subscription;
 import com.techcrack.bookwise.exceptions.customized.ObjectNotFoundException;
@@ -70,7 +70,7 @@ public class AuthorServiceImpl extends AbstractRepository<AuthorServiceImpl, Aut
 
         // For new Authors enabling one-month premium subscription free
         for (long authorId : authorIds) {
-            Subscription subscription = subscriptionService.subscriptionPremiumForOneMonth(authorId);
+            Subscription subscription = subscriptionService.subscriptionPremiumPlanForOneMonth(authorId, new DiscountDetails(100));
             logger.debug("Subscription info {}", subscription);
         }
 

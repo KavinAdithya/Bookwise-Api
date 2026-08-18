@@ -23,6 +23,8 @@ public class Subscription extends BaseEntity {
 
     private long booksAllowedPerMonth;
 
+    private double subscriptionAmount;
+
     public Subscription() {
         super();
     }
@@ -65,6 +67,14 @@ public class Subscription extends BaseEntity {
 
     public void setBooksAllowedPerMonth(long booksAllowedPerMonth) {
         this.booksAllowedPerMonth = booksAllowedPerMonth;
+    }
+
+    public double getSubscriptionAmount() {
+        return subscriptionAmount;
+    }
+
+    public void setSubscriptionAmount(double subscriptionAmount) {
+        this.subscriptionAmount = subscriptionAmount;
     }
 
     @Override

@@ -11,7 +11,6 @@ import java.util.Objects;
 @Table(name = "AdminRevenues")
 public class AdminRevenue extends BaseEntity {
 
-    private Long adminId;
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private IncomeType sourceType;
@@ -57,13 +56,6 @@ public class AdminRevenue extends BaseEntity {
         this.sourceType = sourceType;
     }
 
-    public Long getAdminId() {
-        return adminId;
-    }
-
-    public void setAdminId(Long adminId) {
-        this.adminId = adminId;
-    }
 
     @Override
     public boolean equals(Object o) {

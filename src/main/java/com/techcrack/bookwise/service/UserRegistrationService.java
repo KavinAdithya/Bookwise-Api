@@ -4,6 +4,7 @@ import com.techcrack.bookwise.abstractions.SubscriptionService;
 import com.techcrack.bookwise.abstractions.UserService;
 import com.techcrack.bookwise.constans.enums.Roles;
 import com.techcrack.bookwise.constans.enums.Subscriptions;
+import com.techcrack.bookwise.dtos.subscription.DiscountDetails;
 import com.techcrack.bookwise.entity.Subscription;
 import com.techcrack.bookwise.entity.Users;
 import com.techcrack.bookwise.responseHelper.RegistrationResult;
@@ -30,7 +31,7 @@ public class UserRegistrationService extends AbstractLogger<UserRegistrationServ
 
         logger.info("User Registration done  for {} ", user.getUsername());
 
-        Subscription subscription = subscriptionService.activateSubscription(user, subscriptions);
+        Subscription subscription = subscriptionService.activateSubscription(user, subscriptions, new DiscountDetails(0));
 
         logger.info("Subscription Registration done. Completed Registration Process");
         return new RegistrationResult<>(user, subscription);
