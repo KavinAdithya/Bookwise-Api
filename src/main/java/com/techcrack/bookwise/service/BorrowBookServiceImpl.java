@@ -26,6 +26,7 @@ public class BorrowBookServiceImpl extends AbstractService<BorrowBookServiceImpl
     private final BookService bookService;
     private final SubscriptionService subscriptionService;
     private final AuthorRevenueService authorRevenueService;
+    private final AdminRevenueService adminRevenueService;
 
     public BorrowBookServiceImpl(BorrowBookRepository repo,
                                  BorrowBookValidations validations,
@@ -33,12 +34,14 @@ public class BorrowBookServiceImpl extends AbstractService<BorrowBookServiceImpl
                                  BookService bookService,
                                  SubscriptionService subscriptionService,
                                  CurrentUserService userSession,
-                                 AuthorRevenueService authorRevenueService) {
+                                 AuthorRevenueService authorRevenueService,
+                                 AdminRevenueService adminRevenueService) {
        super(BorrowBookServiceImpl.class, repo, validations, userSession);
        this.userService = userService;
        this.bookService = bookService;
        this.subscriptionService = subscriptionService;
        this.authorRevenueService = authorRevenueService;
+       this.adminRevenueService = adminRevenueService;
     }
 
     /**
@@ -192,7 +195,7 @@ public class BorrowBookServiceImpl extends AbstractService<BorrowBookServiceImpl
         double dailyRent = subscriptionService.getSubscription(entity.getUser().getId())
                 .getDelayDailyFineAmount();
 
-        return dailyRent * daysDelayed;
+        return dailyRent * daysDelayed * entity.getQuantity();
     }
 
     @Override
@@ -247,7 +250,9 @@ public class BorrowBookServiceImpl extends AbstractService<BorrowBookServiceImpl
             logger.info("Author Revenue Generated Successfully");
         }
 
-        // Income Update Pending for admin
+        boolean isAdminRevenueGenerated = adminRevenueService.createRevenueFromBorrowBook(borrowBook);
+
+        logger.info(isAdminRevenueGenerated ? "Admin Revenue Generated Successfully" : "Admin Revenue Not Generated It might be no due amount on return amount");
     }
 
     @Override

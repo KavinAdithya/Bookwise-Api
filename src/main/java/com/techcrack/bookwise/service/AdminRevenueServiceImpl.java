@@ -45,7 +45,7 @@ public class AdminRevenueServiceImpl extends AbstractRepository<AdminRevenueServ
     public boolean createRevenueFromBorrowBook(BorrowBook borrowBook) {
         logger.info("Revenue Creation for Admin on borrow book process started");
 
-        if (borrowBook == null) {
+        if (borrowBook == null || borrowBook.getTotalAmountPaidOnReturn() <= 0) {
             return false;
         }
 
