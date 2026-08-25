@@ -7,7 +7,7 @@ import com.techcrack.bookwise.entity.Book;
 import com.techcrack.bookwise.entity.PurchaseBook;
 import com.techcrack.bookwise.entity.Users;
 import com.techcrack.bookwise.exceptions.customized.InvalidDataException;
-import com.techcrack.bookwise.jwt.CurrentUserService;
+import com.techcrack.bookwise.abstractions.CurrentUserService;
 import com.techcrack.bookwise.repository.PurchaseBookRepository;
 import com.techcrack.bookwise.utils.AbstractRepository;
 import org.springframework.stereotype.Service;
@@ -27,8 +27,8 @@ public class PurchaseBookServiceImpl extends AbstractRepository<PurchaseBookServ
     @Override
     public PurchaseBook register(PurchaseBook entity) {
         logger.info("Book Purchase Process Started for User {} Book {}", entity.getUser().getId(), entity.getBook().getId());
-
-        if (!bookService.checkAvailability(entity.getBook().getId(), entity.getQuantity())) {
+        boolean available = bookService.checkAvailability(entity.getBook().getId(), entity.getQuantity());
+        if (!available) {
             logger.error("Requested book stock is not available");
             throw new InvalidDataException("Book Quantity not available as you requested Quantity : "+ entity.getQuantity());
         }

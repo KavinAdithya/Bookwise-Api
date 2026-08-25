@@ -1,6 +1,7 @@
 package com.techcrack.bookwise.dtos.subscription.request;
 
-import com.techcrack.bookwise.constans.Subscriptions;
+import com.techcrack.bookwise.constans.enums.Subscriptions;
+import com.techcrack.bookwise.entity.Subscription;
 
 public class SubscriptionRegisterDTO {
     private Subscriptions plan;
@@ -17,7 +18,13 @@ public class SubscriptionRegisterDTO {
         this.plan = plan;
     }
 
+    public Subscription buildSubscription() {
+        Subscription subscription = new Subscription();
+        subscription.initialize(null);
+        subscription.setSubscriptions(plan);
 
+        return subscription;
+    }
     @Override
     public String toString() {
         return "SubscriptionDTO{" +

@@ -1,6 +1,6 @@
 package com.techcrack.bookwise.entity;
 
-import com.techcrack.bookwise.constans.Roles;
+import com.techcrack.bookwise.constans.enums.Roles;
 import com.techcrack.bookwise.utils.BaseEntity;
 import jakarta.persistence.*;
 import java.util.Objects;

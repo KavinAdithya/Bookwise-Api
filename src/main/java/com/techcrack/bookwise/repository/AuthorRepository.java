@@ -1,6 +1,6 @@
 package com.techcrack.bookwise.repository;
 
-import com.techcrack.bookwise.constans.Status;
+import com.techcrack.bookwise.constans.enums.Status;
 import com.techcrack.bookwise.entity.Author;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;

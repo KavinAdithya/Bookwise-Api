@@ -1,6 +1,6 @@
 package com.techcrack.bookwise.entity;
 
-import com.techcrack.bookwise.constans.Status;
+import com.techcrack.bookwise.constans.enums.Status;
 import com.techcrack.bookwise.utils.BaseEntity;
 import jakarta.persistence.*;
 

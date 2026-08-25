@@ -22,12 +22,7 @@ public class RawQueries {
 
     public static final String UPDATE_SUBSCRIPTION_BOOK_ALLOWED_COUNT = """
                   UPDATE Subscriptions
-                  SET books_allowed_per_year = CASE
-                                                    WHEN subscriptions = 'PREMIUM'
-                                                        THEN  books_allowed_per_year - :quantity
-                                                      ELSE books_allowed_per_year
-                                                END,
-                       books_allowed_per_month = CASE
+                  SET books_allowed_per_month = CASE
                                                     WHEN subscriptions = 'FREE'
                                                         THEN  books_allowed_per_month - :quantity
                                                       ELSE books_allowed_per_month

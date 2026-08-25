@@ -4,14 +4,15 @@ import com.techcrack.bookwise.abstractions.AuthorService;
 import com.techcrack.bookwise.abstractions.BookService;
 import com.techcrack.bookwise.abstractions.CategoryService;
 import com.techcrack.bookwise.constans.ApplicationData;
-import com.techcrack.bookwise.constans.Status;
+import com.techcrack.bookwise.constans.enums.Status;
+import com.techcrack.bookwise.dtos.book.request.BookRegisterRequest;
 import com.techcrack.bookwise.entity.Author;
 import com.techcrack.bookwise.entity.Book;
 import com.techcrack.bookwise.entity.Category;
 import com.techcrack.bookwise.exceptions.customized.InvalidDataException;
 import com.techcrack.bookwise.exceptions.customized.ObjectNotFoundException;
 import com.techcrack.bookwise.exceptions.templates.Errors;
-import com.techcrack.bookwise.jwt.CurrentUserService;
+import com.techcrack.bookwise.abstractions.CurrentUserService;
 import com.techcrack.bookwise.repository.BookRepository;
 import com.techcrack.bookwise.utils.AbstractService;
 import com.techcrack.bookwise.validations.BookServiceValidations;
@@ -23,7 +24,6 @@ import java.util.List;
 @Service
 public class BookServiceImpl extends AbstractService<BookServiceImpl, BookRepository, BookServiceValidations>
                                 implements BookService {
-
     private final AuthorService authorService;
     private final CategoryService categoryService;
 
@@ -33,26 +33,10 @@ public class BookServiceImpl extends AbstractService<BookServiceImpl, BookReposi
         this.categoryService = categoryService;
     }
 
-    @Transactional
     @Override
+    @Transactional
     public Book register(Book entity) {
         logger.info("Book Registration Process started with Book Title {}", entity.getTitle());
-
-        Errors errors = validations.validateBookDetails(entity);
-
-        if (errors.hasErrors()) {
-            logger.error("Invalid Book Details : {} ", errors.getData());
-            throw new InvalidDataException("Invalid Book Details : " + errors.getData());
-        }
-
-        populateRelationships(entity);
-
-        errors = validations.validateAuthor(entity);
-
-        if (errors.hasErrors()) {
-            logger.error("Invalid Author Details : {} ", errors.getData());
-            throw new InvalidDataException("Invalid Author Details : " + errors.getData());
-        }
 
         entity = repo.save(entity);
 
@@ -61,31 +45,16 @@ public class BookServiceImpl extends AbstractService<BookServiceImpl, BookReposi
         return entity;
     }
 
-    private void populateRelationships(Book entity) {
-
-        Author author = authorService.get(entity.getAuthor().getId());
-        logger.debug("Author Info : {}", author);
-
-        entity.setAuthor(author);
-        logger.debug("Author successfully set to book Book : {}", entity);
-
-        Category category = categoryService.getCategoryByName(entity.getCategory().getName());
-        logger.debug("Category Info : {}", category);
-        entity.setCategory(category);
-
-        entity.setCommissionPercentage(ApplicationData.COMMISSION_PERCENTAGE);
-    }
-
-
-
     @Override
+    @Transactional
     public void remove(long key) {
-
+        repo.deleteById(key);
     }
 
     @Override
+    @Transactional
     public Book update(Book entity) {
-        return null;
+        return repo.save(entity);
     }
 
     @Override
@@ -95,14 +64,54 @@ public class BookServiceImpl extends AbstractService<BookServiceImpl, BookReposi
     }
 
     @Override
+    @Transactional
+    public Book createBook(BookRegisterRequest request) {
+        Book entity = request.buildBook();
+        entity.initialize(userSession.getCurrentUserId());
+
+        Errors errors = validations.validateBookDetails(entity);
+
+        if (errors.hasErrors()) {
+            logger.error("Invalid Book Details : {} ", errors.getData());
+            throw new InvalidDataException("Invalid Book Details : " + errors.getData());
+        }
+
+        populateRelationships(entity, request);
+
+        errors = validations.validateAuthor(entity);
+
+        if (errors.hasErrors()) {
+            logger.error("Invalid Author Details : {} ", errors.getData());
+            throw new InvalidDataException("Invalid Author Details : " + errors.getData());
+        }
+
+        entity.setBookStatus(Status.PENDING);
+        entity.setCommissionPercentage(ApplicationData.COMMISSION_PERCENTAGE);
+        return register(entity);
+    }
+
+    private void populateRelationships(Book entity, BookRegisterRequest request) {
+
+        Author author = authorService.get(userSession.getCurrentUserId());
+        logger.debug("Author Info : {}", author);
+
+        entity.setAuthor(author);
+        logger.debug("Author successfully set to book Book : {}", entity);
+
+        Category category = categoryService.getCategoryByName(request.getCategoryName());
+        logger.debug("Category Info : {}", category);
+        entity.setCategory(category);
+    }
+
+    @Override
     public boolean checkAvailability(long id, int quantity) {
         Book book = get(id);
 
         return book.isActive() && book.getAvailableCopies() >= quantity;
     }
 
-    @Transactional
     @Override
+    @Transactional
     public boolean updateBookAvailability(long id, int quantity) {
         Book book = get(id);
 
@@ -113,7 +122,6 @@ public class BookServiceImpl extends AbstractService<BookServiceImpl, BookReposi
     }
 
     @Override
-    @Transactional
     public List<Book> getAllApprovedAndAvailableBooks() {
         return repo.findAllByBookStatusAndAvailableCopiesGreaterThanAndIsActiveTrue(
                 Status.APPROVED,
@@ -121,7 +129,6 @@ public class BookServiceImpl extends AbstractService<BookServiceImpl, BookReposi
         );
     }
 
-    @Transactional
     @Override
     public List<Book> getAllPendingBooks() {
         return repo.findAllByBookStatusAndAvailableCopiesGreaterThanAndIsActiveTrue(
@@ -130,6 +137,7 @@ public class BookServiceImpl extends AbstractService<BookServiceImpl, BookReposi
         );
     }
 
+    @Override
     @Transactional
     public int approveAllBooks(List<Long> bookIds) {
         logger.info("Approving Books {}", bookIds);
@@ -153,5 +161,9 @@ public class BookServiceImpl extends AbstractService<BookServiceImpl, BookReposi
         return rowsAffected;
     }
 
+    @Transactional
+    public boolean updateBookQuantity(long bookId, int quantity) {
+        return repo.updateBookQuantity(bookId, quantity, userSession.getCurrentUserId(), ApplicationData.SYSTEM_DATE) >= 1;
+    }
 
 }

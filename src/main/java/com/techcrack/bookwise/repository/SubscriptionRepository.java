@@ -2,7 +2,7 @@ package com.techcrack.bookwise.repository;
 
 import com.techcrack.bookwise.constans.queries.JPQLQueries;
 import com.techcrack.bookwise.constans.queries.RawQueries;
-import com.techcrack.bookwise.constans.Subscriptions;
+import com.techcrack.bookwise.constans.enums.Subscriptions;
 import com.techcrack.bookwise.entity.Subscription;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;

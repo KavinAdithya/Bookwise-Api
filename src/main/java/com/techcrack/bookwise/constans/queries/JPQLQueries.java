@@ -29,9 +29,13 @@ public class JPQLQueries {
                 FROM Subscription s
                 WHERE s.user.id = :userId
                   AND s.isActive = true
-                  AND (
-                        s.booksAllowedPerMonth > 0
-                     OR s.booksAllowedPerYear > 0
-                  )
+                  AND s.booksAllowedPerMonth > 0
+            """;
+    public static final String UPDATE_BOOK_QUANTITY = """
+                Update Book b
+                SET b.availableCopies = b.availableCopies + :quantity,
+                b.updatedBy = :updatedBy,
+                b.updatedAt = :updatedAt
+                WHERE b.id = :bookId
             """;
 }

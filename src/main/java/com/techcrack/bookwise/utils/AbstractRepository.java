@@ -1,6 +1,6 @@
 package com.techcrack.bookwise.utils;
 
-import com.techcrack.bookwise.jwt.CurrentUserService;
+import com.techcrack.bookwise.abstractions.CurrentUserService;
 
 /**
  * IMPORTANT: Use Only when you need logger and repo. Ensure Used in service layer only.

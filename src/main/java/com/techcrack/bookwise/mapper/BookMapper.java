@@ -1,0 +1,40 @@
+package com.techcrack.bookwise.mapper;
+
+import com.techcrack.bookwise.dtos.book.response.BookRegisterResponse;
+import com.techcrack.bookwise.dtos.book.response.PendingBookResponse;
+import com.techcrack.bookwise.entity.Book;
+import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@Component
+public class BookMapper {
+    public BookRegisterResponse mapToBookRegisterResponse(Book src) {
+        return new BookRegisterResponse(src);
+    }
+
+    public List<BookRegisterResponse> mapToBookRegisterResponses(List<Book> books) {
+        List<BookRegisterResponse> bookResponse = new ArrayList<>();
+
+        for (Book book : books) {
+            bookResponse.add(mapToBookRegisterResponse(book));
+        }
+
+        return bookResponse;
+    }
+
+    public PendingBookResponse mapToPendingBookResponse(Book book) {
+        return new PendingBookResponse(book);
+    }
+
+    public List<PendingBookResponse> mapToPendingBookResponses(List<Book> books) {
+        List<PendingBookResponse> response = new ArrayList<>();
+
+        for (Book book : books) {
+            response.add(mapToPendingBookResponse(book));
+        }
+
+        return response;
+    }
+}

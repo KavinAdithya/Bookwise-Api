@@ -1,6 +1,6 @@
 package com.techcrack.bookwise.entity;
 
-import com.techcrack.bookwise.constans.Roles;
+import com.techcrack.bookwise.constans.enums.Roles;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.springframework.security.core.GrantedAuthority;

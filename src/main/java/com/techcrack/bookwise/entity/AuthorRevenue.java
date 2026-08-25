@@ -1,6 +1,6 @@
 package com.techcrack.bookwise.entity;
 
-import com.techcrack.bookwise.constans.ApplicationData;
+import com.techcrack.bookwise.constans.enums.IncomeType;
 import com.techcrack.bookwise.utils.BaseEntity;
 import jakarta.persistence.*;
 
@@ -10,33 +10,26 @@ import java.util.Objects;
 @Entity
 @Table(name = "AuthorRevenues")
 public class AuthorRevenue extends BaseEntity {
-    @ManyToOne
-    @JoinColumn(nullable = false)
-    private Author author;
-    @ManyToOne
-    @JoinColumn(nullable = false)
-    private Book book;
-    @ManyToOne
-    @JoinColumn(nullable = false)
-    private PurchaseBook purchaseBook;
-    @ManyToOne
-    @JoinColumn(nullable = false)
-    private BorrowBook borrowBook;
-    private double amount;
+
+    private Long authorId;
+
     @Column(nullable = false)
-    private LocalDateTime createdAt;
+    @Enumerated(EnumType.STRING)
+    private IncomeType sourceType;
+
+    @Column(nullable = false)
+    private Long sourceId;
+
+    private double amount;
+
+    @Column(nullable = false)
+    private LocalDateTime incomeDate;
+
+    @Column(nullable = false)
+    private boolean amountDisbursed;
 
     public AuthorRevenue() {
         super();
-    }
-
-    public AuthorRevenue(double amount, PurchaseBook purchaseBook, BorrowBook borrowBook, Book book, Author author) {
-        this.amount = amount;
-        this.purchaseBook = purchaseBook;
-        this.borrowBook = borrowBook;
-        this.book = book;
-        this.author = author;
-        this.createdAt = ApplicationData.SYSTEM_DATE;
     }
 
     public double getAmount() {
@@ -47,74 +40,66 @@ public class AuthorRevenue extends BaseEntity {
         this.amount = amount;
     }
 
-    public Author getAuthor() {
-        return author;
+    public Long getAuthorId() {
+        return authorId;
     }
 
-    public void setAuthor(Author author) {
-        this.author = author;
+    public void setAuthorId(Long authorId) {
+        this.authorId = authorId;
     }
 
-    public Book getBook() {
-        return book;
+    public IncomeType getSourceType() {
+        return sourceType;
     }
 
-    public void setBook(Book book) {
-        this.book = book;
+    public void setSourceType(IncomeType sourceType) {
+        this.sourceType = sourceType;
     }
 
-    public BorrowBook getBorrowBook() {
-        return borrowBook;
+    public Long getSourceId() {
+        return sourceId;
     }
 
-    public void setBorrowBook(BorrowBook borrowBook) {
-        this.borrowBook = borrowBook;
+    public void setSourceId(Long sourceId) {
+        this.sourceId = sourceId;
     }
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
+    public LocalDateTime getIncomeDate() {
+        return incomeDate;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
+    public void setIncomeDate(LocalDateTime incomeDate) {
+        this.incomeDate = incomeDate;
     }
 
-    public PurchaseBook getPurchaseBook() {
-        return purchaseBook;
+    public boolean isAmountDisbursed() {
+        return amountDisbursed;
     }
 
-    public void setPurchaseBook(PurchaseBook purchaseBook) {
-        this.purchaseBook = purchaseBook;
+    public void setAmountDisbursed(boolean amountDisbursed) {
+        this.amountDisbursed = amountDisbursed;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof AuthorRevenue that)) return false;
-        return Double.compare(getAmount(), that.getAmount()) == 0 && Objects.equals(getId(), that.getId()) && Objects.equals(getAuthor(), that.getAuthor()) && Objects.equals(getBook(), that.getBook()) && Objects.equals(getPurchaseBook(), that.getPurchaseBook()) && Objects.equals(getBorrowBook(), that.getBorrowBook());
+        return Double.compare(getAmount(), that.getAmount()) == 0 && Objects.equals(authorId, that.authorId) && sourceType == that.sourceType && Objects.equals(sourceId, that.sourceId) && Objects.equals(incomeDate, that.incomeDate);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getAuthor(), getBook(), getPurchaseBook(), getBorrowBook(), getAmount());
+        return Objects.hash(authorId, sourceType, sourceId, getAmount(), incomeDate);
     }
 
     @Override
     public String toString() {
         return "AuthorRevenue{" +
-                "purchaseBook=" + purchaseBook +
-                ", borrowBook=" + borrowBook +
-                ", book=" + book +
-                ", author=" + author +
+                "authorId=" + authorId +
+                ", sourceType='" + sourceType + '\'' +
+                ", sourceId=" + sourceId +
                 ", amount=" + amount +
+                ", incomeDate=" + incomeDate +
                 '}';
     }
 }
-
-//Id INT
-//AuthorId INT
-//BookId INT
-//BorrowId INT
-//PurchaseId INT
-//Amount DECIMAL(18,2)
-//CreatedAt TIMESTAM
