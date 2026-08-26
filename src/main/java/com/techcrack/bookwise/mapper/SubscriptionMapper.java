@@ -11,9 +11,9 @@ import org.springframework.stereotype.Component;
 public class SubscriptionMapper {
     public Subscription mapToSubscription(SubscriptionRegisterDTO source) {
 
-//        subscription.setStartDate(ApplicationData.SYSTEM_DATE);
+//        subscription.setStartDate(ApplicationData.getSystemDate());
 //        subscription.setEndDate(
-//                ApplicationData.SYSTEM_DATE.plusDays(subscription.getSubscriptions().getDays())
+//                ApplicationData.getSystemDate().plusDays(subscription.getSubscriptions().getDays())
 //        );
 //        subscription.setBooksAllowedPerMonth(subscription.getSubscriptions().getBooksAllowed());
 

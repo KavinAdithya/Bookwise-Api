@@ -33,7 +33,7 @@ public class AdminRevenueServiceImpl extends AbstractRepository<AdminRevenueServ
         adminRevenue.setAmount(subscription.getSubscriptionAmount());
         adminRevenue.setSourceId(subscription.getId());
         adminRevenue.setSourceType(IncomeType.USER_SUBSCRIPTION);
-        adminRevenue.setIncomeDate(ApplicationData.SYSTEM_DATE);
+        adminRevenue.setIncomeDate(ApplicationData.getSystemDate());
 
         register(adminRevenue);
 
@@ -55,7 +55,7 @@ public class AdminRevenueServiceImpl extends AbstractRepository<AdminRevenueServ
         adminRevenue.setAmount(borrowBook.getTotalAmountPaidOnReturn());
         adminRevenue.setSourceId(borrowBook.getId());
         adminRevenue.setSourceType(IncomeType.BOOK_BORROW_FEE);
-        adminRevenue.setIncomeDate(ApplicationData.SYSTEM_DATE);
+        adminRevenue.setIncomeDate(ApplicationData.getSystemDate());
 
         register(adminRevenue);
 

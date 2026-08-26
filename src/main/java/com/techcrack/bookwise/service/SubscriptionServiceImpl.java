@@ -109,7 +109,7 @@ public class SubscriptionServiceImpl extends AbstractRepository<SubscriptionServ
      * @return Activate subscription details
      */
     public Subscription activateSubscription(Users user, Subscriptions subscriptions, DiscountDetails discountDetails) {
-        return activateSubscription(user, subscriptions, ApplicationData.SYSTEM_DATE, discountDetails);
+        return activateSubscription(user, subscriptions, ApplicationData.getSystemDate(), discountDetails);
     }
 
     /**
@@ -134,7 +134,7 @@ public class SubscriptionServiceImpl extends AbstractRepository<SubscriptionServ
 
         logger.info("Activating One Month free Subscription process completed");
 
-        int rowsAffected = repo.deactivateActiveSubscription(user.getId(), userSession.getCurrentUserId(), ApplicationData.SYSTEM_DATE);
+        int rowsAffected = repo.deactivateActiveSubscription(user.getId(), userSession.getCurrentUserId(), ApplicationData.getSystemDate());
 
         logger.debug("Trying Subscription Deactivation {} rows affected", rowsAffected);
 

@@ -1,6 +1,10 @@
 package com.techcrack.bookwise.controller;
 
 import com.techcrack.bookwise.abstractions.UserService;
+import com.techcrack.bookwise.dtos.passwordReset.PasswordResetRequest;
+import com.techcrack.bookwise.dtos.passwordReset.SendOtpRequest;
+import com.techcrack.bookwise.dtos.passwordReset.VerifyOtpRequest;
+import com.techcrack.bookwise.dtos.passwordReset.VerifyOtpResponse;
 import com.techcrack.bookwise.dtos.user.response.JwtTokenResponse;
 import com.techcrack.bookwise.dtos.user.request.UserAuthenticateRequest;
 import com.techcrack.bookwise.dtos.user.request.UserRegisterRequest;
@@ -8,6 +12,8 @@ import com.techcrack.bookwise.dtos.user.response.UserRegisterResponse;
 import com.techcrack.bookwise.entity.Subscription;
 import com.techcrack.bookwise.entity.Users;
 import com.techcrack.bookwise.abstractions.CurrentUserService;
+import com.techcrack.bookwise.service.OtpService;
+import com.techcrack.bookwise.service.PasswordResetService;
 import com.techcrack.bookwise.service.UserRegistrationService;
 import com.techcrack.bookwise.responseHelper.ApiResponseEntity;
 import com.techcrack.bookwise.mapper.UserMapper;
@@ -25,8 +31,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController extends AbstractController<UserController, UserService, UserMapper> {
     private final UserRegistrationService userRegistrationService;
 
-    public UserController(UserRegistrationService userRegistrationService, UserService service, UserMapper helper, CurrentUserService userSession) {
-        super(UserController.class, service, helper, userSession);
+
+    public UserController(UserRegistrationService userRegistrationService,
+                          UserService service,
+                          UserMapper mapper,
+                          CurrentUserService userSession) {
+        super(UserController.class, service, mapper, userSession);
         this.userRegistrationService = userRegistrationService;
     }
 
@@ -64,5 +74,42 @@ public class UserController extends AbstractController<UserController, UserServi
             "Authentication success! Token Generated",
                     response
         );
+    }
+
+    @PostMapping("/send-otp")
+    public ResponseEntity<ApiResponseEntity<String>> generateOtp(@RequestBody SendOtpRequest request) {
+
+        logger.info("Request Received to send otp for {}", request);
+        service.sendOtp(request);
+        logger.info("Request completed for otp send {}", request);
+
+        return ResponseEntityHelper
+                .buildSuccessResponse("OTP Generated Successfully", "Please check your Email for otp");
+
+    }
+
+    @PostMapping("/verify-otp")
+    public ResponseEntity<ApiResponseEntity<VerifyOtpResponse>> verifyOtp(@RequestBody VerifyOtpRequest request) {
+        logger.info("OTP Verification started for request {}", request);
+
+        String resetToken = service.verifyOtp(request);
+
+        VerifyOtpResponse response = new VerifyOtpResponse(resetToken);
+
+        logger.info("OTP Verification process completed successfully for {}", request);
+        return ResponseEntityHelper
+                 .buildSuccessResponse("OTP Verified Successfully", response);
+    }
+
+    @PostMapping("/password-reset")
+    public ResponseEntity<ApiResponseEntity<Object>> passwordReset(@RequestBody PasswordResetRequest request) {
+        logger.info("Request Received to reset password with {}", request);
+
+        service.resetPassword(request);
+
+        logger.info("Request Completed for reset password with {}", request);
+
+        return ResponseEntityHelper
+                .buildSuccessResponse("Password Reset Completed Successfully", null);
     }
 }

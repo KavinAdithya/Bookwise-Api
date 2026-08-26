@@ -4,7 +4,9 @@ import com.techcrack.bookwise.abstractions.notificationService.NotificationServi
 import com.techcrack.bookwise.utils.AbstractLogger;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.stereotype.Service;
 
+@Service
 public class EmailNotificationService extends AbstractLogger<EmailNotificationService>
         implements NotificationService {
     private final JavaMailSender mailSender;

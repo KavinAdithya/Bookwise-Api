@@ -18,7 +18,7 @@ public record ApiResponseEntity<T>(boolean success, String message, T data, Loca
 				true,
 				message,
 				data,
-				ApplicationData.SYSTEM_DATE
+				ApplicationData.getSystemDate()
 		);
 	}
 
@@ -27,7 +27,7 @@ public record ApiResponseEntity<T>(boolean success, String message, T data, Loca
 				false,
 				message,
 				null,
-				ApplicationData.SYSTEM_DATE
+				ApplicationData.getSystemDate()
 		);
 
 	}

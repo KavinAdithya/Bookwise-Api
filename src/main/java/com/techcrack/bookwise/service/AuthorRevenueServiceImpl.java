@@ -67,7 +67,7 @@ public class AuthorRevenueServiceImpl extends AbstractRepository<AuthorRevenueSe
         revenue.setAuthorId(authorId);
         revenue.setAmount(revenueAmount);
         revenue.setSourceType(IncomeType.BOOK_BORROW_FEE);
-        revenue.setIncomeDate(ApplicationData.SYSTEM_DATE);
+        revenue.setIncomeDate(ApplicationData.getSystemDate());
         revenue.setAmountDisbursed(false);
         revenue.setSourceId(borrowBook.getId());
 

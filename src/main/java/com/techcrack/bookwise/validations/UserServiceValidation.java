@@ -23,7 +23,7 @@ public class UserServiceValidation extends AbstractLogger<UserServiceValidation>
         return errors;
     }
 
-    private boolean isValidPassWord(String password) {
+    public boolean isValidPassWord(String password) {
         logger.debug("Password Validating Process Started for {}", password);
 
         if (password.length() < 8) {
