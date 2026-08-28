@@ -2,7 +2,9 @@ package com.techcrack.bookwise.controller;
 
 import com.techcrack.bookwise.abstractions.CurrentUserService;
 import com.techcrack.bookwise.abstractions.PurchaseBookService;
+import com.techcrack.bookwise.dtos.purchasebook.request.PurchaseBookAmountCalculateRequest;
 import com.techcrack.bookwise.dtos.purchasebook.request.PurchaseBookRequest;
+import com.techcrack.bookwise.dtos.purchasebook.response.PurchaseBookAmountCalculateResponse;
 import com.techcrack.bookwise.dtos.purchasebook.response.PurchaseBookResponse;
 import com.techcrack.bookwise.entity.PurchaseBook;
 import com.techcrack.bookwise.mapper.PurchaseBookMapper;
@@ -37,4 +39,17 @@ public class PurchaseBookController extends AbstractController<PurchaseBookContr
                 .buildSuccessResponse("Book Purchased successfully", response);
     }
 
+    @PostMapping("/calculate-amount")
+    public ResponseEntity<ApiResponseEntity<PurchaseBookAmountCalculateResponse>> calculatePurchaseAmount(@RequestBody PurchaseBookAmountCalculateRequest request) {
+       logger.info("Request Received tp calculate purchase amount for {}" , request);
+
+       double amount = service.calculatePurchasePriceBook(request);
+
+        PurchaseBookAmountCalculateResponse response = new PurchaseBookAmountCalculateResponse(amount);
+
+        logger.info("Purchase Book Amount Calculation Request Completed Amount {}", amount);
+
+        return ResponseEntityHelper
+                .buildSuccessResponse("Amount Calculated Successfully", response);
+    }
 }

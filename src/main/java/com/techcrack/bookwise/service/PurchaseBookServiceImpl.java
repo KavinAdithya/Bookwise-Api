@@ -2,12 +2,14 @@ package com.techcrack.bookwise.service;
 
 import com.techcrack.bookwise.abstractions.*;
 import com.techcrack.bookwise.constans.ApplicationData;
+import com.techcrack.bookwise.dtos.purchasebook.request.PurchaseBookAmountCalculateRequest;
 import com.techcrack.bookwise.dtos.purchasebook.request.PurchaseBookRequest;
 import com.techcrack.bookwise.entity.Book;
 import com.techcrack.bookwise.entity.PurchaseBook;
 import com.techcrack.bookwise.entity.Users;
 import com.techcrack.bookwise.exceptions.customized.InvalidDataException;
 import com.techcrack.bookwise.exceptions.customized.RevenueGenerationFailedException;
+import com.techcrack.bookwise.helper.PurchaseBookHelper;
 import com.techcrack.bookwise.repository.PurchaseBookRepository;
 import com.techcrack.bookwise.utils.AbstractRepository;
 import jakarta.transaction.Transactional;
@@ -20,6 +22,7 @@ public class PurchaseBookServiceImpl extends AbstractRepository<PurchaseBookServ
     private final UserService userService;
     private final AdminRevenueService adminRevenueService;
     private final AuthorRevenueService authorRevenueService;
+    private final PurchaseBookHelper helper;
 
     public PurchaseBookServiceImpl(
             PurchaseBookRepository repo,
@@ -27,12 +30,14 @@ public class PurchaseBookServiceImpl extends AbstractRepository<PurchaseBookServ
             UserService userService,
             CurrentUserService userSession,
             AdminRevenueService adminRevenueService,
-            AuthorRevenueService authorRevenueService) {
+            AuthorRevenueService authorRevenueService,
+            PurchaseBookHelper helper) {
         super(PurchaseBookServiceImpl.class, repo, userSession);
         this.bookService = bookService;
         this.userService = userService;
         this.adminRevenueService = adminRevenueService;
         this.authorRevenueService = authorRevenueService;
+        this.helper = helper;
     }
 
     @Override
@@ -92,8 +97,13 @@ public class PurchaseBookServiceImpl extends AbstractRepository<PurchaseBookServ
         populateRelationships(entity, request);
         entity.setPurchaseDate(ApplicationData.getSystemDate());
         entity.setQuantity(request.quantity());
+        double totalPurchaseAmount = helper.calculateTotalAmountFromPurchaseBook(entity);
 
-        double totalPurchaseAmount = calculateTotalAmount(entity);
+        if (totalPurchaseAmount != request.purchaseAmount()) {
+            String failureMessage = buildInvalidRequestAmount(totalPurchaseAmount, request.purchaseAmount()).toString();
+            logger.warn("Amount Mismatch between Actual and request amount to purchase a book");
+            throw new InvalidDataException(failureMessage);
+        }
 
         entity.setTotalAmount(totalPurchaseAmount);
 
@@ -121,11 +131,22 @@ public class PurchaseBookServiceImpl extends AbstractRepository<PurchaseBookServ
         return purchaseBook;
     }
 
-    private double calculateTotalAmount(PurchaseBook entity) {
-        double bookPrice = entity.getBook().getPurchasePrice();
-        double quantity = entity.getQuantity();
+    @Override
+    public double calculatePurchasePriceBook(PurchaseBookAmountCalculateRequest request) {
+        Book book = bookService.get(request.bookId());
 
-        return bookPrice * quantity;
+        return helper.calculateTotalAmount(book, request.quantity());
+    }
+
+    private StringBuilder buildInvalidRequestAmount(double totalPurchaseAmount, double requestedPurchaseAmount) {
+        return new StringBuilder()
+                .append("Invalid Purchase Book Amount")
+                .append(" Actual Purchase Book Amount ")
+                .append(totalPurchaseAmount)
+                .append(" Purchase Book Requested Amount ")
+                .append(requestedPurchaseAmount)
+                .append(" Difference Amount is ")
+                .append(Math.abs(totalPurchaseAmount - requestedPurchaseAmount));
     }
 
     private void populateRelationships(PurchaseBook entity, PurchaseBookRequest request) {

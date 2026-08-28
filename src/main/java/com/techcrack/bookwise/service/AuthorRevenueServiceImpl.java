@@ -88,7 +88,7 @@ public class AuthorRevenueServiceImpl extends AbstractRepository<AuthorRevenueSe
         AuthorRevenue revenue = createAuthorRevenue();
 
         revenue.setAuthorId(purchaseBook.getBook().getAuthor().getId());
-        revenue.setSourceType(IncomeType.BOOK_BORROW_FEE);
+        revenue.setSourceType(IncomeType.BOOK_PURCHASE_FEE);
         revenue.setSourceId(purchaseBook.getId());
 
         double revenueAmount = helper.calculatePurchaseBookRevenue(purchaseBook);
