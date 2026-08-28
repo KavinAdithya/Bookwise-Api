@@ -240,7 +240,7 @@ public class BorrowBookServiceImpl extends AbstractService<BorrowBookServiceImpl
             throw new TransactionFailedException("Failed for update book quantity");
         }
 
-        boolean isAuthorRevenueGenerated = authorRevenueService.createFromBorrowBook(borrowBook);
+        boolean isAuthorRevenueGenerated = authorRevenueService.createRevenueFromBorrowBook(borrowBook);
 
         if (!isAuthorRevenueGenerated) {
             logger.warn("Failed to generate Author Revenue for borrow details {}" , borrowBook);

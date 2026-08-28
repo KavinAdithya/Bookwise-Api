@@ -1,0 +1,40 @@
+package com.techcrack.bookwise.controller;
+
+import com.techcrack.bookwise.abstractions.CurrentUserService;
+import com.techcrack.bookwise.abstractions.PurchaseBookService;
+import com.techcrack.bookwise.dtos.purchasebook.request.PurchaseBookRequest;
+import com.techcrack.bookwise.dtos.purchasebook.response.PurchaseBookResponse;
+import com.techcrack.bookwise.entity.PurchaseBook;
+import com.techcrack.bookwise.mapper.PurchaseBookMapper;
+import com.techcrack.bookwise.responseHelper.ApiResponseEntity;
+import com.techcrack.bookwise.responseHelper.ResponseEntityHelper;
+import com.techcrack.bookwise.utils.AbstractController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping("/api/purchase-books")
+public class PurchaseBookController extends AbstractController<PurchaseBookController, PurchaseBookService, PurchaseBookMapper> {
+
+    public PurchaseBookController(PurchaseBookService service, PurchaseBookMapper mapper, CurrentUserService userSession) {
+        super(PurchaseBookController.class, service, mapper, userSession);
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<ApiResponseEntity<PurchaseBookResponse>> register(@RequestBody PurchaseBookRequest request) {
+        logger.info("Request Received to purchase a book {}", request);
+
+        PurchaseBook purchaseBook = service.purchaseBook(request);
+
+        logger.info("Book Purchase request completed {}", purchaseBook);
+
+        PurchaseBookResponse response = mapper.mapToPurchaseBookResponse(purchaseBook);
+
+        return ResponseEntityHelper
+                .buildSuccessResponse("Book Purchased successfully", response);
+    }
+
+}
