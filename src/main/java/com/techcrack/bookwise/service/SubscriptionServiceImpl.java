@@ -159,8 +159,12 @@ public class SubscriptionServiceImpl extends AbstractRepository<SubscriptionServ
 
     public void setValidationPeriodBasedOnType(Subscription subscription, LocalDateTime dateTime) {
         subscription.setStartDate(dateTime);
-        subscription.setEndDate(dateTime.plusDays(subscription.getSubscriptions().getDays()));
+        subscription.setEndDate(isLifeTimeSubscription(subscription.getSubscriptions()) ? null : dateTime.plusDays(subscription.getSubscriptions().getDays()));
         subscription.setBooksAllowedPerMonth(subscription.getSubscriptions().getBooksAllowed());
+    }
+
+    private boolean isLifeTimeSubscription(Subscriptions subscriptions) {
+        return subscriptions.getDays() == Integer.MAX_VALUE;
     }
 
     @Transactional

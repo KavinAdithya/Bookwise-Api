@@ -9,6 +9,7 @@ import com.techcrack.bookwise.entity.Subscription;
 import com.techcrack.bookwise.entity.Users;
 import com.techcrack.bookwise.responseHelper.RegistrationResult;
 import com.techcrack.bookwise.utils.AbstractLogger;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -23,6 +24,7 @@ public class UserRegistrationService extends AbstractLogger<UserRegistrationServ
         this.subscriptionService = subscriptionService;
     }
 
+    @Transactional
     public RegistrationResult<Users, Subscription> register(Users user, Subscriptions subscriptions) {
         logger.info("User Registration for {} started ", user.getUsername());
 
