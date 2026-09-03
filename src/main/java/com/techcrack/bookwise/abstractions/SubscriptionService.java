@@ -6,6 +6,7 @@ import com.techcrack.bookwise.entity.Subscription;
 import com.techcrack.bookwise.entity.Users;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public interface SubscriptionService extends BasicCRUD<Subscription> {
     Subscription subscriptionPremiumPlanForOneMonth(long userId, DiscountDetails discountDetails);
@@ -17,4 +18,5 @@ public interface SubscriptionService extends BasicCRUD<Subscription> {
     int getFreeLimitDays(long userId);
     int updateBookAllowed(long userId, long quantity);
     Subscriptions getSubscription(long userId);
+    Subscriptions[] getAllSubscriptions();
 }

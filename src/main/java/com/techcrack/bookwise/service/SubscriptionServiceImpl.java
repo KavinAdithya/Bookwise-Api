@@ -18,6 +18,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class SubscriptionServiceImpl extends AbstractRepository<SubscriptionServiceImpl, SubscriptionRepository>
@@ -186,5 +187,10 @@ public class SubscriptionServiceImpl extends AbstractRepository<SubscriptionServ
 
     public Subscriptions getSubscription(long userId) {
         return repo.getSubscription(userId);
+    }
+
+    @Override
+    public Subscriptions[] getAllSubscriptions() {
+        return Subscriptions.values();
     }
 }

@@ -38,4 +38,12 @@ public class JPQLQueries {
                 b.updatedAt = :updatedAt
                 WHERE b.id = :bookId
             """;
+
+    public static final String FIND_EXISTING_USER = """
+            SELECT u
+            FROM Users u
+            WHERE u.email = :email OR
+            u.username = :username OR
+            u.contact = :contact
+            """;
 }
