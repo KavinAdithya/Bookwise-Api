@@ -41,7 +41,7 @@ public class BorrowBook extends BaseEntity {
         this.quantity = quantity;
         this.user = user;
         this.status = BorrowStatus.PROCESSING;
-        this.createdAt = ApplicationData.SYSTEM_DATE;
+        this.createdAt = ApplicationData.getSystemDate();
     }
 
     public Book getBook() {

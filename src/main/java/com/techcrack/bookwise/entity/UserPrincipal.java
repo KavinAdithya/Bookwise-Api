@@ -27,13 +27,12 @@ public class UserPrincipal implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> authorities = new ArrayList<>();
 
+        authorities.add(new SimpleGrantedAuthority("USER"));
 
         if (user.getRole() == Roles.AUTHOR) {
             authorities.add(new SimpleGrantedAuthority("AUTHOR"));
             return authorities;
         }
-
-        authorities.add(new SimpleGrantedAuthority("USER"));
 
         if (user.getRole() == Roles.USER)
             return authorities;
@@ -51,5 +50,13 @@ public class UserPrincipal implements UserDetails {
     @NonNull
     public String getUsername() {
         return user.getUsername();
+    }
+
+    public String getName() {
+        return user.getName();
+    }
+
+    public String getRole() {
+        return user.getRole().toString().toUpperCase();
     }
 }

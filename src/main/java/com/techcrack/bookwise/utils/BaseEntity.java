@@ -37,7 +37,7 @@ public abstract class BaseEntity {
      * For New Object Creation Only use this
      */
     public void initialize(Long createdBy) {
-        this.createdAt = ApplicationData.SYSTEM_DATE;
+        this.createdAt = ApplicationData.getSystemDate();
         this.createdBy = createdBy;
         this.isActive = true;
     }
@@ -46,7 +46,7 @@ public abstract class BaseEntity {
      * For Update Only Invoke this method
      */
     public void initializeUpdate(Long updatedBy) {
-        this.updatedAt = ApplicationData.SYSTEM_DATE;
+        this.updatedAt = ApplicationData.getSystemDate();
         this.updatedBy = updatedBy;
     }
 

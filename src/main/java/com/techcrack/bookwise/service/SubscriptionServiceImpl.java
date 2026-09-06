@@ -18,6 +18,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class SubscriptionServiceImpl extends AbstractRepository<SubscriptionServiceImpl, SubscriptionRepository>
@@ -109,7 +110,7 @@ public class SubscriptionServiceImpl extends AbstractRepository<SubscriptionServ
      * @return Activate subscription details
      */
     public Subscription activateSubscription(Users user, Subscriptions subscriptions, DiscountDetails discountDetails) {
-        return activateSubscription(user, subscriptions, ApplicationData.SYSTEM_DATE, discountDetails);
+        return activateSubscription(user, subscriptions, ApplicationData.getSystemDate(), discountDetails);
     }
 
     /**
@@ -134,7 +135,7 @@ public class SubscriptionServiceImpl extends AbstractRepository<SubscriptionServ
 
         logger.info("Activating One Month free Subscription process completed");
 
-        int rowsAffected = repo.deactivateActiveSubscription(user.getId(), userSession.getCurrentUserId(), ApplicationData.SYSTEM_DATE);
+        int rowsAffected = repo.deactivateActiveSubscription(user.getId(), userSession.getCurrentUserId(), ApplicationData.getSystemDate());
 
         logger.debug("Trying Subscription Deactivation {} rows affected", rowsAffected);
 
@@ -159,8 +160,12 @@ public class SubscriptionServiceImpl extends AbstractRepository<SubscriptionServ
 
     public void setValidationPeriodBasedOnType(Subscription subscription, LocalDateTime dateTime) {
         subscription.setStartDate(dateTime);
-        subscription.setEndDate(dateTime.plusDays(subscription.getSubscriptions().getDays()));
+        subscription.setEndDate(isLifeTimeSubscription(subscription.getSubscriptions()) ? null : dateTime.plusDays(subscription.getSubscriptions().getDays()));
         subscription.setBooksAllowedPerMonth(subscription.getSubscriptions().getBooksAllowed());
+    }
+
+    private boolean isLifeTimeSubscription(Subscriptions subscriptions) {
+        return subscriptions.getDays() == Integer.MAX_VALUE;
     }
 
     @Transactional
@@ -182,5 +187,10 @@ public class SubscriptionServiceImpl extends AbstractRepository<SubscriptionServ
 
     public Subscriptions getSubscription(long userId) {
         return repo.getSubscription(userId);
+    }
+
+    @Override
+    public Subscriptions[] getAllSubscriptions() {
+        return Subscriptions.values();
     }
 }

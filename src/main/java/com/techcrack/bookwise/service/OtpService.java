@@ -25,7 +25,7 @@ public class OtpService extends AbstractLogger<OtpService> {
         logger.info("For {} otp send process", email);
         String otp = otpGenerator.generate();
 
-        OTPDetail detail = new OTPDetail(otp, ApplicationData.SYSTEM_DATE
+        OTPDetail detail = new OTPDetail(otp, ApplicationData.getSystemDate()
                                                         .plusMinutes(
                                                                 ApplicationData.OTP_MINUTE_EXPIRY));
         storage.addOtp(email, detail);
@@ -42,7 +42,7 @@ public class OtpService extends AbstractLogger<OtpService> {
     public boolean verifyOtp(String email, String otp) {
         OTPDetail detail = storage.getOTP(email);
 
-        if (detail == null || detail.expiryTime().isBefore(ApplicationData.SYSTEM_DATE))  {
+        if (detail == null || detail.expiryTime().isBefore(ApplicationData.getSystemDate()))  {
             logger.warn("OTP Expired or not generated for this email {}", email);
             return false;
         }

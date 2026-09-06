@@ -6,6 +6,7 @@ import com.techcrack.bookwise.constans.ApplicationData;
 import com.techcrack.bookwise.constans.enums.IncomeType;
 import com.techcrack.bookwise.entity.AuthorRevenue;
 import com.techcrack.bookwise.entity.BorrowBook;
+import com.techcrack.bookwise.entity.PurchaseBook;
 import com.techcrack.bookwise.exceptions.customized.ObjectNotFoundException;
 import com.techcrack.bookwise.helper.AuthorRevenueHelper;
 import com.techcrack.bookwise.repository.AuthorRevenueRepository;
@@ -47,7 +48,7 @@ public class AuthorRevenueServiceImpl extends AbstractRepository<AuthorRevenueSe
 
     @Override
     @Transactional
-    public boolean createFromBorrowBook(BorrowBook borrowBook) {
+    public boolean createRevenueFromBorrowBook(BorrowBook borrowBook) {
         logger.info("Recording revenue for author process started");
 
         if (borrowBook == null || borrowBook.getBook() == null || borrowBook.getBook().getAuthor() == null)
@@ -60,15 +61,11 @@ public class AuthorRevenueServiceImpl extends AbstractRepository<AuthorRevenueSe
 
         long authorId = borrowBook.getBook().getAuthor().getId();
 
-        AuthorRevenue revenue = new AuthorRevenue();
-
-        revenue.initialize(userSession.getCurrentUserId());
+        AuthorRevenue revenue = createAuthorRevenue();
 
         revenue.setAuthorId(authorId);
         revenue.setAmount(revenueAmount);
         revenue.setSourceType(IncomeType.BOOK_BORROW_FEE);
-        revenue.setIncomeDate(ApplicationData.SYSTEM_DATE);
-        revenue.setAmountDisbursed(false);
         revenue.setSourceId(borrowBook.getId());
 
         register(revenue);
@@ -76,5 +73,39 @@ public class AuthorRevenueServiceImpl extends AbstractRepository<AuthorRevenueSe
         logger.info("Revenue Recorded Details {}", revenue);
 
         return true;
+    }
+
+    @Override
+    @Transactional
+    public boolean createRevenueFromPurchaseBook(PurchaseBook purchaseBook) {
+        logger.info("Revenue Creation for author process started");
+
+        if (purchaseBook == null || purchaseBook.getBook() == null || purchaseBook.getBook().getAuthor() == null) {
+            logger.warn("Failed to created author revenue due to entity is null");
+            return false;
+        }
+
+        AuthorRevenue revenue = createAuthorRevenue();
+
+        revenue.setAuthorId(purchaseBook.getBook().getAuthor().getId());
+        revenue.setSourceType(IncomeType.BOOK_PURCHASE_FEE);
+        revenue.setSourceId(purchaseBook.getId());
+
+        double revenueAmount = helper.calculatePurchaseBookRevenue(purchaseBook);
+        revenue.setAmount(revenueAmount);
+
+        register(revenue);
+
+        logger.info("Author Revenue Generated Successfully");
+        return true;
+    }
+
+    private AuthorRevenue createAuthorRevenue() {
+        AuthorRevenue revenue = new AuthorRevenue();
+        revenue.initialize(userSession.getCurrentUserId());
+        revenue.setIncomeDate(ApplicationData.getSystemDate());
+        revenue.setAmountDisbursed(false);
+
+        return revenue;
     }
 }

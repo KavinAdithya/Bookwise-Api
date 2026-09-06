@@ -125,8 +125,8 @@ public class BorrowBookServiceImpl extends AbstractService<BorrowBookServiceImpl
         logger.info("Setting borrow details");
 
         borrowBook.initialize(userSession.getCurrentUserId());
-        borrowBook.setBorrowDate(ApplicationData.SYSTEM_DATE);
-        borrowBook.setDueDate(ApplicationData.SYSTEM_DATE.plusDays(
+        borrowBook.setBorrowDate(ApplicationData.getSystemDate());
+        borrowBook.setDueDate(ApplicationData.getSystemDate().plusDays(
                 subscriptionService.getFreeLimitDays(
                         userSession.getCurrentUserId()
                 )
@@ -186,11 +186,11 @@ public class BorrowBookServiceImpl extends AbstractService<BorrowBookServiceImpl
     }
 
     public double calculateDueAmount(BorrowBook entity) {
-        if (ApplicationData.SYSTEM_DATE.isBefore(entity.getDueDate())) {
+        if (ApplicationData.getSystemDate().isBefore(entity.getDueDate())) {
             return 0;
         }
 
-        long daysDelayed = ChronoUnit.DAYS.between(entity.getDueDate(), ApplicationData.SYSTEM_DATE);
+        long daysDelayed = ChronoUnit.DAYS.between(entity.getDueDate(), ApplicationData.getSystemDate());
 
         double dailyRent = subscriptionService.getSubscription(entity.getUser().getId())
                 .getDelayDailyFineAmount();
@@ -231,7 +231,7 @@ public class BorrowBookServiceImpl extends AbstractService<BorrowBookServiceImpl
         borrowBook.initializeUpdate(userSession.getCurrentUserId());
         borrowBook.setActive(false);
         borrowBook.setStatus(BorrowStatus.RETURNED);
-        borrowBook.setReturnDate(ApplicationData.SYSTEM_DATE);
+        borrowBook.setReturnDate(ApplicationData.getSystemDate());
         borrowBook.setTotalAmountPaidOnReturn(dueAmount);
 
         boolean updated = bookService.updateBookQuantity(borrowBook.getBook().getId(), borrowBook.getQuantity());
@@ -240,7 +240,7 @@ public class BorrowBookServiceImpl extends AbstractService<BorrowBookServiceImpl
             throw new TransactionFailedException("Failed for update book quantity");
         }
 
-        boolean isAuthorRevenueGenerated = authorRevenueService.createFromBorrowBook(borrowBook);
+        boolean isAuthorRevenueGenerated = authorRevenueService.createRevenueFromBorrowBook(borrowBook);
 
         if (!isAuthorRevenueGenerated) {
             logger.warn("Failed to generate Author Revenue for borrow details {}" , borrowBook);

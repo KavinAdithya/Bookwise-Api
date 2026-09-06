@@ -1,11 +1,14 @@
 package com.techcrack.bookwise.mapper;
 
-import com.techcrack.bookwise.dtos.user.response.JwtTokenResponse;
+import com.techcrack.bookwise.abstractions.CurrentUserService;
+import com.techcrack.bookwise.dtos.user.context.AuthenticationResult;
+import com.techcrack.bookwise.dtos.user.response.AuthenticatedResponse;
 import com.techcrack.bookwise.dtos.user.request.UserRegisterRequest;
 import com.techcrack.bookwise.dtos.user.response.UserRegisterResponse;
 import com.techcrack.bookwise.entity.Subscription;
 import com.techcrack.bookwise.entity.Users;
 import org.springframework.stereotype.Component;
+
 
 @Component
 public class UserMapper {
@@ -21,7 +24,7 @@ public class UserMapper {
         );
     }
 
-    public JwtTokenResponse mapToJwtToken(String token) {
-        return new JwtTokenResponse(token);
+    public AuthenticatedResponse mapToJwtToken(AuthenticationResult authenticationResult) {
+        return new AuthenticatedResponse(authenticationResult.userPrincipal().getName(), authenticationResult.userPrincipal().getRole(), authenticationResult.token());
     }
 }

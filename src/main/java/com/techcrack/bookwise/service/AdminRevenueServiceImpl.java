@@ -6,6 +6,7 @@ import com.techcrack.bookwise.constans.ApplicationData;
 import com.techcrack.bookwise.constans.enums.IncomeType;
 import com.techcrack.bookwise.entity.AdminRevenue;
 import com.techcrack.bookwise.entity.BorrowBook;
+import com.techcrack.bookwise.entity.PurchaseBook;
 import com.techcrack.bookwise.entity.Subscription;
 import com.techcrack.bookwise.repository.AdminRevenueRepository;
 import com.techcrack.bookwise.utils.AbstractRepository;
@@ -27,13 +28,11 @@ public class AdminRevenueServiceImpl extends AbstractRepository<AdminRevenueServ
             return false;
         }
 
-        AdminRevenue adminRevenue = new AdminRevenue();
+        AdminRevenue adminRevenue = createAdminRevenue();
 
-        adminRevenue.initialize(userSession.getCurrentUserId());
         adminRevenue.setAmount(subscription.getSubscriptionAmount());
         adminRevenue.setSourceId(subscription.getId());
         adminRevenue.setSourceType(IncomeType.USER_SUBSCRIPTION);
-        adminRevenue.setIncomeDate(ApplicationData.SYSTEM_DATE);
 
         register(adminRevenue);
 
@@ -49,19 +48,49 @@ public class AdminRevenueServiceImpl extends AbstractRepository<AdminRevenueServ
             return false;
         }
 
-        AdminRevenue adminRevenue = new AdminRevenue();
+        AdminRevenue adminRevenue = createAdminRevenue();
 
-        adminRevenue.initialize(userSession.getCurrentUserId());
         adminRevenue.setAmount(borrowBook.getTotalAmountPaidOnReturn());
         adminRevenue.setSourceId(borrowBook.getId());
         adminRevenue.setSourceType(IncomeType.BOOK_BORROW_FEE);
-        adminRevenue.setIncomeDate(ApplicationData.SYSTEM_DATE);
 
         register(adminRevenue);
 
         logger.info("Revenue Creation for Admin on borrow book process completed");
         return true;
     }
+
+    @Override
+    public boolean createRevenueFromPurchaseBook(PurchaseBook purchaseBook) {
+        if (purchaseBook == null || purchaseBook.getBook() == null)
+            return false;
+
+        double bookSoldCost = purchaseBook.getTotalAmount();
+        double commission = purchaseBook.getBook().getCommissionPercentage();
+
+        double commissionAmount = bookSoldCost * commission / 100;
+
+        AdminRevenue adminRevenue = createAdminRevenue();
+
+        adminRevenue.setSourceType(IncomeType.BOOK_PURCHASE_FEE);
+        adminRevenue.setSourceId(purchaseBook.getId());
+        adminRevenue.setAmount(commissionAmount);
+
+        register(adminRevenue);
+
+
+        return true;
+    }
+
+    private AdminRevenue createAdminRevenue() {
+        AdminRevenue adminRevenue = new AdminRevenue();
+
+        adminRevenue.initialize(userSession.getCurrentUserId());
+        adminRevenue.setIncomeDate(ApplicationData.getSystemDate());
+
+        return adminRevenue;
+    }
+
 
     @Override
     public AdminRevenue register(AdminRevenue entity) {
