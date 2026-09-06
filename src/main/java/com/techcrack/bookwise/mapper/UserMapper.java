@@ -25,6 +25,6 @@ public class UserMapper {
     }
 
     public AuthenticatedResponse mapToJwtToken(AuthenticationResult authenticationResult) {
-        return new AuthenticatedResponse(authenticationResult.userPrincipal().getUsername(), authenticationResult.userPrincipal().getRole(), authenticationResult.token());
+        return new AuthenticatedResponse(authenticationResult.userPrincipal().getName(), authenticationResult.userPrincipal().getRole(), authenticationResult.token());
     }
 }

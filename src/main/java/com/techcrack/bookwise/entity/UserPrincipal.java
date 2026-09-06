@@ -52,6 +52,10 @@ public class UserPrincipal implements UserDetails {
         return user.getUsername();
     }
 
+    public String getName() {
+        return user.getName();
+    }
+
     public String getRole() {
         return user.getRole().toString().toUpperCase();
     }
