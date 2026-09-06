@@ -36,7 +36,7 @@ public class JwtService {
     public String generateToken(String username) {
         return Jwts.builder()
                 .claims()
-                .add(new HashMap<String, Object>())
+                .add(new HashMap<>())
                 .subject(username)
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 10))

@@ -5,15 +5,14 @@ import com.techcrack.bookwise.dtos.passwordReset.PasswordResetRequest;
 import com.techcrack.bookwise.dtos.passwordReset.SendOtpRequest;
 import com.techcrack.bookwise.dtos.passwordReset.VerifyOtpRequest;
 import com.techcrack.bookwise.dtos.passwordReset.VerifyOtpResponse;
-import com.techcrack.bookwise.dtos.user.response.JwtTokenResponse;
+import com.techcrack.bookwise.dtos.user.context.AuthenticationResult;
+import com.techcrack.bookwise.dtos.user.response.AuthenticatedResponse;
 import com.techcrack.bookwise.dtos.user.request.UserAuthenticateRequest;
 import com.techcrack.bookwise.dtos.user.request.UserRegisterRequest;
 import com.techcrack.bookwise.dtos.user.response.UserRegisterResponse;
 import com.techcrack.bookwise.entity.Subscription;
 import com.techcrack.bookwise.entity.Users;
 import com.techcrack.bookwise.abstractions.CurrentUserService;
-import com.techcrack.bookwise.service.OtpService;
-import com.techcrack.bookwise.service.PasswordResetService;
 import com.techcrack.bookwise.service.UserRegistrationService;
 import com.techcrack.bookwise.responseHelper.ApiResponseEntity;
 import com.techcrack.bookwise.mapper.UserMapper;
@@ -62,13 +61,13 @@ public class UserController extends AbstractController<UserController, UserServi
     }
 
     @PostMapping("/login")
-    public ResponseEntity<ApiResponseEntity<JwtTokenResponse>> authenticateUser(@RequestBody UserAuthenticateRequest userAuthenticateRequest) {
+    public ResponseEntity<ApiResponseEntity<AuthenticatedResponse>> authenticateUser(@RequestBody UserAuthenticateRequest userAuthenticateRequest) {
         logger.info("Login Request received for {}", userAuthenticateRequest.getUsername());
 
-        String token = service.authenticate(userAuthenticateRequest.getUsername(), userAuthenticateRequest.getPassword());
+        AuthenticationResult authenticationResult = service.authenticate(userAuthenticateRequest.getUsername(), userAuthenticateRequest.getPassword());
 
-        logger.info("Login Request completed for {} Token generated : {}", userAuthenticateRequest.getPassword(), token);
-        JwtTokenResponse response =  mapper.mapToJwtToken(token);
+        logger.info("Login Request completed for {} Token generated : {}", userAuthenticateRequest.getPassword(), authenticationResult.token());
+        AuthenticatedResponse response =  mapper.mapToJwtToken(authenticationResult);
 
         return ResponseEntityHelper.buildSuccessResponse(
             "Authentication success! Token Generated",

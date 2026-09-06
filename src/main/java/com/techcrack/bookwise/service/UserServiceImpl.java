@@ -4,6 +4,8 @@ import com.techcrack.bookwise.abstractions.UserService;
 import com.techcrack.bookwise.dtos.passwordReset.PasswordResetRequest;
 import com.techcrack.bookwise.dtos.passwordReset.SendOtpRequest;
 import com.techcrack.bookwise.dtos.passwordReset.VerifyOtpRequest;
+import com.techcrack.bookwise.dtos.user.context.AuthenticationResult;
+import com.techcrack.bookwise.entity.UserPrincipal;
 import com.techcrack.bookwise.entity.Users;
 import com.techcrack.bookwise.exceptions.customized.InvalidDataException;
 import com.techcrack.bookwise.exceptions.customized.ObjectNotFoundException;
@@ -82,7 +84,7 @@ public class UserServiceImpl extends AbstractService<UserServiceImpl, UserReposi
     }
 
 
-    public String authenticate(String username, String password) {
+    public AuthenticationResult authenticate(String username, String password) {
 
         logger.info("Authentication Process started for {}", username);
 
@@ -96,7 +98,12 @@ public class UserServiceImpl extends AbstractService<UserServiceImpl, UserReposi
 
         logger.info("Authentication Details are valid");
 
-        return jwtService.generateToken(username);
+        String token = jwtService.generateToken(username);
+
+        return new AuthenticationResult(
+                token,
+                (UserPrincipal) authentication.getPrincipal()
+        );
     }
 
     public Users getUser(String username) {
