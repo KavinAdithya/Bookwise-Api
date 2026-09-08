@@ -14,8 +14,12 @@ import java.util.List;
 public class CurrentUserServiceImpl implements CurrentUserService {
     @Override
     public long getCurrentUserId() {
-       UserPrincipal principal = getCurrentUser();
-        return principal.getUserId();
+        try {
+            UserPrincipal principal = getCurrentUser();
+            return principal.getUserId();
+        } catch (Exception e) {
+            return -1;
+        }
     }
 
     @Override

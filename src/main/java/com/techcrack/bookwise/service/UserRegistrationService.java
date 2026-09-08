@@ -28,7 +28,7 @@ public class UserRegistrationService extends AbstractLogger<UserRegistrationServ
     public RegistrationResult<Users, Subscription> register(Users user, Subscriptions subscriptions) {
         logger.info("User Registration for {} started ", user.getUsername());
 
-        user.setRole(Roles.USER);
+        user.setRole(user.getRole() == null ? Roles.USER : user.getRole());
         user = userService.register(user);
 
         logger.info("User Registration done  for {} ", user.getUsername());

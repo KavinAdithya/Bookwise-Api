@@ -135,7 +135,7 @@ public class SubscriptionServiceImpl extends AbstractRepository<SubscriptionServ
 
         logger.info("Activating One Month free Subscription process completed");
 
-        int rowsAffected = repo.deactivateActiveSubscription(user.getId(), userSession.getCurrentUserId(), ApplicationData.getSystemDate());
+        int rowsAffected = repo.deactivateActiveSubscription(user.getId(), user.getId(), ApplicationData.getSystemDate());
 
         logger.debug("Trying Subscription Deactivation {} rows affected", rowsAffected);
 
