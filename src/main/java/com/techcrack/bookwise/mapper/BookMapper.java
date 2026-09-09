@@ -2,6 +2,7 @@ package com.techcrack.bookwise.mapper;
 
 import com.techcrack.bookwise.dtos.book.response.BookRegisterResponse;
 import com.techcrack.bookwise.dtos.book.response.PendingBookResponse;
+import com.techcrack.bookwise.dtos.book.response.ViewBookResponse;
 import com.techcrack.bookwise.entity.Book;
 import org.springframework.stereotype.Component;
 
@@ -14,11 +15,11 @@ public class BookMapper {
         return new BookRegisterResponse(src);
     }
 
-    public List<BookRegisterResponse> mapToBookRegisterResponses(List<Book> books) {
-        List<BookRegisterResponse> bookResponse = new ArrayList<>();
+    public List<ViewBookResponse> mapToViewBookResponses(List<Book> books) {
+        List<ViewBookResponse> bookResponse = new ArrayList<>();
 
         for (Book book : books) {
-            bookResponse.add(mapToBookRegisterResponse(book));
+            bookResponse.add(mapToViewBookResponse(book));
         }
 
         return bookResponse;
@@ -36,5 +37,9 @@ public class BookMapper {
         }
 
         return response;
+    }
+
+    public ViewBookResponse mapToViewBookResponse(Book book) {
+        return new ViewBookResponse(book);
     }
 }
