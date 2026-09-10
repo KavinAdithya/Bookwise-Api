@@ -111,7 +111,7 @@ public class BookServiceImpl extends AbstractService<BookServiceImpl, BookReposi
 
     private void populateRelationships(Book entity, BookRegisterRequest request) {
 
-        Author author = authorService.get(userSession.getCurrentUserId());
+        Author author = authorService.getAuthorByUserId(userSession.getCurrentUserId());
         logger.debug("Author Info : {}", author);
 
         entity.setAuthor(author);

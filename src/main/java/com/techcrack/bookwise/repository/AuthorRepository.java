@@ -11,6 +11,7 @@ import org.springframework.data.repository.query.Param;
 import static com.techcrack.bookwise.constans.queries.JPQLQueries.UPDATE_AUTHOR_STATUS;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface AuthorRepository extends JpaRepository<Author, Long> {
     List<Author> findAllByStatusAndIsActiveTrue(Status status);
@@ -19,4 +20,7 @@ public interface AuthorRepository extends JpaRepository<Author, Long> {
     @Modifying
     @Query(value = UPDATE_AUTHOR_STATUS, nativeQuery = false)
     int updateAuthorStatusByIds(@Param("status") Status status, @Param("ids") List<Long> authorIds);
+
+
+    Optional<Author> findByUser_Id(Long userId);
 }
