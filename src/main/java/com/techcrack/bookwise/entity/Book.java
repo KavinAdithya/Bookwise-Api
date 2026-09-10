@@ -36,6 +36,8 @@ public class Book extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Status bookStatus;
 
+    private String coverImageUrl;
+
     public Book() {
     }
 
@@ -142,6 +144,14 @@ public class Book extends BaseEntity {
 
     public void setTotalCopies(int totalCopies) {
         this.totalCopies = totalCopies;
+    }
+
+    public String getCoverImageUrl() {
+        return coverImageUrl;
+    }
+
+    public void setCoverImageUrl(String coverImageUrl) {
+        this.coverImageUrl = coverImageUrl;
     }
 
     @Override

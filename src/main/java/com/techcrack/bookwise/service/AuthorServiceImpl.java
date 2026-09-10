@@ -88,4 +88,8 @@ public class AuthorServiceImpl extends AbstractRepository<AuthorServiceImpl, Aut
 
         return rowsAffected;
     }
+    public Author getAuthorByUserId(long key) {
+        return repo.findByUser_Id(key)
+                .orElseThrow(() -> new ObjectNotFoundException(Author.class, "Author not found with user id : " + key));
+    }
 }

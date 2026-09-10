@@ -1,6 +1,7 @@
 package com.techcrack.bookwise.controller;
 
 import com.techcrack.bookwise.abstractions.BookService;
+import com.techcrack.bookwise.dtos.book.response.ViewBookResponse;
 import com.techcrack.bookwise.mapper.BookMapper;
 import com.techcrack.bookwise.dtos.book.request.BookIdsRequest;
 import com.techcrack.bookwise.dtos.book.request.BookRegisterRequest;
@@ -11,8 +12,10 @@ import com.techcrack.bookwise.abstractions.CurrentUserService;
 import com.techcrack.bookwise.responseHelper.ApiResponseEntity;
 import com.techcrack.bookwise.responseHelper.ResponseEntityHelper;
 import com.techcrack.bookwise.utils.AbstractController;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -24,11 +27,15 @@ public class BookController extends AbstractController<BookController, BookServi
         super(BookController.class, service, helper, userSession);
     }
 
-    @PostMapping("/register")
-    public ResponseEntity<ApiResponseEntity<BookRegisterResponse>> register(@RequestBody BookRegisterRequest request)  {
+    @PostMapping(
+            value = "/register",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ApiResponseEntity<BookRegisterResponse>> register(
+                    @RequestPart("book") BookRegisterRequest request,
+                    @RequestPart("coverImage") MultipartFile coverImage)  {
         logger.info("Request Received for register a new book with {}", request.getTitle());
 
-        Book book = service.createBook(request);
+        Book book = service.createBook(request, coverImage);
 
         BookRegisterResponse responseDTO = mapper.mapToBookRegisterResponse(book);
 
@@ -39,12 +46,12 @@ public class BookController extends AbstractController<BookController, BookServi
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponseEntity<List<BookRegisterResponse>>> getAllBooksForView() {
+    public ResponseEntity<ApiResponseEntity<List<ViewBookResponse>>> getAllBooksForView() {
         logger.info("Get all books request received");
 
         List<Book> books = service.getAllApprovedAndAvailableBooks();
 
-        List<BookRegisterResponse> response = mapper.mapToBookRegisterResponses(books);
+        List<ViewBookResponse> response = mapper.mapToViewBookResponses(books);
 
         logger.info("Get All Books request completed");
         return ResponseEntityHelper

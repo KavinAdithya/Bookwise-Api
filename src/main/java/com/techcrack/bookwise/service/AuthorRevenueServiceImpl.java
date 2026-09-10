@@ -101,8 +101,9 @@ public class AuthorRevenueServiceImpl extends AbstractRepository<AuthorRevenueSe
     }
 
     private AuthorRevenue createAuthorRevenue() {
+        long currentLoggedInAs = userSession.getCurrentUserId();
         AuthorRevenue revenue = new AuthorRevenue();
-        revenue.initialize(userSession.getCurrentUserId());
+        revenue.initialize(currentLoggedInAs == -1 ? null : currentLoggedInAs);
         revenue.setIncomeDate(ApplicationData.getSystemDate());
         revenue.setAmountDisbursed(false);
 

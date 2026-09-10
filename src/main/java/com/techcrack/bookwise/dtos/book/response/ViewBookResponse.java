@@ -1,27 +1,11 @@
 package com.techcrack.bookwise.dtos.book.response;
 
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.techcrack.bookwise.entity.Book;
 
+import javax.swing.text.View;
 import java.time.LocalDateTime;
 
-@JsonPropertyOrder({
-        "id",
-        "title",
-        "ISBN",
-        "authorName",
-        "description",
-        "categoryName",
-        "language",
-        "publishDate",
-        "totalCopies",
-        "availableCopies",
-        "purchasePrice",
-        "borrowFee",
-        "commissionPercentage"
-})
-public class BookRegisterResponse {
-
+public class ViewBookResponse {
     private Long id;
     private String title;
     private String ISBN;
@@ -29,19 +13,16 @@ public class BookRegisterResponse {
     private String description;
     private String categoryName;
     private String language;
-    private LocalDateTime publishDate;
-    private int totalCopies;
     private int availableCopies;
     private double purchasePrice;
     private double borrowFee;
-    private double commissionPercentage;
     private String coverImageUrl;
 
-    public BookRegisterResponse() {
+    public ViewBookResponse() {
         super();
     }
 
-    public BookRegisterResponse(Book book){
+    public ViewBookResponse(Book book){
         this.id = book.getId();
         this.title = book.getTitle();
         this.ISBN = book.getISBN();
@@ -49,12 +30,9 @@ public class BookRegisterResponse {
         this.description = book.getDescription();
         this.categoryName = book.getCategory().getName();
         this.language = book.getLanguage();
-        this.publishDate = book.getPublishDate();
-        this.totalCopies = book.getTotalCopies();
         this.availableCopies = book.getAvailableCopies();
         this.purchasePrice = book.getPurchasePrice();
         this.borrowFee = book.getBorrowFee();
-        this.commissionPercentage = book.getCommissionPercentage();
         this.coverImageUrl = book.getCoverImageUrl();
     }
 
@@ -114,22 +92,6 @@ public class BookRegisterResponse {
         this.language = language;
     }
 
-    public LocalDateTime getPublishDate() {
-        return publishDate;
-    }
-
-    public void setPublishDate(LocalDateTime publishDate) {
-        this.publishDate = publishDate;
-    }
-
-    public int getTotalCopies() {
-        return totalCopies;
-    }
-
-    public void setTotalCopies(int totalCopies) {
-        this.totalCopies = totalCopies;
-    }
-
     public int getAvailableCopies() {
         return availableCopies;
     }
@@ -154,14 +116,6 @@ public class BookRegisterResponse {
         this.borrowFee = borrowFee;
     }
 
-    public double getCommissionPercentage() {
-        return commissionPercentage;
-    }
-
-    public void setCommissionPercentage(double commissionPercentage) {
-        this.commissionPercentage = commissionPercentage;
-    }
-
     public String getCoverImageUrl() {
         return coverImageUrl;
     }
@@ -172,7 +126,7 @@ public class BookRegisterResponse {
 
     @Override
     public String toString() {
-        return "BookResponseDTO{" +
+        return "ViewBookResponse{" +
                 "id=" + id +
                 ", title='" + title + '\'' +
                 ", ISBN='" + ISBN + '\'' +
@@ -180,12 +134,10 @@ public class BookRegisterResponse {
                 ", description='" + description + '\'' +
                 ", categoryName='" + categoryName + '\'' +
                 ", language='" + language + '\'' +
-                ", publishDate=" + publishDate +
-                ", totalCopies=" + totalCopies +
                 ", availableCopies=" + availableCopies +
                 ", purchasePrice=" + purchasePrice +
                 ", borrowFee=" + borrowFee +
-                ", commissionPercentage=" + commissionPercentage +
+                ", coverImageUrl='" + coverImageUrl + '\'' +
                 '}';
     }
 }

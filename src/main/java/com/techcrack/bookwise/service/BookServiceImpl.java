@@ -13,12 +13,16 @@ import com.techcrack.bookwise.exceptions.customized.InvalidDataException;
 import com.techcrack.bookwise.exceptions.customized.ObjectNotFoundException;
 import com.techcrack.bookwise.exceptions.templates.Errors;
 import com.techcrack.bookwise.abstractions.CurrentUserService;
+import com.techcrack.bookwise.helper.ImageSaveHelper;
 import com.techcrack.bookwise.repository.BookRepository;
 import com.techcrack.bookwise.utils.AbstractService;
 import com.techcrack.bookwise.validations.BookServiceValidations;
 import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @Service
@@ -26,11 +30,18 @@ public class BookServiceImpl extends AbstractService<BookServiceImpl, BookReposi
                                 implements BookService {
     private final AuthorService authorService;
     private final CategoryService categoryService;
+    private final ImageSaveHelper imageSaveHelper;
 
-    public BookServiceImpl(BookRepository repo, AuthorService authorService, CategoryService categoryService, BookServiceValidations validations, CurrentUserService userSession) {
+    public BookServiceImpl(BookRepository repo,
+                           AuthorService authorService,
+                           CategoryService categoryService,
+                           BookServiceValidations validations,
+                           CurrentUserService userSession,
+                           ImageSaveHelper imageSaveHelper) {
         super(BookServiceImpl.class, repo, validations, userSession);
         this.authorService = authorService;
         this.categoryService = categoryService;
+        this.imageSaveHelper = imageSaveHelper;
     }
 
     @Override
@@ -65,7 +76,7 @@ public class BookServiceImpl extends AbstractService<BookServiceImpl, BookReposi
 
     @Override
     @Transactional
-    public Book createBook(BookRegisterRequest request) {
+    public Book createBook(BookRegisterRequest request, MultipartFile coverImage) {
         Book entity = request.buildBook();
         entity.initialize(userSession.getCurrentUserId());
 
@@ -87,12 +98,20 @@ public class BookServiceImpl extends AbstractService<BookServiceImpl, BookReposi
 
         entity.setBookStatus(Status.PENDING);
         entity.setCommissionPercentage(ApplicationData.COMMISSION_PERCENTAGE);
+
+        try {
+            String fileName = imageSaveHelper.saveMultiPartImage(coverImage);
+            entity.setCoverImageUrl(fileName);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to upload book cover image");
+        }
+
         return register(entity);
     }
 
     private void populateRelationships(Book entity, BookRegisterRequest request) {
 
-        Author author = authorService.get(userSession.getCurrentUserId());
+        Author author = authorService.getAuthorByUserId(userSession.getCurrentUserId());
         logger.debug("Author Info : {}", author);
 
         entity.setAuthor(author);
@@ -145,7 +164,7 @@ public class BookServiceImpl extends AbstractService<BookServiceImpl, BookReposi
                 bookIds,
                 true,
                 Status.APPROVED,
-                ApplicationData.HARD_CODED_CURRENT_ID,
+                userSession.getCurrentUserId(),
                 ApplicationData.getSystemDate(),
                 ApplicationData.getSystemDate());
 

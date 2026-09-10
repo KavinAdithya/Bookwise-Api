@@ -1,6 +1,7 @@
 package com.techcrack.bookwise.controller;
 
 import com.techcrack.bookwise.abstractions.CategoryService;
+import com.techcrack.bookwise.dtos.category.response.CategoryChooseResponse;
 import com.techcrack.bookwise.mapper.CategoryMapper;
 import com.techcrack.bookwise.dtos.category.request.CategoryRegisterRequest;
 import com.techcrack.bookwise.dtos.category.response.CategoryRegisterResponse;
@@ -10,10 +11,9 @@ import com.techcrack.bookwise.responseHelper.ApiResponseEntity;
 import com.techcrack.bookwise.responseHelper.ResponseEntityHelper;
 import com.techcrack.bookwise.utils.AbstractController;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/categories")
@@ -36,5 +36,16 @@ public class CategoryController extends AbstractController<CategoryController, C
         CategoryRegisterResponse response = mapper.mapToCategoryRegisterResponse(category);
 
         return ResponseEntityHelper.buildSuccessResponse("Category Registered Successfully", response);
+    }
+
+    @GetMapping("/choices")
+    public ResponseEntity<ApiResponseEntity<List<CategoryChooseResponse>>> getCategoryForChoose() {
+        logger.info("Request Received to get all categories for book choice");
+
+        List<Category> categories = service.getAllCategories();
+
+        List<CategoryChooseResponse> responses = mapper.mapToCategoryChooseResponses(categories);
+        return ResponseEntityHelper
+                .buildSuccessResponse("Categories fetched successfully", responses);
     }
 }
