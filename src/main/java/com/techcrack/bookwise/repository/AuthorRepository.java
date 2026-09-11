@@ -23,4 +23,6 @@ public interface AuthorRepository extends JpaRepository<Author, Long> {
 
 
     Optional<Author> findByUser_Id(Long userId);
+
+    List<Author> findByIsActiveTrue();
 }
