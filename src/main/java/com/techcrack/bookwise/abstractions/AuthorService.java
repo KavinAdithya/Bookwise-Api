@@ -10,4 +10,5 @@ public interface AuthorService extends BasicCRUD<Author> {
     int rejectAuthors(List<Long> authorIds);
     boolean isAuthorValid(Author author);
     Author getAuthorByUserId(long key);
+    List<Author> getAllActiveAuthors();
 }

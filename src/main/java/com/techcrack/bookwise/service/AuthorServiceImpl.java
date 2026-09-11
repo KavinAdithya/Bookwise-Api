@@ -92,4 +92,9 @@ public class AuthorServiceImpl extends AbstractRepository<AuthorServiceImpl, Aut
         return repo.findByUser_Id(key)
                 .orElseThrow(() -> new ObjectNotFoundException(Author.class, "Author not found with user id : " + key));
     }
+
+    @Override
+    public List<Author> getAllActiveAuthors() {
+        return repo.findByIsActiveTrue();
+    }
 }

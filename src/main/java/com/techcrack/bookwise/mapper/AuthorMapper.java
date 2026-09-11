@@ -3,10 +3,12 @@ package com.techcrack.bookwise.mapper;
 import com.techcrack.bookwise.dtos.author.request.AuthorRegisterRequest;
 import com.techcrack.bookwise.dtos.author.response.AuthorRegisterResponse;
 import com.techcrack.bookwise.dtos.author.response.PendingAuthorResponse;
+import com.techcrack.bookwise.dtos.author.response.ViewAuthorResponse;
 import com.techcrack.bookwise.entity.Author;
 import com.techcrack.bookwise.entity.Subscription;
 import org.springframework.stereotype.Component;
 
+import javax.swing.text.View;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,5 +35,19 @@ public class AuthorMapper {
         }
 
         return response;
+    }
+
+    public ViewAuthorResponse mapToViewAuthorResponse(Author author) {
+        return new ViewAuthorResponse(author);
+    }
+
+    public List<ViewAuthorResponse> mapToViewAuthorResponses(List<Author> authors) {
+        List<ViewAuthorResponse> responses = new ArrayList<>();
+
+        for (Author author : authors) {
+            responses.add(mapToViewAuthorResponse(author));
+        }
+
+        return responses;
     }
 }

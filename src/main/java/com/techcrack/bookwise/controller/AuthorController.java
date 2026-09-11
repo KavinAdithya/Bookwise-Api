@@ -5,6 +5,7 @@ import com.techcrack.bookwise.dtos.author.request.AuthorIdsRequest;
 import com.techcrack.bookwise.dtos.author.request.AuthorRegisterRequest;
 import com.techcrack.bookwise.dtos.author.response.AuthorRegisterResponse;
 import com.techcrack.bookwise.dtos.author.response.PendingAuthorResponse;
+import com.techcrack.bookwise.dtos.author.response.ViewAuthorResponse;
 import com.techcrack.bookwise.entity.Author;
 import com.techcrack.bookwise.entity.Subscription;
 import com.techcrack.bookwise.abstractions.CurrentUserService;
@@ -82,4 +83,17 @@ public class AuthorController extends AbstractController<AuthorController, Autho
         return ResponseEntityHelper
                 .buildSuccessResponse("Authors Rejected Successfully", authorsCount + " authors status were updated.");
     }
+
+    @GetMapping
+    public ResponseEntity<ApiResponseEntity<List<ViewAuthorResponse>>> getAllAuthors() {
+        logger.info("Request Received to fetch all authors");
+
+        List<Author> authors = service.getAllActiveAuthors();
+        List<ViewAuthorResponse> responses = mapper.mapToViewAuthorResponses(authors);
+
+        logger.info("Request Completed to fetch all authors");
+        return ResponseEntityHelper
+                .buildSuccessResponse("Authors Fetched Successfully", responses);
+    }
+
 }
