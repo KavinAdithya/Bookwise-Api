@@ -3,6 +3,7 @@ package com.techcrack.bookwise.controller;
 import com.techcrack.bookwise.abstractions.AuthorService;
 import com.techcrack.bookwise.dtos.author.request.AuthorIdsRequest;
 import com.techcrack.bookwise.dtos.author.request.AuthorRegisterRequest;
+import com.techcrack.bookwise.dtos.author.response.AdminViewAuthorResponse;
 import com.techcrack.bookwise.dtos.author.response.AuthorRegisterResponse;
 import com.techcrack.bookwise.dtos.author.response.PendingAuthorResponse;
 import com.techcrack.bookwise.dtos.author.response.ViewAuthorResponse;
@@ -85,15 +86,28 @@ public class AuthorController extends AbstractController<AuthorController, Autho
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponseEntity<List<ViewAuthorResponse>>> getAllAuthors() {
+    public ResponseEntity<ApiResponseEntity<List<AdminViewAuthorResponse>>> getAllAuthors() {
         logger.info("Request Received to fetch all authors");
 
-        List<Author> authors = service.getAllActiveAuthors();
-        List<ViewAuthorResponse> responses = mapper.mapToViewAuthorResponses(authors);
+        List<AdminViewAuthorResponse> authors = service.getAllActiveAuthorForAdminView();
 
         logger.info("Request Completed to fetch all authors");
         return ResponseEntityHelper
-                .buildSuccessResponse("Authors Fetched Successfully", responses);
+                .buildSuccessResponse("Authors Fetched Successfully", authors);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ApiResponseEntity<ViewAuthorResponse>> getAuthor(@PathVariable("id") long id) {
+        logger.info("Request Received to fetch a author with {}" , id);
+
+        Author author = service.getAuthorById(id);
+
+        ViewAuthorResponse viewAuthorResponse = mapper.mapToViewAuthorResponse(author);
+
+        logger.info("Request Completed to fetch a author with {}", id);
+
+        return ResponseEntityHelper
+                .buildSuccessResponse("Author Fetched Successfully", viewAuthorResponse);
     }
 
 }

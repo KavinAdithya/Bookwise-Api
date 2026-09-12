@@ -1,5 +1,6 @@
 package com.techcrack.bookwise.abstractions;
 
+import com.techcrack.bookwise.dtos.author.response.AdminViewAuthorResponse;
 import com.techcrack.bookwise.entity.Author;
 
 import java.util.List;
@@ -11,4 +12,6 @@ public interface AuthorService extends BasicCRUD<Author> {
     boolean isAuthorValid(Author author);
     Author getAuthorByUserId(long key);
     List<Author> getAllActiveAuthors();
+    List<AdminViewAuthorResponse> getAllActiveAuthorForAdminView();
+    Author getAuthorById(long id);
 }

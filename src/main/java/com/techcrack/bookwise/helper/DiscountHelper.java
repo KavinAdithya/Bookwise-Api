@@ -11,7 +11,7 @@ public class DiscountHelper {
             return 0.0;
 
         double rentAmount = subscription.getSubscriptions().getRent();
-        double discountApplied = discountDetails.discountPercentage();
+        double discountApplied = discountDetails.discountPercentage() / 100.00;
 
         return calculateDiscountedAmount(rentAmount, discountApplied);
     }

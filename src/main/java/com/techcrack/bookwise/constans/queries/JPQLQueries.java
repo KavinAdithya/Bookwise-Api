@@ -46,4 +46,24 @@ public class JPQLQueries {
             u.username = :username OR
             u.contact = :contact
             """;
+
+    public static final String FETCH_AUTHORS_ADMIN_VIEW = """
+                SELECT
+                    new com.techcrack.bookwise.dtos.author.response.AdminViewAuthorResponse(
+                        a.Id,
+                        a.user.name,
+                        a.status,
+                        a.user.email,
+                        a.createdAt
+                    )
+                FROM Author a
+                WHERE a.isActive
+            """;
+
+    public static final String FETCH_ALL_USER_IDS = """
+                SELECT
+                    a.user.id
+                FROM Author a
+                WHERE a.id in :authorIds
+            """;
 }
