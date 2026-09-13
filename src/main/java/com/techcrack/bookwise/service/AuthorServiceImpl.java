@@ -2,6 +2,7 @@ package com.techcrack.bookwise.service;
 
 import com.techcrack.bookwise.abstractions.AuthorService;
 import com.techcrack.bookwise.abstractions.SubscriptionService;
+import com.techcrack.bookwise.constans.ApplicationData;
 import com.techcrack.bookwise.constans.enums.Status;
 import com.techcrack.bookwise.dtos.author.response.AdminViewAuthorResponse;
 import com.techcrack.bookwise.dtos.subscription.DiscountDetails;
@@ -58,15 +59,15 @@ public class AuthorServiceImpl extends AbstractRepository<AuthorServiceImpl, Aut
                 author.getUser().isActive() && author.getStatus()== Status.APPROVED;
     }
 
-    public List<Author> getPendingAuthors() {
-        return repo.findAllByStatusAndIsActiveTrue(Status.PENDING);
+    public List<AdminViewAuthorResponse> getAuthorsBasedOnStatus(Status status) {
+        return repo.findAuthorsByStatus(status);
     }
 
     @Transactional
     public int approveAuthors(List<Long> authorIds) {
         logger.info("Updating Author status to approve process started");
 
-        int rowsAffected = repo.updateAuthorStatusByIds(Status.APPROVED, authorIds);
+        int rowsAffected = repo.updateAuthorStatusByIds(Status.APPROVED, authorIds, userSession.getCurrentUserId(), ApplicationData.getSystemDate());
 
         logger.debug("Total Authors {} Affected rows {}", authorIds, rowsAffected);
         logger.info("Author Approval process done for author ids {}", authorIds);
@@ -87,7 +88,7 @@ public class AuthorServiceImpl extends AbstractRepository<AuthorServiceImpl, Aut
     public int rejectAuthors(List<Long> authorIds) {
         logger.info("Rejecting Author status to approve process started");
 
-        int rowsAffected = repo.updateAuthorStatusByIds(Status.APPROVED, authorIds);
+        int rowsAffected = repo.updateAuthorStatusByIds(Status.REJECTED, authorIds, userSession.getCurrentUserId(), ApplicationData.getSystemDate());
 
         logger.debug("Total Authors Rejected {} Affected rows {}", authorIds, rowsAffected);
         logger.info("Author Rejected process done for author ids {}", authorIds);
@@ -112,5 +113,10 @@ public class AuthorServiceImpl extends AbstractRepository<AuthorServiceImpl, Aut
     public Author getAuthorById(long id) {
         return repo.findByIdAndIsActiveTrue(id)
                 .orElseThrow(() -> new ObjectNotFoundException(Author.class, "Author not found with id " + id));
+    }
+
+    @Override
+    public long getAuthorIdByUserId(long userId) {
+        return repo.findAuthorIdByUserId(userId);
     }
 }

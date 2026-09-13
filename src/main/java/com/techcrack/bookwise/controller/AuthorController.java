@@ -1,11 +1,11 @@
 package com.techcrack.bookwise.controller;
 
 import com.techcrack.bookwise.abstractions.AuthorService;
+import com.techcrack.bookwise.constans.enums.Status;
 import com.techcrack.bookwise.dtos.author.request.AuthorIdsRequest;
 import com.techcrack.bookwise.dtos.author.request.AuthorRegisterRequest;
 import com.techcrack.bookwise.dtos.author.response.AdminViewAuthorResponse;
 import com.techcrack.bookwise.dtos.author.response.AuthorRegisterResponse;
-import com.techcrack.bookwise.dtos.author.response.PendingAuthorResponse;
 import com.techcrack.bookwise.dtos.author.response.ViewAuthorResponse;
 import com.techcrack.bookwise.entity.Author;
 import com.techcrack.bookwise.entity.Subscription;
@@ -48,17 +48,16 @@ public class AuthorController extends AbstractController<AuthorController, Autho
                 .buildSuccessResponse("Author Registered successfully", response);
     }
 
-    @GetMapping("/status/pending")
-    public ResponseEntity<ApiResponseEntity<List<PendingAuthorResponse>>> getAuthorsForApproval() {
+    @GetMapping("/filter")
+    public ResponseEntity<ApiResponseEntity<List<AdminViewAuthorResponse>>> getAuthorsForApproval(@RequestParam("status") Status status) {
         logger.info("Author Approval Request Received");
 
-        List<Author> authors = service.getPendingAuthors();
+        List<AdminViewAuthorResponse> authors = service.getAuthorsBasedOnStatus(status);
 
-        List<PendingAuthorResponse> response = mapper.mapToPendingAuthorResponses(authors);
 
         logger.info("Author Pending Request Completed");
         return ResponseEntityHelper
-                .buildSuccessResponse("Pending Authors Fetched Successfully", response);
+                .buildSuccessResponse("Pending Authors Fetched Successfully", authors);
     }
 
     @PatchMapping("/approve")

@@ -1,6 +1,7 @@
 package com.techcrack.bookwise.controller;
 
 import com.techcrack.bookwise.abstractions.BookService;
+import com.techcrack.bookwise.dtos.book.response.AuthorBookViewResponse;
 import com.techcrack.bookwise.dtos.book.response.ViewBookResponse;
 import com.techcrack.bookwise.mapper.BookMapper;
 import com.techcrack.bookwise.dtos.book.request.BookIdsRequest;
@@ -100,5 +101,16 @@ public class BookController extends AbstractController<BookController, BookServi
 
         return ResponseEntityHelper
                 .buildSuccessResponse("Books Status Updated", "Totally " + booksCount + " Books are Rejected");
+    }
+
+    @GetMapping("/author")
+    public ResponseEntity<ApiResponseEntity<List<AuthorBookViewResponse>>> getAllAuthorBooks() {
+        logger.info("Request Received to fetch books related to author");
+
+        List<AuthorBookViewResponse> responses = service.getAuthorBooksAll();
+
+        logger.info("Request Completed to fetch books related to author");
+        return ResponseEntityHelper
+                .buildSuccessResponse("Author Books fetched successfully", responses);
     }
 }

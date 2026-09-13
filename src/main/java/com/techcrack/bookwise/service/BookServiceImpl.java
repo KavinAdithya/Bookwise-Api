@@ -6,6 +6,7 @@ import com.techcrack.bookwise.abstractions.CategoryService;
 import com.techcrack.bookwise.constans.ApplicationData;
 import com.techcrack.bookwise.constans.enums.Status;
 import com.techcrack.bookwise.dtos.book.request.BookRegisterRequest;
+import com.techcrack.bookwise.dtos.book.response.AuthorBookViewResponse;
 import com.techcrack.bookwise.entity.Author;
 import com.techcrack.bookwise.entity.Book;
 import com.techcrack.bookwise.entity.Category;
@@ -183,6 +184,13 @@ public class BookServiceImpl extends AbstractService<BookServiceImpl, BookReposi
     @Transactional
     public boolean updateBookQuantity(long bookId, int quantity) {
         return repo.updateBookQuantity(bookId, quantity, userSession.getCurrentUserId(), ApplicationData.getSystemDate()) >= 1;
+    }
+
+    @Override
+    public List<AuthorBookViewResponse> getAuthorBooksAll() {
+        long currentUserId = userSession.getCurrentUserId();
+        long authorId = authorService.getAuthorIdByUserId(currentUserId);
+        return repo.getAuthorBooksByAuthorId(authorId);
     }
 
 }

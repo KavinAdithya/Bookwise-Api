@@ -3,7 +3,9 @@ package com.techcrack.bookwise.constans.queries;
 public class JPQLQueries {
     public static final String UPDATE_AUTHOR_STATUS = """
                 UPDATE Author a
-                SET a.status = :status
+                SET a.status = :status,
+                a.updatedBy = :updatedBy,
+                a.updatedAt = :updatedAt
                 WHERE a.id IN :ids
             """;
 
@@ -65,5 +67,41 @@ public class JPQLQueries {
                     a.user.id
                 FROM Author a
                 WHERE a.id in :authorIds
+            """;
+
+    public static final String FETCH_AUTHOR_ADMIN_VIEW_PENDING = """
+                SELECT
+                    new com.techcrack.bookwise.dtos.author.response.AdminViewAuthorResponse(
+                        a.Id,
+                        a.user.name,
+                        a.status,
+                        a.user.email,
+                        a.createdAt
+                    )
+                FROM Author a
+                WHERE a.isActive
+                AND a.status = :status
+            """;
+
+    public static final String FETCH_BOOKS_FOR_AUTHOR = """
+                SELECT
+                    new com.techcrack.bookwise.dtos.book.response.AuthorBookViewResponse(
+                       b.id,
+                       b.title,
+                       b.category.name,
+                       b.coverImageUrl,
+                       b.totalCopies,
+                       b.availableCopies,
+                       b.bookStatus
+                    )
+                FROM Book b
+                WHERE b.author.id = :authorId
+            """;
+
+    public static final String FIND_AUTHOR_ID_BY_USER_ID = """
+                SELECT
+                    a.id
+                FROM Author a
+                WHERE a.user.id = :userId
             """;
 }
