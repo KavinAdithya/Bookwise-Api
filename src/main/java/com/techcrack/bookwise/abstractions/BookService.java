@@ -17,4 +17,6 @@ public interface BookService extends BasicCRUD<Book> {
     Book createBook(BookRegisterRequest request, MultipartFile coverImage);
     boolean updateBookQuantity(long bookId, int quantity);
     List<AuthorBookViewResponse> getAuthorBooksAll();
+    Book getBookById(long id);
+
 }

@@ -1,13 +1,10 @@
 package com.techcrack.bookwise.controller;
 
 import com.techcrack.bookwise.abstractions.BookService;
-import com.techcrack.bookwise.dtos.book.response.AuthorBookViewResponse;
-import com.techcrack.bookwise.dtos.book.response.ViewBookResponse;
+import com.techcrack.bookwise.dtos.book.response.*;
 import com.techcrack.bookwise.mapper.BookMapper;
 import com.techcrack.bookwise.dtos.book.request.BookIdsRequest;
 import com.techcrack.bookwise.dtos.book.request.BookRegisterRequest;
-import com.techcrack.bookwise.dtos.book.response.BookRegisterResponse;
-import com.techcrack.bookwise.dtos.book.response.PendingBookResponse;
 import com.techcrack.bookwise.entity.Book;
 import com.techcrack.bookwise.abstractions.CurrentUserService;
 import com.techcrack.bookwise.responseHelper.ApiResponseEntity;
@@ -24,8 +21,8 @@ import java.util.List;
 @RequestMapping("/api/books")
 public class BookController extends AbstractController<BookController, BookService, BookMapper> {
 
-    public BookController(BookService service, BookMapper helper, CurrentUserService userSession) {
-        super(BookController.class, service, helper, userSession);
+    public BookController(BookService service, BookMapper mapper, CurrentUserService userSession) {
+        super(BookController.class, service, mapper, userSession);
     }
 
     @PostMapping(
@@ -112,5 +109,19 @@ public class BookController extends AbstractController<BookController, BookServi
         logger.info("Request Completed to fetch books related to author");
         return ResponseEntityHelper
                 .buildSuccessResponse("Author Books fetched successfully", responses);
+    }
+
+    @GetMapping("/author/book/{id}")
+    public ResponseEntity<ApiResponseEntity<AuthorBookDetailViewResponse>> getAuthorBookById(@PathVariable("id") long bookId) {
+        logger.info("Request Received to fetch book detail for author");
+
+        Book book = service.getBookById(bookId);
+
+        AuthorBookDetailViewResponse response = mapper.mapToAuthorBookDetailViewResponse(book);
+
+        logger.info("Request Completed to fetch book detail for author");
+
+        return ResponseEntityHelper
+                .buildSuccessResponse("Author Book Detail Fetched Successfully", response);
     }
 }

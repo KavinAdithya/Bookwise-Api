@@ -1,5 +1,6 @@
 package com.techcrack.bookwise.mapper;
 
+import com.techcrack.bookwise.dtos.book.response.AuthorBookDetailViewResponse;
 import com.techcrack.bookwise.dtos.book.response.BookRegisterResponse;
 import com.techcrack.bookwise.dtos.book.response.PendingBookResponse;
 import com.techcrack.bookwise.dtos.book.response.ViewBookResponse;
@@ -41,5 +42,9 @@ public class BookMapper {
 
     public ViewBookResponse mapToViewBookResponse(Book book) {
         return new ViewBookResponse(book);
+    }
+
+    public AuthorBookDetailViewResponse mapToAuthorBookDetailViewResponse(Book book) {
+        return new AuthorBookDetailViewResponse(book);
     }
 }

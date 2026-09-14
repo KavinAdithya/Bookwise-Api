@@ -4,6 +4,7 @@ import com.techcrack.bookwise.abstractions.AuthorService;
 import com.techcrack.bookwise.abstractions.BookService;
 import com.techcrack.bookwise.abstractions.CategoryService;
 import com.techcrack.bookwise.constans.ApplicationData;
+import com.techcrack.bookwise.constans.enums.BookStatus;
 import com.techcrack.bookwise.constans.enums.Status;
 import com.techcrack.bookwise.dtos.book.request.BookRegisterRequest;
 import com.techcrack.bookwise.dtos.book.response.AuthorBookViewResponse;
@@ -97,7 +98,7 @@ public class BookServiceImpl extends AbstractService<BookServiceImpl, BookReposi
             throw new InvalidDataException("Invalid Author Details : " + errors.getData());
         }
 
-        entity.setBookStatus(Status.PENDING);
+        entity.setBookStatus(BookStatus.PENDING);
         entity.setCommissionPercentage(ApplicationData.COMMISSION_PERCENTAGE);
 
         try {
@@ -164,7 +165,7 @@ public class BookServiceImpl extends AbstractService<BookServiceImpl, BookReposi
         int rowsAffected = repo.changeStatusOfAllBooks(
                 bookIds,
                 true,
-                Status.APPROVED,
+                BookStatus.PUBLISHED,
                 userSession.getCurrentUserId(),
                 ApplicationData.getSystemDate(),
                 ApplicationData.getSystemDate());
@@ -176,7 +177,7 @@ public class BookServiceImpl extends AbstractService<BookServiceImpl, BookReposi
     @Transactional
     public int rejectAllBooks(List<Long> bookIds) {
         logger.info("Rejecting Books : {}", bookIds);
-        int rowsAffected = repo.changeStatusOfAllBooks(bookIds, false, Status.REJECTED, ApplicationData.HARD_CODED_CURRENT_ID, ApplicationData.getSystemDate(), null);
+        int rowsAffected = repo.changeStatusOfAllBooks(bookIds, false, BookStatus.REJECTED, ApplicationData.HARD_CODED_CURRENT_ID, ApplicationData.getSystemDate(), null);
         logger.info("Books Rejected successfully : {}", rowsAffected);
         return rowsAffected;
     }
@@ -193,4 +194,9 @@ public class BookServiceImpl extends AbstractService<BookServiceImpl, BookReposi
         return repo.getAuthorBooksByAuthorId(authorId);
     }
 
+    @Override
+    public Book getBookById(long id) {
+        return repo.findByIdAndIsActiveTrue(id)
+                .orElseThrow(() -> new ObjectNotFoundException(Book.class, "Book is not found with id {}" + id));
+    }
 }

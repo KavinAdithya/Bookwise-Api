@@ -1,5 +1,6 @@
 package com.techcrack.bookwise.repository;
 
+import com.techcrack.bookwise.constans.enums.BookStatus;
 import com.techcrack.bookwise.constans.enums.Status;
 import com.techcrack.bookwise.dtos.book.response.AuthorBookViewResponse;
 import com.techcrack.bookwise.entity.Book;
@@ -11,6 +12,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import static com.techcrack.bookwise.constans.queries.JPQLQueries.*;
 
@@ -27,7 +29,7 @@ public interface BookRepository extends JpaRepository<Book, Long> {
     int changeStatusOfAllBooks(
             @Param("bookIds") List<Long> bookIds,
             @Param("isActive") boolean isActive,
-            @Param("status") Status status,
+            @Param("status") BookStatus status,
             @Param("updatedBy") long updatedBy,
             @Param("updatedAt") LocalDateTime updatedAt,
             @Param("publishDate") LocalDateTime publishDate
@@ -44,4 +46,6 @@ public interface BookRepository extends JpaRepository<Book, Long> {
 
     @Query(FETCH_BOOKS_FOR_AUTHOR)
     List<AuthorBookViewResponse> getAuthorBooksByAuthorId(long authorId);
+
+    Optional<Book> findByIdAndIsActiveTrue(long id);
 }
