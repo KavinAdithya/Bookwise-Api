@@ -4,6 +4,7 @@ import com.techcrack.bookwise.abstractions.CurrentUserService;
 import com.techcrack.bookwise.dtos.user.context.AuthenticationResult;
 import com.techcrack.bookwise.dtos.user.response.AuthenticatedResponse;
 import com.techcrack.bookwise.dtos.user.request.UserRegisterRequest;
+import com.techcrack.bookwise.dtos.user.response.AuthenticatedUserDetails;
 import com.techcrack.bookwise.dtos.user.response.UserRegisterResponse;
 import com.techcrack.bookwise.entity.Subscription;
 import com.techcrack.bookwise.entity.Users;
@@ -25,6 +26,11 @@ public class UserMapper {
     }
 
     public AuthenticatedResponse mapToJwtToken(AuthenticationResult authenticationResult) {
-        return new AuthenticatedResponse(authenticationResult.userPrincipal().getName(), authenticationResult.userPrincipal().getRole(), authenticationResult.token());
+        return new AuthenticatedResponse(
+                    new AuthenticatedUserDetails(
+                            authenticationResult.userPrincipal().getName(),
+                            authenticationResult.userPrincipal().getRole()
+                    ),
+                authenticationResult.token());
     }
 }

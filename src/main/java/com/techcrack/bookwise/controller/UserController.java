@@ -9,6 +9,7 @@ import com.techcrack.bookwise.dtos.user.context.AuthenticationResult;
 import com.techcrack.bookwise.dtos.user.response.AuthenticatedResponse;
 import com.techcrack.bookwise.dtos.user.request.UserAuthenticateRequest;
 import com.techcrack.bookwise.dtos.user.request.UserRegisterRequest;
+import com.techcrack.bookwise.dtos.user.response.AuthenticatedUserDetails;
 import com.techcrack.bookwise.dtos.user.response.UserRegisterResponse;
 import com.techcrack.bookwise.entity.Subscription;
 import com.techcrack.bookwise.entity.Users;
@@ -20,10 +21,7 @@ import com.techcrack.bookwise.responseHelper.RegistrationResult;
 import com.techcrack.bookwise.responseHelper.ResponseEntityHelper;
 import com.techcrack.bookwise.utils.AbstractController;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/users")
@@ -111,4 +109,21 @@ public class UserController extends AbstractController<UserController, UserServi
         return ResponseEntityHelper
                 .buildSuccessResponse("Password Reset Completed Successfully", null);
     }
+
+    @GetMapping("/me")
+    public ResponseEntity<ApiResponseEntity<AuthenticatedUserDetails>> getCurrentLoggerInUser() {
+        logger.info("Request Received to fetch logged in user details");
+
+        AuthenticatedUserDetails authenticatedUserDetails = new AuthenticatedUserDetails(
+                userSession.getCurrentUser().getName(),
+                userSession.getCurrentUser().getRole()
+        );
+
+        logger.info("Request completed to fetch logged in user details");
+
+        return ResponseEntityHelper
+                .buildSuccessResponse("User Detail fetched",  authenticatedUserDetails);
+
+    }
+
 }
