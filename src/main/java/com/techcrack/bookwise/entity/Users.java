@@ -75,10 +75,6 @@ public class Users extends BaseEntity {
         this.role = role;
     }
 
-    public void setUpdatedBy(Long updatedBy) {
-        this.updatedBy = updatedBy;
-    }
-
     public String getUsername() {
         return username;
     }

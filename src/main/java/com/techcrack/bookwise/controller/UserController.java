@@ -6,11 +6,10 @@ import com.techcrack.bookwise.dtos.passwordReset.SendOtpRequest;
 import com.techcrack.bookwise.dtos.passwordReset.VerifyOtpRequest;
 import com.techcrack.bookwise.dtos.passwordReset.VerifyOtpResponse;
 import com.techcrack.bookwise.dtos.user.context.AuthenticationResult;
-import com.techcrack.bookwise.dtos.user.response.AuthenticatedResponse;
+import com.techcrack.bookwise.dtos.user.context.UserSubscriptionDetail;
+import com.techcrack.bookwise.dtos.user.response.*;
 import com.techcrack.bookwise.dtos.user.request.UserAuthenticateRequest;
 import com.techcrack.bookwise.dtos.user.request.UserRegisterRequest;
-import com.techcrack.bookwise.dtos.user.response.AuthenticatedUserDetails;
-import com.techcrack.bookwise.dtos.user.response.UserRegisterResponse;
 import com.techcrack.bookwise.entity.Subscription;
 import com.techcrack.bookwise.entity.Users;
 import com.techcrack.bookwise.abstractions.CurrentUserService;
@@ -22,6 +21,8 @@ import com.techcrack.bookwise.responseHelper.ResponseEntityHelper;
 import com.techcrack.bookwise.utils.AbstractController;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
@@ -126,4 +127,36 @@ public class UserController extends AbstractController<UserController, UserServi
 
     }
 
+    /**
+     *
+     * {@code @Param} filterIsActive = 2 Means both active and inactive
+     * Filter IsActive = 1 Means active
+     * Filter IsActive = 0 Means InActive
+     */
+    @GetMapping("/admin")
+    public ResponseEntity<ApiResponseEntity<List<AdminUserViewResponse>>> getAllUsers(@RequestParam int filterIsActive) {
+        logger.info("Request Received to fetch all users except author");
+
+        List<AdminUserViewResponse> responses = service.getAllUsers(filterIsActive);
+
+        logger.info("Request Completed to fetch all users");
+
+        return ResponseEntityHelper
+                .buildSuccessResponse("Users fetched successfully", responses);
+    }
+
+    @GetMapping("/admin/user/{userId}")
+    public ResponseEntity<ApiResponseEntity<AdminUserDetailViewResponse>> getUser(@PathVariable("userId") long userId) {
+        logger.info("Request received from admin to fetch a user details of {} ", userId);
+
+        UserSubscriptionDetail subscriptionDetail = service.getUserWithSubscription(userId);
+
+        AdminUserDetailViewResponse response = mapper.mapToAdminUserDetailViewResponse(subscriptionDetail);
+
+        logger.info("Request completed to fetch user {} from admin", userId);
+
+        return ResponseEntityHelper
+                .buildSuccessResponse("User Fetched Successfully",
+                        response);
+    }
 }

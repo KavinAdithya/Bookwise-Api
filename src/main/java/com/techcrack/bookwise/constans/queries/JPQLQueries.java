@@ -104,4 +104,36 @@ public class JPQLQueries {
                 FROM Author a
                 WHERE a.user.id = :userId
             """;
+
+    public static final String FETCH_ALL_USERS = """
+                SELECT
+                    new com.techcrack.bookwise.dtos.user.response.
+                        AdminUserViewResponse(
+                            u.id,
+                            u.name,
+                            u.username,
+                            u.email,
+                            u.role)
+                FROM Users u
+                WHERE u.role != "AUTHOR"
+            """;
+
+    public static final String FETCH_ALL_USERS_IsActive_BASED =
+            FETCH_ALL_USERS +
+            """
+                AND u.isActive = :isActive
+            """;
+
+    public static final String FETCH_USER_SUBSCRIPTION = """
+                SELECT
+                    new com.techcrack.bookwise.dtos.user.context
+                        .UserSubscriptionDetail(
+                            u,
+                            s
+                        )
+                FROM Subscription s
+                JOIN s.user u
+                WHERE u.isActive
+                    AND u.id = :userId
+            """;
 }
