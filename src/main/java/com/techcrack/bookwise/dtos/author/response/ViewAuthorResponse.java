@@ -4,6 +4,7 @@ import com.techcrack.bookwise.constans.enums.Status;
 import com.techcrack.bookwise.entity.Author;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 
 public class ViewAuthorResponse {
@@ -15,7 +16,7 @@ public class ViewAuthorResponse {
     private String email;
     private String contact;
     private String address;
-    private LocalDate submittedOn;
+    private LocalDateTime createdAt;
 
     public ViewAuthorResponse() {
         super();
@@ -29,7 +30,7 @@ public class ViewAuthorResponse {
         this.status = author.getStatus();
         this.contact = author.getUser().getContact();
         this.username = author.getUser().getUsername();
-        this.submittedOn = author.getCreatedAt().toLocalDate();
+        this.createdAt = author.getCreatedAt();
         this.email = author.getUser().getEmail();
     }
 
@@ -97,12 +98,12 @@ public class ViewAuthorResponse {
         this.address = address;
     }
 
-    public LocalDate getSubmittedOn() {
-        return submittedOn;
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 
-    public void setSubmittedOn(LocalDate submittedOn) {
-        this.submittedOn = submittedOn;
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 
     @Override
@@ -115,7 +116,7 @@ public class ViewAuthorResponse {
                 ", email='" + email + '\'' +
                 ", contact='" + contact + '\'' +
                 ", address='" + address + '\'' +
-                ", submittedOn=" + submittedOn +
+                ", createdAt=" + createdAt +
                 '}';
     }
 }

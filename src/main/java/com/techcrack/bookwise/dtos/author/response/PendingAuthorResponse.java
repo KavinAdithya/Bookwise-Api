@@ -1,5 +1,6 @@
 package com.techcrack.bookwise.dtos.author.response;
 
+import com.techcrack.bookwise.constans.enums.Status;
 import com.techcrack.bookwise.entity.Author;
 
 public class PendingAuthorResponse {
@@ -8,6 +9,7 @@ public class PendingAuthorResponse {
     private String bio;
     private String username;
     private String email;
+    private Status status;
 
     public PendingAuthorResponse(long authorId, String authorName, String bio, String username, String email) {
         this.authorId = authorId;
@@ -23,6 +25,15 @@ public class PendingAuthorResponse {
         this.bio = author.getBio();
         this.username = author.getUser().getUsername();
         this.email = author.getUser().getEmail();
+        this.status = author.getStatus();
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
     }
 
     public long getAuthorId() {

@@ -5,6 +5,8 @@ import com.techcrack.bookwise.dtos.passwordReset.PasswordResetRequest;
 import com.techcrack.bookwise.dtos.passwordReset.SendOtpRequest;
 import com.techcrack.bookwise.dtos.passwordReset.VerifyOtpRequest;
 import com.techcrack.bookwise.dtos.user.context.AuthenticationResult;
+import com.techcrack.bookwise.dtos.user.context.UserSubscriptionDetail;
+import com.techcrack.bookwise.dtos.user.response.AdminUserViewResponse;
 import com.techcrack.bookwise.entity.UserPrincipal;
 import com.techcrack.bookwise.entity.Users;
 import com.techcrack.bookwise.exceptions.customized.InvalidDataException;
@@ -22,6 +24,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 
 @Service
@@ -165,5 +169,17 @@ public class UserServiceImpl extends AbstractService<UserServiceImpl, UserReposi
         users.setPassword(encoder.encode(request.password()));
 
         logger.info("Password Reset Process Completed");
+    }
+
+    @Override
+    public List<AdminUserViewResponse> getAllUsers(int filterIsActive) {
+        if (filterIsActive >= 0 && filterIsActive <= 2)
+            return filterIsActive == 2 ? repo.getAllUser() : repo.getAllUser(filterIsActive == 1);
+
+        throw new InvalidDataException("Invalid Filter Criteria to fetch users Params : " + filterIsActive);
+    }
+
+    public UserSubscriptionDetail getUserWithSubscription(long userId) {
+        return repo.getUserSubscription(userId);
     }
 }
