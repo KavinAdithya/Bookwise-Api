@@ -136,4 +136,27 @@ public class JPQLQueries {
                 WHERE u.isActive
                     AND u.id = :userId
             """;
+
+    public static final String FETCH_ALL_BOOKS = """
+                SELECT
+                   new com.techcrack.bookwise.dtos.book.response.AdminViewBookResponse(
+                        b.id,
+                        b.title,
+                        b.totalCopies,
+                        b.availableCopies,
+                        u.name,
+                        c.name,
+                        b.bookStatus,
+                        b.coverImageUrl
+                   )
+                FROM Book b
+                JOIN b.category c
+                JOIN b.author a
+                JOIN a.user u
+            """;
+
+    public static  final String FETCH_ALL_BOOKS_BY_STATUS =
+            FETCH_ALL_BOOKS + """
+                                WHERE b.bookStatus = :bookStatus
+                           """;
 }

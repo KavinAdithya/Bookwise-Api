@@ -7,6 +7,8 @@ import com.techcrack.bookwise.constans.ApplicationData;
 import com.techcrack.bookwise.constans.enums.BookStatus;
 import com.techcrack.bookwise.constans.enums.Status;
 import com.techcrack.bookwise.dtos.book.request.BookRegisterRequest;
+import com.techcrack.bookwise.dtos.book.response.AdminViewBookDetailResponse;
+import com.techcrack.bookwise.dtos.book.response.AdminViewBookResponse;
 import com.techcrack.bookwise.dtos.book.response.AuthorBookViewResponse;
 import com.techcrack.bookwise.entity.Author;
 import com.techcrack.bookwise.entity.Book;
@@ -145,16 +147,8 @@ public class BookServiceImpl extends AbstractService<BookServiceImpl, BookReposi
     @Override
     public List<Book> getAllApprovedAndAvailableBooks() {
         return repo.findAllByBookStatusAndAvailableCopiesGreaterThanAndIsActiveTrue(
-                Status.APPROVED,
+                BookStatus.PUBLISHED,
                 0
-        );
-    }
-
-    @Override
-    public List<Book> getAllPendingBooks() {
-        return repo.findAllByBookStatusAndAvailableCopiesGreaterThanAndIsActiveTrue(
-            Status.PENDING,
-            0
         );
     }
 
@@ -196,7 +190,12 @@ public class BookServiceImpl extends AbstractService<BookServiceImpl, BookReposi
 
     @Override
     public Book getBookById(long id) {
-        return repo.findByIdAndIsActiveTrue(id)
+        return repo.findById(id)
                 .orElseThrow(() -> new ObjectNotFoundException(Book.class, "Book is not found with id {}" + id));
+    }
+
+    @Override
+    public List<AdminViewBookResponse> getAllBooksForAdmin(BookStatus bookStatus) {
+        return BookStatus.ALL == bookStatus ? repo.getAllBooks() : repo.getAllBooksByStatus(bookStatus);
     }
 }

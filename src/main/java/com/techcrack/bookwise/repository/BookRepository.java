@@ -2,6 +2,7 @@ package com.techcrack.bookwise.repository;
 
 import com.techcrack.bookwise.constans.enums.BookStatus;
 import com.techcrack.bookwise.constans.enums.Status;
+import com.techcrack.bookwise.dtos.book.response.AdminViewBookResponse;
 import com.techcrack.bookwise.dtos.book.response.AuthorBookViewResponse;
 import com.techcrack.bookwise.entity.Book;
 import jakarta.transaction.Transactional;
@@ -20,7 +21,7 @@ public interface BookRepository extends JpaRepository<Book, Long> {
     boolean existsByISBN(String ISBN);
     boolean existsByTitle(String title);
 
-    List<Book> findAllByBookStatusAndAvailableCopiesGreaterThanAndIsActiveTrue(Status bookStatus, int availableCopies);
+    List<Book> findAllByBookStatusAndAvailableCopiesGreaterThanAndIsActiveTrue(BookStatus bookStatus, int availableCopies);
 
 
     @Modifying
@@ -48,4 +49,10 @@ public interface BookRepository extends JpaRepository<Book, Long> {
     List<AuthorBookViewResponse> getAuthorBooksByAuthorId(long authorId);
 
     Optional<Book> findByIdAndIsActiveTrue(long id);
+
+    @Query(FETCH_ALL_BOOKS)
+    List<AdminViewBookResponse> getAllBooks();
+
+    @Query(FETCH_ALL_BOOKS_BY_STATUS)
+    List<AdminViewBookResponse> getAllBooksByStatus(@Param("bookStatus") BookStatus bookStatus);
 }

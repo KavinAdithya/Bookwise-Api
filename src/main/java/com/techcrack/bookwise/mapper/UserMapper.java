@@ -1,6 +1,5 @@
 package com.techcrack.bookwise.mapper;
 
-import com.techcrack.bookwise.abstractions.CurrentUserService;
 import com.techcrack.bookwise.dtos.subscription.response.SubscriptionDetails;
 import com.techcrack.bookwise.dtos.user.context.AuthenticationResult;
 import com.techcrack.bookwise.dtos.user.context.UserSubscriptionDetail;
