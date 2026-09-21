@@ -29,7 +29,7 @@ public class BookController extends AbstractController<BookController, BookServi
     @PostMapping(
             value = "/books/register",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ApiResponseEntity<BookRegisterResponse>> register(
+    public ResponseEntity<ApiResponseEntity<BookRegisterResponse>> registerBook(
                     @RequestPart("book") BookRegisterRequest request,
                     @RequestPart("coverImage") MultipartFile coverImage)  {
         logger.info("Request Received for register a new book with {}", request.getTitle());
@@ -46,7 +46,7 @@ public class BookController extends AbstractController<BookController, BookServi
 
     // This is for Users view
     @GetMapping("/books")
-    public ResponseEntity<ApiResponseEntity<List<UserBookViewResponse>>> getAllBooksForView() {
+    public ResponseEntity<ApiResponseEntity<List<UserBookViewResponse>>> getAllBooks() {
         logger.info("Get all books request received");
 
         List<UserBookViewResponse> response = service.getAllPublishedBooks();
