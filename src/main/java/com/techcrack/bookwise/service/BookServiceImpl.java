@@ -125,7 +125,7 @@ public class BookServiceImpl extends AbstractService<BookServiceImpl, BookReposi
     }
 
     @Override
-    public boolean checkAvailability(long id, int quantity) {
+    public boolean checkBookAvailability(long id, int quantity) {
         Book book = get(id);
 
         return book.isActive() && book.getAvailableCopies() >= quantity;
