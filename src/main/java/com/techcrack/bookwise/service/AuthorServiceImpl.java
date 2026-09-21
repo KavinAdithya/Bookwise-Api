@@ -106,8 +106,8 @@ public class AuthorServiceImpl extends AbstractRepository<AuthorServiceImpl, Aut
     }
 
     @Override
-    public List<AdminViewAuthorResponse> getAllActiveAuthorForAdminView() {
-        return repo.getAllAuthorAdminView();
+    public List<AdminViewAuthorResponse> getAllActiveAuthorsForAdminView() {
+        return repo.getAllAuthorsAdminView();
     }
 
     public Author getAuthorById(long id) {
