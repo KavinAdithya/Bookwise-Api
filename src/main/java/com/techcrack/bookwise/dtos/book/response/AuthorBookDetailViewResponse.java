@@ -1,47 +1,43 @@
 package com.techcrack.bookwise.dtos.book.response;
 
+import com.techcrack.bookwise.constans.enums.BookStatus;
 import com.techcrack.bookwise.entity.Book;
 
-import javax.swing.text.View;
 import java.time.LocalDateTime;
 
-public class ViewBookResponse {
-    private Long id;
+public class AuthorBookDetailViewResponse {
     private String title;
     private String ISBN;
-    private String authorName;
     private String description;
     private String categoryName;
     private String language;
+    private LocalDateTime publishDate;
+    private int totalCopies;
     private int availableCopies;
     private double purchasePrice;
     private double borrowFee;
+    private double commissionPercentage;
+    private BookStatus bookStatus;
     private String coverImageUrl;
 
-    public ViewBookResponse() {
+    public AuthorBookDetailViewResponse() {
         super();
     }
 
-    public ViewBookResponse(Book book){
-        this.id = book.getId();
+    public AuthorBookDetailViewResponse(Book book) {
         this.title = book.getTitle();
         this.ISBN = book.getISBN();
-        this.authorName = book.getAuthor().getUser().getName();
         this.description = book.getDescription();
         this.categoryName = book.getCategory().getName();
         this.language = book.getLanguage();
+        this.publishDate = book.getPublishDate();
+        this.totalCopies = book.getTotalCopies();
         this.availableCopies = book.getAvailableCopies();
         this.purchasePrice = book.getPurchasePrice();
         this.borrowFee = book.getBorrowFee();
+        this.bookStatus = book.getBookStatus();
+        this.commissionPercentage = book.getCommissionPercentage();
         this.coverImageUrl = book.getCoverImageUrl();
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getTitle() {
@@ -58,14 +54,6 @@ public class ViewBookResponse {
 
     public void setISBN(String ISBN) {
         this.ISBN = ISBN;
-    }
-
-    public String getAuthorName() {
-        return authorName;
-    }
-
-    public void setAuthorName(String authorName) {
-        this.authorName = authorName;
     }
 
     public String getDescription() {
@@ -92,6 +80,22 @@ public class ViewBookResponse {
         this.language = language;
     }
 
+    public LocalDateTime getPublishDate() {
+        return publishDate;
+    }
+
+    public void setPublishDate(LocalDateTime publishDate) {
+        this.publishDate = publishDate;
+    }
+
+    public int getTotalCopies() {
+        return totalCopies;
+    }
+
+    public void setTotalCopies(int totalCopies) {
+        this.totalCopies = totalCopies;
+    }
+
     public int getAvailableCopies() {
         return availableCopies;
     }
@@ -116,6 +120,22 @@ public class ViewBookResponse {
         this.borrowFee = borrowFee;
     }
 
+    public double getCommissionPercentage() {
+        return commissionPercentage;
+    }
+
+    public void setCommissionPercentage(double commissionPercentage) {
+        this.commissionPercentage = commissionPercentage;
+    }
+
+    public BookStatus getBookStatus() {
+        return bookStatus;
+    }
+
+    public void setBookStatus(BookStatus bookStatus) {
+        this.bookStatus = bookStatus;
+    }
+
     public String getCoverImageUrl() {
         return coverImageUrl;
     }
@@ -126,17 +146,19 @@ public class ViewBookResponse {
 
     @Override
     public String toString() {
-        return "ViewBookResponse{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
+        return "AuthorBookDetailViewResponse{" +
+                "title='" + title + '\'' +
                 ", ISBN='" + ISBN + '\'' +
-                ", authorName='" + authorName + '\'' +
                 ", description='" + description + '\'' +
                 ", categoryName='" + categoryName + '\'' +
                 ", language='" + language + '\'' +
+                ", publishDate=" + publishDate +
+                ", totalCopies=" + totalCopies +
                 ", availableCopies=" + availableCopies +
                 ", purchasePrice=" + purchasePrice +
                 ", borrowFee=" + borrowFee +
+                ", commissionPercentage=" + commissionPercentage +
+                ", bookStatus=" + bookStatus +
                 ", coverImageUrl='" + coverImageUrl + '\'' +
                 '}';
     }

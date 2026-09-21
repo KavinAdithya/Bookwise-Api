@@ -126,7 +126,7 @@ public class SubscriptionServiceImpl extends AbstractRepository<SubscriptionServ
         logger.info("Activating One Month free subscription process started.");
 
         Subscription subscription = new Subscription();
-        subscription.initialize(user.getId());
+        subscription.initialize(userSession.getCurrentUserId());
 
         subscription.setSubscriptions(subscriptions);
         setValidationPeriodBasedOnType(subscription, startDate);

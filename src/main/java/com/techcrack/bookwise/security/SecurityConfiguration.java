@@ -33,7 +33,7 @@ public class SecurityConfiguration {
                         .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**")
                         .permitAll()
                         .requestMatchers("/error").permitAll()
-                        .requestMatchers("/api/users/login", "/api/users/register", "/api/authors/register" ,"/api/subscriptions")
+                        .requestMatchers("/api/users/login", "/api/users/register", "/api/authors/register" ,"/api/subscriptions", "/uploads/**")
                         .permitAll()
                         .anyRequest()
                         .authenticated()

@@ -1,8 +1,6 @@
 package com.techcrack.bookwise.mapper;
 
-import com.techcrack.bookwise.dtos.book.response.BookRegisterResponse;
-import com.techcrack.bookwise.dtos.book.response.PendingBookResponse;
-import com.techcrack.bookwise.dtos.book.response.ViewBookResponse;
+import com.techcrack.bookwise.dtos.book.response.*;
 import com.techcrack.bookwise.entity.Book;
 import org.springframework.stereotype.Component;
 
@@ -15,8 +13,8 @@ public class BookMapper {
         return new BookRegisterResponse(src);
     }
 
-    public List<ViewBookResponse> mapToViewBookResponses(List<Book> books) {
-        List<ViewBookResponse> bookResponse = new ArrayList<>();
+    public List<UserBookViewResponse> mapToViewBookResponses(List<Book> books) {
+        List<UserBookViewResponse> bookResponse = new ArrayList<>();
 
         for (Book book : books) {
             bookResponse.add(mapToViewBookResponse(book));
@@ -39,7 +37,37 @@ public class BookMapper {
         return response;
     }
 
-    public ViewBookResponse mapToViewBookResponse(Book book) {
-        return new ViewBookResponse(book);
+    public UserBookViewResponse mapToViewBookResponse(Book source) {
+        return new UserBookViewResponse(
+                source.getId(),
+                source.getTitle(),
+                source.getAuthor().getUser().getName(),
+                source.getCategory().getName(),
+                source.getAvailableCopies(),
+                source.getPurchasePrice(),
+                source.getBorrowFee(),
+                source.getCoverImageUrl()
+        );
+    }
+
+    public AuthorBookDetailViewResponse mapToAuthorBookDetailViewResponse(Book book) {
+        return new AuthorBookDetailViewResponse(book);
+    }
+
+    public AdminViewBookDetailResponse mapToAdminViewBookDetailResponse(Book source) {
+        return new AdminViewBookDetailResponse(
+                source.getId(),
+                source.getTitle(),
+                source.getISBN(),
+                source.getDescription(),
+                source.getAuthor().getUser().getName(),
+                source.getCategory().getName(),
+                source.getTotalCopies(),
+                source.getAvailableCopies(),
+                source.getBorrowFee(),
+                source.getPurchasePrice(),
+                source.getBookStatus(),
+                source.getCoverImageUrl()
+        );
     }
 }

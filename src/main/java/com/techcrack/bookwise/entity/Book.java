@@ -1,5 +1,6 @@
 package com.techcrack.bookwise.entity;
 
+import com.techcrack.bookwise.constans.enums.BookStatus;
 import com.techcrack.bookwise.constans.enums.Status;
 import com.techcrack.bookwise.utils.BaseEntity;
 import jakarta.persistence.*;
@@ -34,18 +35,18 @@ public class Book extends BaseEntity {
     private double commissionPercentage;
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private Status bookStatus;
+    private BookStatus bookStatus;
 
     private String coverImageUrl;
 
     public Book() {
     }
 
-    public Status getBookStatus() {
+    public BookStatus getBookStatus() {
         return bookStatus;
     }
 
-    public void setBookStatus(Status bookStatus) {
+    public void setBookStatus(BookStatus bookStatus) {
         this.bookStatus = bookStatus;
     }
 

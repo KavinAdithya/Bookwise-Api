@@ -1,12 +1,11 @@
 package com.techcrack.bookwise.controller;
 
 import com.techcrack.bookwise.abstractions.BookService;
-import com.techcrack.bookwise.dtos.book.response.ViewBookResponse;
+import com.techcrack.bookwise.constans.enums.BookStatus;
+import com.techcrack.bookwise.dtos.book.response.*;
 import com.techcrack.bookwise.mapper.BookMapper;
 import com.techcrack.bookwise.dtos.book.request.BookIdsRequest;
 import com.techcrack.bookwise.dtos.book.request.BookRegisterRequest;
-import com.techcrack.bookwise.dtos.book.response.BookRegisterResponse;
-import com.techcrack.bookwise.dtos.book.response.PendingBookResponse;
 import com.techcrack.bookwise.entity.Book;
 import com.techcrack.bookwise.abstractions.CurrentUserService;
 import com.techcrack.bookwise.responseHelper.ApiResponseEntity;
@@ -20,15 +19,15 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/books")
+@RequestMapping("/api")
 public class BookController extends AbstractController<BookController, BookService, BookMapper> {
 
-    public BookController(BookService service, BookMapper helper, CurrentUserService userSession) {
-        super(BookController.class, service, helper, userSession);
+    public BookController(BookService service, BookMapper mapper, CurrentUserService userSession) {
+        super(BookController.class, service, mapper, userSession);
     }
 
     @PostMapping(
-            value = "/register",
+            value = "/books/register",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponseEntity<BookRegisterResponse>> register(
                     @RequestPart("book") BookRegisterRequest request,
@@ -45,13 +44,12 @@ public class BookController extends AbstractController<BookController, BookServi
                 .buildSuccessResponse("Book Registered Successfully", responseDTO);
     }
 
-    @GetMapping
-    public ResponseEntity<ApiResponseEntity<List<ViewBookResponse>>> getAllBooksForView() {
+    // This is for Users view
+    @GetMapping("/books")
+    public ResponseEntity<ApiResponseEntity<List<UserBookViewResponse>>> getAllBooksForView() {
         logger.info("Get all books request received");
 
-        List<Book> books = service.getAllApprovedAndAvailableBooks();
-
-        List<ViewBookResponse> response = mapper.mapToViewBookResponses(books);
+        List<UserBookViewResponse> response = service.getAllPublishedBooks();
 
         logger.info("Get All Books request completed");
         return ResponseEntityHelper
@@ -61,24 +59,18 @@ public class BookController extends AbstractController<BookController, BookServi
                 );
     }
 
-    @GetMapping("/status/pending")
-    public ResponseEntity<ApiResponseEntity<List<PendingBookResponse>>> getAllPendingBooks() {
-        logger.info("Request Received to get all pending books");
+    @GetMapping("/books/{bookId}")
+    public ResponseEntity<ApiResponseEntity<UserBookDetailViewResponse>> getBookDetails(@PathVariable("bookId") Long bookId) {
+        logger.info("Request Received to fetch book details with {}", bookId);
 
-        List<Book> books = service.getAllPendingBooks();
+        UserBookDetailViewResponse response = service.getBookDetail(bookId);
 
-        List<PendingBookResponse> response = mapper.mapToPendingBookResponses(books);
-
-        logger.info("Request Completed to get all pending books");
+        logger.info("Request Completed to fetch book details with {}", bookId);
 
         return ResponseEntityHelper
-                .buildSuccessResponse(
-                        "Pending Books Fetched Successfully",
-                        response
-                );
+                .buildSuccessResponse("Book Details Fetched Successfully", response);
     }
-
-    @PatchMapping("/approve")
+    @PatchMapping("/admin/books/approve")
     public ResponseEntity<ApiResponseEntity<String>> approveAllBooks(@RequestBody BookIdsRequest request) {
         logger.info("Request Received to approve books {}", request.getBookIds());
 
@@ -90,7 +82,7 @@ public class BookController extends AbstractController<BookController, BookServi
                 .buildSuccessResponse("Books Status Updated", "Totally " + booksCount + " Books are Approved");
     }
 
-    @PatchMapping("/reject")
+    @PatchMapping("/admin/books/reject")
     public ResponseEntity<ApiResponseEntity<String>> rejectAllBooks(@RequestBody BookIdsRequest request) {
         logger.info("Request Received to Reject books {}", request.getBookIds());
 
@@ -100,5 +92,56 @@ public class BookController extends AbstractController<BookController, BookServi
 
         return ResponseEntityHelper
                 .buildSuccessResponse("Books Status Updated", "Totally " + booksCount + " Books are Rejected");
+    }
+
+    @GetMapping("/author/me/books")
+    public ResponseEntity<ApiResponseEntity<List<AuthorBookViewResponse>>> getAllAuthorBooks() {
+        logger.info("Request Received to fetch books related to author");
+
+        List<AuthorBookViewResponse> responses = service.getAuthorBooksAll();
+
+        logger.info("Request Completed to fetch books related to author");
+        return ResponseEntityHelper
+                .buildSuccessResponse("Author Books fetched successfully", responses);
+    }
+
+    @GetMapping("/author/me/books/{id}")
+    public ResponseEntity<ApiResponseEntity<AuthorBookDetailViewResponse>> getAuthorBookById(@PathVariable("id") long bookId) {
+        logger.info("Request Received to fetch book detail for author");
+
+        Book book = service.getBookById(bookId);
+
+        AuthorBookDetailViewResponse response = mapper.mapToAuthorBookDetailViewResponse(book);
+
+        logger.info("Request Completed to fetch book detail for author");
+
+        return ResponseEntityHelper
+                .buildSuccessResponse("Author Book Detail Fetched Successfully", response);
+    }
+
+    @GetMapping("/admin/me/books")
+    public ResponseEntity<ApiResponseEntity<List<AdminViewBookResponse>>> getAllBooksForAdmin(@RequestParam("bookStatus") BookStatus status) {
+        logger.info("Request Received to fetch all books for admin");
+
+        List<AdminViewBookResponse> responses = service.getAllBooksForAdmin(status);
+
+        logger.info("Request Completed to fetch all books for admin");
+
+        return ResponseEntityHelper
+                .buildSuccessResponse("Admin Books fetched Successfully", responses);
+    }
+
+    @GetMapping("/admin/me/books/{bookId}")
+    public ResponseEntity<ApiResponseEntity<AdminViewBookDetailResponse>>  getBookDetailForAdmin(@PathVariable("bookId") long bookId) {
+        logger.info("Request Received to fetch book details for admin");
+
+        Book book = service.getBookById(bookId);
+
+        AdminViewBookDetailResponse response = mapper.mapToAdminViewBookDetailResponse(book);
+
+        logger.info("Request Completed to fetch book details for admin");
+
+        return ResponseEntityHelper
+                .buildSuccessResponse("Admin book details fetched", response);
     }
 }

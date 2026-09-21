@@ -44,6 +44,6 @@ public class ImageSaveHelper {
                 StandardCopyOption.REPLACE_EXISTING
         );
 
-        return uploadDir + fileName;
+        return uploadDir + "/" + fileName;
     }
 }
