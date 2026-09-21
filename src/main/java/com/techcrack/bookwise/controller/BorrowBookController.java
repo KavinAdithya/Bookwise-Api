@@ -20,14 +20,14 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/borrow-books")
+@RequestMapping("/api")
 public class BorrowBookController extends AbstractController<BorrowBookController, BorrowBookService, BorrowBookMapper> {
     public BorrowBookController(BorrowBookService service, BorrowBookMapper helper, CurrentUserService userSession) {
         super(BorrowBookController.class, service, helper, userSession);
     }
 
-    @PostMapping("/register")
-    public ResponseEntity<ApiResponseEntity<BorrowBookRegisterResponse>> borrowBook(@RequestBody BorrowBookRequest request) {
+    @PostMapping("/borrow-books/register")
+    public ResponseEntity<ApiResponseEntity<BorrowBookRegisterResponse>> registerBorrowBook(@RequestBody BorrowBookRequest request) {
         logger.info("Request Received to borrow book {}", request);
 
         BorrowBook borrowBook = service.borrowBook(request);
@@ -40,8 +40,8 @@ public class BorrowBookController extends AbstractController<BorrowBookControlle
                 .buildSuccessResponse("Book Borrowed Successfully", response);
     }
 
-    @GetMapping("/{borrowBookId}")
-    public ResponseEntity<ApiResponseEntity<BorrowBookRegisterResponse>> borrowBook(@PathVariable long borrowBookId) {
+    @GetMapping("/borrow-books/{borrowBookId}")
+    public ResponseEntity<ApiResponseEntity<BorrowBookRegisterResponse>> getBorrowBookById(@PathVariable long borrowBookId) {
         logger.info("Request received to get borrow details for {}", borrowBookId);
 
         BorrowBook book = service.getBorrowDetails(borrowBookId);
@@ -56,8 +56,8 @@ public class BorrowBookController extends AbstractController<BorrowBookControlle
                     );
     }
 
-    @GetMapping("/{borrowBookId}/calculate-due")
-    public ResponseEntity<ApiResponseEntity<DueAmountResponse>> getDueAmount(@PathVariable long borrowBookId) {
+    @GetMapping("/borrow-books/{borrowBookId}/calculate-due")
+    public ResponseEntity<ApiResponseEntity<DueAmountResponse>> calculateDueAmount(@PathVariable long borrowBookId) {
         logger.info("Request received to calculate due amount for {}", borrowBookId);
         double dueAmount = service.calculateDueAmount(borrowBookId);
 
@@ -68,8 +68,8 @@ public class BorrowBookController extends AbstractController<BorrowBookControlle
                 .buildSuccessResponse("Due Amount Fetched", response);
     }
 
-    @GetMapping
-    public ResponseEntity<ApiResponseEntity<List<BorrowBookRegisterResponse>>> fetchBorrowRequests() {
+    @GetMapping("/borrow-books")
+    public ResponseEntity<ApiResponseEntity<List<BorrowBookRegisterResponse>>> getAllBorrowRequests() {
         logger.info("Request Received to fetch all borrow details of the user {}", userSession.getCurrentUserId());
 
         List<BorrowBook> borrowBooks = service.getAllBorrowDetails();
@@ -82,8 +82,8 @@ public class BorrowBookController extends AbstractController<BorrowBookControlle
                 .buildSuccessResponse("Borrow Books Fetched Successfully", responseDTOS);
     }
 
-    @PatchMapping("/return-book")
-    public ResponseEntity<ApiResponseEntity<ReturnBookResponse>> returnBook(@RequestBody ReturnBookRequest request) {
+    @PatchMapping("/borrow-books/return-book")
+    public ResponseEntity<ApiResponseEntity<ReturnBookResponse>> returnBorrowBook(@RequestBody ReturnBookRequest request) {
         logger.info("Request received to return a book with {}", request);
 
 
