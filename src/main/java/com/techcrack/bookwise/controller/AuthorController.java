@@ -33,7 +33,7 @@ public class AuthorController extends AbstractController<AuthorController, Autho
     }
 
     @PostMapping("/register")
-    public ResponseEntity<ApiResponseEntity<AuthorRegisterResponse>> register(@RequestBody AuthorRegisterRequest authorRegisterRequest) {
+    public ResponseEntity<ApiResponseEntity<AuthorRegisterResponse>> registerAuthor(@RequestBody AuthorRegisterRequest authorRegisterRequest) {
         logger.info("Request received for author registration {}", authorRegisterRequest.getUser().getUsername());
 
         Author author = mapper.mapToAuthor(authorRegisterRequest);
@@ -49,7 +49,7 @@ public class AuthorController extends AbstractController<AuthorController, Autho
     }
 
     @GetMapping("/filter")
-    public ResponseEntity<ApiResponseEntity<List<AdminViewAuthorResponse>>> getAuthorsForApproval(@RequestParam("status") Status status) {
+    public ResponseEntity<ApiResponseEntity<List<AdminViewAuthorResponse>>> getAuthorsBasedOnStatus(@RequestParam("status") Status status) {
         logger.info("Author Approval Request Received");
 
         List<AdminViewAuthorResponse> authors = service.getAuthorsBasedOnStatus(status);
@@ -88,7 +88,7 @@ public class AuthorController extends AbstractController<AuthorController, Autho
     public ResponseEntity<ApiResponseEntity<List<AdminViewAuthorResponse>>> getAllAuthors() {
         logger.info("Request Received to fetch all authors");
 
-        List<AdminViewAuthorResponse> authors = service.getAllActiveAuthorForAdminView();
+        List<AdminViewAuthorResponse> authors = service.getAllActiveAuthorsForAdminView();
 
         logger.info("Request Completed to fetch all authors");
         return ResponseEntityHelper
