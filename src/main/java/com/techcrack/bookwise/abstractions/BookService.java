@@ -12,7 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 public interface BookService extends BasicCRUD<Book> {
-    boolean checkAvailability(long id, int quantity);
+    boolean checkBookAvailability(long id, int quantity);
     boolean updateBookAvailability(long id, int quantity);
     List<UserBookViewResponse> getAllPublishedBooks();
     UserBookDetailViewResponse getBookDetail(long bookId);
