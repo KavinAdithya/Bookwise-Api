@@ -16,15 +16,15 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/subscriptions")
+@RequestMapping("/api")
 public class SubscriptionController extends AbstractController<SubscriptionController, SubscriptionService, SubscriptionMapper> {
 
     public SubscriptionController(SubscriptionService subscriptionService, SubscriptionMapper mapper, CurrentUserService userSession) {
         super(SubscriptionController.class, subscriptionService, mapper, userSession);
     }
 
-    @GetMapping
-    public ResponseEntity<ApiResponseEntity<List<SubscriptionPlanResponse>>> getSubscriptionPlans() {
+    @GetMapping("/subscriptions")
+    public ResponseEntity<ApiResponseEntity<List<SubscriptionPlanResponse>>> getAllActiveSubscriptionPlans() {
         logger.info("Request Received to fetch all subscriptions available");
 
         Subscriptions[] subscriptions = service.getAllSubscriptions();
