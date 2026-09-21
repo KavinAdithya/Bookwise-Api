@@ -1,5 +1,7 @@
 package com.techcrack.bookwise.repository;
 
+import com.techcrack.bookwise.dtos.book.response.UserBookDetailViewResponse;
+import com.techcrack.bookwise.dtos.book.response.UserBookViewResponse;
 import com.techcrack.bookwise.dtos.user.context.UserSubscriptionDetail;
 import com.techcrack.bookwise.dtos.user.response.AdminUserViewResponse;
 import com.techcrack.bookwise.entity.Users;
@@ -33,4 +35,5 @@ public interface UserRepository extends JpaRepository<Users, Long> {
 
     @Query(FETCH_USER_SUBSCRIPTION)
     UserSubscriptionDetail getUserSubscription(@Param("userId") long userId);
+
 }

@@ -159,4 +159,46 @@ public class JPQLQueries {
             FETCH_ALL_BOOKS + """
                                 WHERE b.bookStatus = :bookStatus
                            """;
+
+    public static final String FETCH_USER_BOOK_DETAIL = """
+                SELECT
+                    new com.techcrack.bookwise.dtos.book.response.UserBookDetailViewResponse(
+                        b.id,
+                        b.title,
+                        b.ISBN,
+                        b.description,
+                        c.name,
+                        u.name,
+                        b.availableCopies,
+                        b.totalCopies,
+                        b.borrowFee,
+                        b.purchasePrice,
+                        b.coverImageUrl
+                    )
+                FROM Book b
+                JOIN b.category c
+                JOIN b.author a
+                JOIN a.user u
+                WHERE b.id = :bookId
+            """;
+
+    public static final String FETCH_ALL_USER_BOOKS = """
+            SELECT
+                new com.techcrack.bookwise.dtos.book.response.UserBookViewResponse(
+                    b.id,
+                    b.title,
+                    u.name,
+                    c.name,
+                    b.availableCopies,
+                    b.purchasePrice,
+                    b.borrowFee,
+                    b.coverImageUrl
+                )
+            FROM Book b
+            JOIN b.category c
+            JOIN b.author a
+            JOIN a.user u
+            WHERE b.isActive
+            AND b.bookStatus = "PUBLISHED"
+            """;
 }

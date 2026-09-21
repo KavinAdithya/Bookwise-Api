@@ -7,9 +7,7 @@ import com.techcrack.bookwise.constans.ApplicationData;
 import com.techcrack.bookwise.constans.enums.BookStatus;
 import com.techcrack.bookwise.constans.enums.Status;
 import com.techcrack.bookwise.dtos.book.request.BookRegisterRequest;
-import com.techcrack.bookwise.dtos.book.response.AdminViewBookDetailResponse;
-import com.techcrack.bookwise.dtos.book.response.AdminViewBookResponse;
-import com.techcrack.bookwise.dtos.book.response.AuthorBookViewResponse;
+import com.techcrack.bookwise.dtos.book.response.*;
 import com.techcrack.bookwise.entity.Author;
 import com.techcrack.bookwise.entity.Book;
 import com.techcrack.bookwise.entity.Category;
@@ -145,11 +143,13 @@ public class BookServiceImpl extends AbstractService<BookServiceImpl, BookReposi
     }
 
     @Override
-    public List<Book> getAllApprovedAndAvailableBooks() {
-        return repo.findAllByBookStatusAndAvailableCopiesGreaterThanAndIsActiveTrue(
-                BookStatus.PUBLISHED,
-                0
-        );
+    public List<UserBookViewResponse> getAllPublishedBooks() {
+        return repo.getAllPublishedUserBooks();
+    }
+
+    @Override
+    public UserBookDetailViewResponse getBookDetail(long bookId) {
+        return repo.getUserBookDetailsById(bookId);
     }
 
     @Override

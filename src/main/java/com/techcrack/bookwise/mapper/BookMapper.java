@@ -13,8 +13,8 @@ public class BookMapper {
         return new BookRegisterResponse(src);
     }
 
-    public List<ViewBookResponse> mapToViewBookResponses(List<Book> books) {
-        List<ViewBookResponse> bookResponse = new ArrayList<>();
+    public List<UserBookViewResponse> mapToViewBookResponses(List<Book> books) {
+        List<UserBookViewResponse> bookResponse = new ArrayList<>();
 
         for (Book book : books) {
             bookResponse.add(mapToViewBookResponse(book));
@@ -37,8 +37,8 @@ public class BookMapper {
         return response;
     }
 
-    public ViewBookResponse mapToViewBookResponse(Book source) {
-        return new ViewBookResponse(
+    public UserBookViewResponse mapToViewBookResponse(Book source) {
+        return new UserBookViewResponse(
                 source.getId(),
                 source.getTitle(),
                 source.getAuthor().getUser().getName(),

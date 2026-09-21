@@ -4,6 +4,8 @@ import com.techcrack.bookwise.constans.enums.BookStatus;
 import com.techcrack.bookwise.constans.enums.Status;
 import com.techcrack.bookwise.dtos.book.response.AdminViewBookResponse;
 import com.techcrack.bookwise.dtos.book.response.AuthorBookViewResponse;
+import com.techcrack.bookwise.dtos.book.response.UserBookDetailViewResponse;
+import com.techcrack.bookwise.dtos.book.response.UserBookViewResponse;
 import com.techcrack.bookwise.entity.Book;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -55,4 +57,10 @@ public interface BookRepository extends JpaRepository<Book, Long> {
 
     @Query(FETCH_ALL_BOOKS_BY_STATUS)
     List<AdminViewBookResponse> getAllBooksByStatus(@Param("bookStatus") BookStatus bookStatus);
+
+    @Query(FETCH_USER_BOOK_DETAIL)
+    UserBookDetailViewResponse getUserBookDetailsById(@Param("bookId") long bookId);
+
+    @Query(FETCH_ALL_USER_BOOKS)
+    List<UserBookViewResponse> getAllPublishedUserBooks();
 }
