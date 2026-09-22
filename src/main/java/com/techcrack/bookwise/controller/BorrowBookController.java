@@ -1,6 +1,7 @@
 package com.techcrack.bookwise.controller;
 
 import com.techcrack.bookwise.abstractions.BorrowBookService;
+import com.techcrack.bookwise.dtos.book.response.BorrowBookConfirmationDetail;
 import com.techcrack.bookwise.dtos.borrowbook.layer.ReturnBookContext;
 import com.techcrack.bookwise.dtos.borrowbook.request.BorrowBookRequest;
 import com.techcrack.bookwise.dtos.borrowbook.request.ReturnBookRequest;
@@ -95,5 +96,19 @@ public class BorrowBookController extends AbstractController<BorrowBookControlle
         logger.info("Request Completed to return a book {}", request);
         return ResponseEntityHelper
                 .buildSuccessResponse("Book Returned Successfully", response);
+    }
+
+    @GetMapping("/borrow-books/confirmation/{bookId}/{quantity}")
+    public  ResponseEntity<ApiResponseEntity<BorrowBookConfirmationDetail>> getBorrowBookConfirmationDetails(@PathVariable("bookId") long bookId, @PathVariable("quantity") int quantity) {
+        logger.info("Request received to get borrow book confirmation details");
+
+        BorrowBookConfirmationDetail borrowBookConfirmationDetail = service.computeBorrowBookConfirmationDetails(
+                new BorrowBookRequest(bookId, quantity)
+        );
+
+        logger.info("Request Completed to get borrow book confirmation details");
+
+        return ResponseEntityHelper
+                .buildSuccessResponse("Computed Borrow Book Confirmation Details", borrowBookConfirmationDetail);
     }
 }

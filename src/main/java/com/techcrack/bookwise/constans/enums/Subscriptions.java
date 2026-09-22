@@ -9,7 +9,7 @@ public enum Subscriptions {
 
     private final int days;
     private final double rent;
-    private final int booksAllowed;
+    private final long booksAllowed;
     private final double delayDailyFineAmount;
 
     Subscriptions(int days, int rent, int booksAllowed, double delayDailyFineAmount) {
@@ -19,7 +19,7 @@ public enum Subscriptions {
         this.delayDailyFineAmount = delayDailyFineAmount;
     }
 
-    public int getBooksAllowed() {
+    public long getBooksAllowed() {
         return booksAllowed;
     }
 

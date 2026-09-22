@@ -11,6 +11,11 @@ public class BorrowBookRequest {
         super();
     }
 
+    public BorrowBookRequest(long bookId, int quantity) {
+        this.bookId = bookId;
+        this.quantity = quantity;
+    }
+
     public long getBookId() {
         return bookId;
     }

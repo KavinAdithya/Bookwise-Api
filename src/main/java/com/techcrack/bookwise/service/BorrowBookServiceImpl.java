@@ -3,12 +3,16 @@ package com.techcrack.bookwise.service;
 import com.techcrack.bookwise.abstractions.*;
 import com.techcrack.bookwise.constans.ApplicationData;
 import com.techcrack.bookwise.constans.enums.BorrowStatus;
+import com.techcrack.bookwise.constans.enums.Subscriptions;
+import com.techcrack.bookwise.dtos.book.response.BorrowBookConfirmationDetail;
 import com.techcrack.bookwise.dtos.borrowbook.layer.ReturnBookContext;
 import com.techcrack.bookwise.dtos.borrowbook.request.BorrowBookRequest;
+import com.techcrack.bookwise.dtos.subscription.response.BorrowBookSubscriptionDetail;
+import com.techcrack.bookwise.dtos.subscription.response.SubscriptionDetails;
+import com.techcrack.bookwise.entity.Book;
 import com.techcrack.bookwise.entity.BorrowBook;
-import com.techcrack.bookwise.exceptions.customized.InvalidDataException;
-import com.techcrack.bookwise.exceptions.customized.ObjectNotFoundException;
-import com.techcrack.bookwise.exceptions.customized.TransactionFailedException;
+import com.techcrack.bookwise.entity.Subscription;
+import com.techcrack.bookwise.exceptions.customized.*;
 import com.techcrack.bookwise.exceptions.templates.Errors;
 import com.techcrack.bookwise.repository.BorrowBookRepository;
 import com.techcrack.bookwise.utils.AbstractService;
@@ -192,7 +196,7 @@ public class BorrowBookServiceImpl extends AbstractService<BorrowBookServiceImpl
 
         long daysDelayed = ChronoUnit.DAYS.between(entity.getDueDate(), ApplicationData.getSystemDate());
 
-        double dailyRent = subscriptionService.getSubscription(entity.getUser().getId())
+        double dailyRent = subscriptionService.getSubscriptionPlanByUserId(entity.getUser().getId())
                 .getDelayDailyFineAmount();
 
         return dailyRent * daysDelayed * entity.getQuantity();
@@ -253,6 +257,41 @@ public class BorrowBookServiceImpl extends AbstractService<BorrowBookServiceImpl
         boolean isAdminRevenueGenerated = adminRevenueService.createRevenueFromBorrowBook(borrowBook);
 
         logger.info(isAdminRevenueGenerated ? "Admin Revenue Generated Successfully" : "Admin Revenue Not Generated It might be no due amount on return amount");
+    }
+
+    @Override
+    public BorrowBookConfirmationDetail computeBorrowBookConfirmationDetails(BorrowBookRequest request) {
+        logger.info("Request Received to get borrow book confirmation details");
+
+        if (!bookService.checkBookAvailability(request.getBookId(), request.getQuantity())) {
+            logger.warn("Book Quantity not available");
+            throw new OutOfStockException("Book is out of stock");
+        }
+
+        boolean hasLimit = subscriptionService.hasLimitToBorrowBook(userSession.getCurrentUserId());
+        if (hasLimit) {
+            logger.warn("User doesn't have limit to borrow a book");
+            throw new UpgradeSubscriptionException("User doesn't have limit to borrow a book");
+        }
+
+        Book book = bookService.getBookById(request.getBookId());
+        Subscription subscription = subscriptionService.getSubscriptionByUserId(userSession.getCurrentUserId());
+
+        BorrowBookSubscriptionDetail subscriptionDetail = new BorrowBookSubscriptionDetail(
+                subscription.getId(),
+                subscription.getSubscriptions(),
+                subscription.getEndDate(),
+                subscription.getSubscriptions().getBooksAllowed(),
+                subscription.getBooksAllowedPerMonth(),
+                subscription.getSubscriptions().getDelayDailyFineAmount()
+        );
+
+        return new BorrowBookConfirmationDetail(
+                book.getId(),
+                book.getTitle(),
+                book.getAuthor().getUser().getName(),
+                subscriptionDetail
+        );
     }
 
     @Override

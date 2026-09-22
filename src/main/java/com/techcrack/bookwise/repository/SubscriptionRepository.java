@@ -24,11 +24,13 @@ public interface SubscriptionRepository extends JpaRepository<Subscription, Long
     boolean existsLimitForBookBorrow(@Param("userId") long userId);
 
     @Query(JPQLQueries.FETCH_SUBSCRIPTIONS)
-    Subscriptions getSubscription(@Param("userId") long userId);
+    Subscriptions getSubscriptionPlanByUserId(@Param("userId") long userId);
 
     @Modifying
     @Transactional
     @Query(value = RawQueries.UPDATE_SUBSCRIPTION_BOOK_ALLOWED_COUNT, nativeQuery = true)
     int updateBooksAllowed(@Param("userId") long userId,
                            @Param("quantity") long quantity);
+
+    Subscription getSubscriptionByIsActiveTrueAndUser_Id(long userId);
 }

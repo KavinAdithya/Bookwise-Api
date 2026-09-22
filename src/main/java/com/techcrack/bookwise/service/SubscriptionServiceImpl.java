@@ -6,7 +6,6 @@ import com.techcrack.bookwise.abstractions.UserService;
 import com.techcrack.bookwise.constans.ApplicationData;
 import com.techcrack.bookwise.constans.enums.Subscriptions;
 import com.techcrack.bookwise.dtos.subscription.DiscountDetails;
-import com.techcrack.bookwise.entity.AdminRevenue;
 import com.techcrack.bookwise.entity.Subscription;
 import com.techcrack.bookwise.entity.Users;
 import com.techcrack.bookwise.abstractions.CurrentUserService;
@@ -18,7 +17,6 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Service
 public class SubscriptionServiceImpl extends AbstractRepository<SubscriptionServiceImpl, SubscriptionRepository>
@@ -176,7 +174,7 @@ public class SubscriptionServiceImpl extends AbstractRepository<SubscriptionServ
     @Override
     @Transactional
     public int getFreeLimitDays(long userId) {
-        return repo.getSubscription(userId).getDays();
+        return repo.getSubscriptionPlanByUserId(userId).getDays();
     }
 
     @Override
@@ -185,12 +183,17 @@ public class SubscriptionServiceImpl extends AbstractRepository<SubscriptionServ
         return repo.updateBooksAllowed(userId, quantity);
     }
 
-    public Subscriptions getSubscription(long userId) {
-        return repo.getSubscription(userId);
+    public Subscriptions getSubscriptionPlanByUserId(long userId) {
+        return repo.getSubscriptionPlanByUserId(userId);
     }
 
     @Override
     public Subscriptions[] getAllSubscriptions() {
         return Subscriptions.values();
+    }
+
+    @Override
+    public Subscription getSubscriptionByUserId(long userId) {
+        return repo.getSubscriptionByIsActiveTrueAndUser_Id(userId);
     }
 }
