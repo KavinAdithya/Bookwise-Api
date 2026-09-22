@@ -180,7 +180,7 @@ public class BorrowBookServiceImpl extends AbstractService<BorrowBookServiceImpl
      * @return returns calculated due amount
      */
     public double calculateDueAmount(long borrowBookId) {
-        BorrowBook entity = getBorrowDetails(borrowBookId);
+        BorrowBook entity = this.getBorrowBookById(borrowBookId);
 
         return calculateDueAmount(entity);
     }
@@ -218,7 +218,7 @@ public class BorrowBookServiceImpl extends AbstractService<BorrowBookServiceImpl
     public void returnBook(ReturnBookContext context) {
         logger.info("Return Book process has been started for Borrow Book Id : {}", context);
 
-        BorrowBook borrowBook = getBorrowDetails(context.borrowBookId());
+        BorrowBook borrowBook = this.getBorrowBookById(context.borrowBookId());
 
         // Calculation of due amount
         double dueAmount = calculateDueAmount(borrowBook);

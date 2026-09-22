@@ -1,7 +1,6 @@
 package com.techcrack.bookwise.controller;
 
 import com.techcrack.bookwise.abstractions.BorrowBookService;
-import com.techcrack.bookwise.constans.ApplicationData;
 import com.techcrack.bookwise.dtos.borrowbook.layer.ReturnBookContext;
 import com.techcrack.bookwise.dtos.borrowbook.request.BorrowBookRequest;
 import com.techcrack.bookwise.dtos.borrowbook.request.ReturnBookRequest;
@@ -44,7 +43,7 @@ public class BorrowBookController extends AbstractController<BorrowBookControlle
     public ResponseEntity<ApiResponseEntity<BorrowBookRegisterResponse>> getBorrowBookById(@PathVariable long borrowBookId) {
         logger.info("Request received to get borrow details for {}", borrowBookId);
 
-        BorrowBook book = service.getBorrowDetails(borrowBookId);
+        BorrowBook book = service.getBorrowBookById(borrowBookId);
 
         BorrowBookRegisterResponse response = mapper.mapToBorrowBookRegisterResponse(book);
 
@@ -72,7 +71,7 @@ public class BorrowBookController extends AbstractController<BorrowBookControlle
     public ResponseEntity<ApiResponseEntity<List<BorrowBookRegisterResponse>>> getAllBorrowRequests() {
         logger.info("Request Received to fetch all borrow details of the user {}", userSession.getCurrentUserId());
 
-        List<BorrowBook> borrowBooks = service.getAllBorrowDetails();
+        List<BorrowBook> borrowBooks = service.getAllBorrowBooks();
 
         List<BorrowBookRegisterResponse> responseDTOS = mapper.mapToBorrowBookRegisterResponses(borrowBooks);
 

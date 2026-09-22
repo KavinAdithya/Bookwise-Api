@@ -8,8 +8,8 @@ import java.util.List;
 
 public interface BorrowBookService extends BasicCRUD<BorrowBook> {
     BorrowBook borrowBook(BorrowBookRequest request);
-    BorrowBook getBorrowDetails(long borrowBookId);
+    BorrowBook getBorrowBookById(long borrowBookId);
     double calculateDueAmount(long borrowBookId);
-    List<BorrowBook> getAllBorrowDetails();
+    List<BorrowBook> getAllBorrowBooks();
     void returnBook(ReturnBookContext context);
 }

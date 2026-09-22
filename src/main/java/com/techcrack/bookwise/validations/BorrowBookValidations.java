@@ -51,7 +51,7 @@ public class BorrowBookValidations extends AbstractLogger<BorrowBookValidations>
             errors.addErrorMessage(message);
         }
 
-        if (hasNoError && !bookService.checkAvailability(entity.getBook().getId(), entity.getQuantity())) {
+        if (hasNoError && !bookService.checkBookAvailability(entity.getBook().getId(), entity.getQuantity())) {
             message = "Book is out of stock for Book Name " + entity.getBook().getTitle();
             logger.error(message);
             errors.addErrorMessage(message);

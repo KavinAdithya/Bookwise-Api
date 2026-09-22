@@ -75,7 +75,7 @@ public class PurchaseBookServiceImpl extends AbstractRepository<PurchaseBookServ
         }
         logger.info("Purchasing Book Process Started");
 
-        boolean available = bookService.checkAvailability(request.bookId(), request.quantity());
+        boolean available = bookService.checkBookAvailability(request.bookId(), request.quantity());
 
         if (!available) {
             logger.error("Requested book stock is not available");
