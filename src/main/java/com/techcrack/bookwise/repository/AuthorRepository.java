@@ -35,7 +35,7 @@ public interface AuthorRepository extends JpaRepository<Author, Long> {
     List<Author> findByIsActiveTrue();
 
     @Query(FETCH_AUTHORS_ADMIN_VIEW)
-    List<AdminViewAuthorResponse> getAllAuthorAdminView();
+    List<AdminViewAuthorResponse> getAllAuthorsAdminView();
 
     Optional<Author> findByIdAndIsActiveTrue(long id);
 

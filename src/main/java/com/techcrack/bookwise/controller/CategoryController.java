@@ -16,15 +16,15 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/categories")
+@RequestMapping("/api")
 public class CategoryController extends AbstractController<CategoryController, CategoryService, CategoryMapper> {
 
     public CategoryController(CategoryService service, CategoryMapper helper, CurrentUserService userSession) {
        super(CategoryController.class, service, helper, userSession);
     }
 
-    @PostMapping("/register")
-    public ResponseEntity<ApiResponseEntity<CategoryRegisterResponse>> register(@RequestBody CategoryRegisterRequest categoryRegisterRequest) {
+    @PostMapping("/categories/register")
+    public ResponseEntity<ApiResponseEntity<CategoryRegisterResponse>> registerCategory(@RequestBody CategoryRegisterRequest categoryRegisterRequest) {
         logger.info("Request Received for category register with {}", categoryRegisterRequest.getName());
 
         Category category = mapper.mapToCategory(categoryRegisterRequest);
@@ -38,8 +38,8 @@ public class CategoryController extends AbstractController<CategoryController, C
         return ResponseEntityHelper.buildSuccessResponse("Category Registered Successfully", response);
     }
 
-    @GetMapping("/choices")
-    public ResponseEntity<ApiResponseEntity<List<CategoryChooseResponse>>> getCategoryForChoose() {
+    @GetMapping("/categories")
+    public ResponseEntity<ApiResponseEntity<List<CategoryChooseResponse>>> getAllActiveCategories() {
         logger.info("Request Received to get all categories for book choice");
 
         List<Category> categories = service.getAllCategories();

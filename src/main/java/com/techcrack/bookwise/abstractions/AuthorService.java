@@ -13,7 +13,7 @@ public interface AuthorService extends BasicCRUD<Author> {
     boolean isAuthorValid(Author author);
     Author getAuthorByUserId(long key);
     List<Author> getAllActiveAuthors();
-    List<AdminViewAuthorResponse> getAllActiveAuthorForAdminView();
+    List<AdminViewAuthorResponse> getAllActiveAuthorsForAdminView();
     Author getAuthorById(long id);
     long getAuthorIdByUserId(long userId);
 }

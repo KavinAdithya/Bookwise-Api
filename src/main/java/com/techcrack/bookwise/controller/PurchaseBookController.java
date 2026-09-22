@@ -18,15 +18,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/purchase-books")
+@RequestMapping("/api")
 public class PurchaseBookController extends AbstractController<PurchaseBookController, PurchaseBookService, PurchaseBookMapper> {
 
     public PurchaseBookController(PurchaseBookService service, PurchaseBookMapper mapper, CurrentUserService userSession) {
         super(PurchaseBookController.class, service, mapper, userSession);
     }
 
-    @PostMapping("/register")
-    public ResponseEntity<ApiResponseEntity<PurchaseBookResponse>> register(@RequestBody PurchaseBookRequest request) {
+    @PostMapping("/purchase-books/register")
+    public ResponseEntity<ApiResponseEntity<PurchaseBookResponse>> registerPurchaseBook(@RequestBody PurchaseBookRequest request) {
         logger.info("Request Received to purchase a book {}", request);
 
         PurchaseBook purchaseBook = service.purchaseBook(request);
@@ -39,7 +39,7 @@ public class PurchaseBookController extends AbstractController<PurchaseBookContr
                 .buildSuccessResponse("Book Purchased successfully", response);
     }
 
-    @PostMapping("/calculate-amount")
+    @PostMapping("/purchase-books/calculate-amount")
     public ResponseEntity<ApiResponseEntity<PurchaseBookAmountCalculateResponse>> calculatePurchaseAmount(@RequestBody PurchaseBookAmountCalculateRequest request) {
        logger.info("Request Received tp calculate purchase amount for {}" , request);
 

@@ -93,7 +93,7 @@ public class BorrowBookServiceImpl extends AbstractService<BorrowBookServiceImpl
     }
 
     @Override
-    public BorrowBook getBorrowDetails(long borrowBookId) {
+    public BorrowBook getBorrowBookById(long borrowBookId) {
         logger.info("Getting Borrow details");
 
         BorrowBook borrowBook = repo.findByIdAndIsActiveTrueAndUser_Id(
@@ -209,7 +209,7 @@ public class BorrowBookServiceImpl extends AbstractService<BorrowBookServiceImpl
     }
 
     @Override
-    public List<BorrowBook> getAllBorrowDetails() {
+    public List<BorrowBook> getAllBorrowBooks() {
         return repo.findByIsActiveTrueAndUser_Id(userSession.getCurrentUserId());
     }
 

@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/api")
 public class UserController extends AbstractController<UserController, UserService, UserMapper> {
     private final UserRegistrationService userRegistrationService;
 
@@ -38,7 +38,7 @@ public class UserController extends AbstractController<UserController, UserServi
         this.userRegistrationService = userRegistrationService;
     }
 
-    @PostMapping("/register")
+    @PostMapping("/users/register")
     public ResponseEntity<ApiResponseEntity<UserRegisterResponse>> registerUser(@RequestBody UserRegisterRequest userRegisterRequest) {
         logger.info("Request received to create a user with {}", userRegisterRequest.getUsername());
 
@@ -59,7 +59,7 @@ public class UserController extends AbstractController<UserController, UserServi
         );
     }
 
-    @PostMapping("/login")
+    @PostMapping("/users/login")
     public ResponseEntity<ApiResponseEntity<AuthenticatedResponse>> authenticateUser(@RequestBody UserAuthenticateRequest userAuthenticateRequest) {
         logger.info("Login Request received for {}", userAuthenticateRequest.getUsername());
 
@@ -74,7 +74,7 @@ public class UserController extends AbstractController<UserController, UserServi
         );
     }
 
-    @PostMapping("/send-otp")
+    @PostMapping("/users/send-otp")
     public ResponseEntity<ApiResponseEntity<String>> generateOtp(@RequestBody SendOtpRequest request) {
 
         logger.info("Request Received to send otp for {}", request);
@@ -86,7 +86,7 @@ public class UserController extends AbstractController<UserController, UserServi
 
     }
 
-    @PostMapping("/verify-otp")
+    @PostMapping("/users/verify-otp")
     public ResponseEntity<ApiResponseEntity<VerifyOtpResponse>> verifyOtp(@RequestBody VerifyOtpRequest request) {
         logger.info("OTP Verification started for request {}", request);
 
@@ -99,7 +99,7 @@ public class UserController extends AbstractController<UserController, UserServi
                  .buildSuccessResponse("OTP Verified Successfully", response);
     }
 
-    @PostMapping("/password-reset")
+    @PostMapping("/users/password-reset")
     public ResponseEntity<ApiResponseEntity<Object>> passwordReset(@RequestBody PasswordResetRequest request) {
         logger.info("Request Received to reset password with {}", request);
 
@@ -111,7 +111,7 @@ public class UserController extends AbstractController<UserController, UserServi
                 .buildSuccessResponse("Password Reset Completed Successfully", null);
     }
 
-    @GetMapping("/me")
+    @GetMapping("/users/me")
     public ResponseEntity<ApiResponseEntity<AuthenticatedUserDetails>> getCurrentLoggerInUser() {
         logger.info("Request Received to fetch logged in user details");
 
@@ -133,7 +133,7 @@ public class UserController extends AbstractController<UserController, UserServi
      * Filter IsActive = 1 Means active
      * Filter IsActive = 0 Means InActive
      */
-    @GetMapping("/admin")
+    @GetMapping("/admin/users")
     public ResponseEntity<ApiResponseEntity<List<AdminUserViewResponse>>> getAllUsers(@RequestParam int filterIsActive) {
         logger.info("Request Received to fetch all users except author");
 
@@ -145,8 +145,8 @@ public class UserController extends AbstractController<UserController, UserServi
                 .buildSuccessResponse("Users fetched successfully", responses);
     }
 
-    @GetMapping("/admin/user/{userId}")
-    public ResponseEntity<ApiResponseEntity<AdminUserDetailViewResponse>> getUser(@PathVariable("userId") long userId) {
+    @GetMapping("/admin/users/{userId}")
+    public ResponseEntity<ApiResponseEntity<AdminUserDetailViewResponse>> getUserById(@PathVariable("userId") long userId) {
         logger.info("Request received from admin to fetch a user details of {} ", userId);
 
         UserSubscriptionDetail subscriptionDetail = service.getUserWithSubscription(userId);
