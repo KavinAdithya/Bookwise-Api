@@ -14,12 +14,14 @@ import com.techcrack.bookwise.entity.BorrowBook;
 import com.techcrack.bookwise.entity.Subscription;
 import com.techcrack.bookwise.exceptions.customized.*;
 import com.techcrack.bookwise.exceptions.templates.Errors;
+import com.techcrack.bookwise.helper.BorrowBookHelper;
 import com.techcrack.bookwise.repository.BorrowBookRepository;
 import com.techcrack.bookwise.utils.AbstractService;
 import com.techcrack.bookwise.validations.BorrowBookValidations;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
@@ -31,6 +33,7 @@ public class BorrowBookServiceImpl extends AbstractService<BorrowBookServiceImpl
     private final SubscriptionService subscriptionService;
     private final AuthorRevenueService authorRevenueService;
     private final AdminRevenueService adminRevenueService;
+    private final BorrowBookHelper helper;
 
     public BorrowBookServiceImpl(BorrowBookRepository repo,
                                  BorrowBookValidations validations,
@@ -38,6 +41,7 @@ public class BorrowBookServiceImpl extends AbstractService<BorrowBookServiceImpl
                                  BookService bookService,
                                  SubscriptionService subscriptionService,
                                  CurrentUserService userSession,
+                                 BorrowBookHelper helper,
                                  AuthorRevenueService authorRevenueService,
                                  AdminRevenueService adminRevenueService) {
        super(BorrowBookServiceImpl.class, repo, validations, userSession);
@@ -46,6 +50,7 @@ public class BorrowBookServiceImpl extends AbstractService<BorrowBookServiceImpl
        this.subscriptionService = subscriptionService;
        this.authorRevenueService = authorRevenueService;
        this.adminRevenueService = adminRevenueService;
+       this.helper = helper;
     }
 
     /**
@@ -128,13 +133,13 @@ public class BorrowBookServiceImpl extends AbstractService<BorrowBookServiceImpl
     public void setBorrowDetails(BorrowBook borrowBook) {
         logger.info("Setting borrow details");
 
+        LocalDateTime dueDate = helper.computeBorrowDueDate(
+                subscriptionService.getFreeLimitDays(userSession.getCurrentUserId())
+        );
+
         borrowBook.initialize(userSession.getCurrentUserId());
         borrowBook.setBorrowDate(ApplicationData.getSystemDate());
-        borrowBook.setDueDate(ApplicationData.getSystemDate().plusDays(
-                subscriptionService.getFreeLimitDays(
-                        userSession.getCurrentUserId()
-                )
-        ));
+        borrowBook.setDueDate(dueDate);
 
         borrowBook.setStatus(BorrowStatus.BORROWED);
 
@@ -269,7 +274,7 @@ public class BorrowBookServiceImpl extends AbstractService<BorrowBookServiceImpl
         }
 
         boolean hasLimit = subscriptionService.hasLimitToBorrowBook(userSession.getCurrentUserId());
-        if (hasLimit) {
+        if (!hasLimit) {
             logger.warn("User doesn't have limit to borrow a book");
             throw new UpgradeSubscriptionException("User doesn't have limit to borrow a book");
         }
@@ -286,10 +291,19 @@ public class BorrowBookServiceImpl extends AbstractService<BorrowBookServiceImpl
                 subscription.getSubscriptions().getDelayDailyFineAmount()
         );
 
+        LocalDateTime dueDate = helper.computeBorrowDueDate(
+                subscriptionService.getFreeLimitDays(userSession.getCurrentUserId())
+        );
+
         return new BorrowBookConfirmationDetail(
                 book.getId(),
                 book.getTitle(),
+                book.getDescription(),
+                book.getAvailableCopies(),
                 book.getAuthor().getUser().getName(),
+                book.getCategory().getName(),
+                book.getCoverImageUrl(),
+                dueDate,
                 subscriptionDetail
         );
     }
