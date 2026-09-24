@@ -7,6 +7,7 @@ import com.techcrack.bookwise.constans.enums.Subscriptions;
 import com.techcrack.bookwise.dtos.book.response.BorrowBookConfirmationDetail;
 import com.techcrack.bookwise.dtos.borrowbook.layer.ReturnBookContext;
 import com.techcrack.bookwise.dtos.borrowbook.request.BorrowBookRequest;
+import com.techcrack.bookwise.dtos.borrowbook.response.BorrowBookViewResponse;
 import com.techcrack.bookwise.dtos.subscription.response.BorrowBookSubscriptionDetail;
 import com.techcrack.bookwise.dtos.subscription.response.SubscriptionDetails;
 import com.techcrack.bookwise.entity.Book;
@@ -218,8 +219,8 @@ public class BorrowBookServiceImpl extends AbstractService<BorrowBookServiceImpl
     }
 
     @Override
-    public List<BorrowBook> getAllBorrowBooks() {
-        return repo.findByIsActiveTrueAndUser_Id(userSession.getCurrentUserId());
+    public List<BorrowBookViewResponse> getAllBorrowBooks() {
+        return repo.findAllBorrowsBasedOnUser(userSession.getCurrentUserId());
     }
 
     @Transactional

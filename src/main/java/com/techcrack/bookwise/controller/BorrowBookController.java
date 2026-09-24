@@ -6,6 +6,7 @@ import com.techcrack.bookwise.dtos.borrowbook.layer.ReturnBookContext;
 import com.techcrack.bookwise.dtos.borrowbook.request.BorrowBookRequest;
 import com.techcrack.bookwise.dtos.borrowbook.request.ReturnBookRequest;
 import com.techcrack.bookwise.dtos.borrowbook.response.BorrowBookRegisterResponse;
+import com.techcrack.bookwise.dtos.borrowbook.response.BorrowBookViewResponse;
 import com.techcrack.bookwise.dtos.borrowbook.response.DueAmountResponse;
 import com.techcrack.bookwise.dtos.borrowbook.response.ReturnBookResponse;
 import com.techcrack.bookwise.entity.BorrowBook;
@@ -69,17 +70,15 @@ public class BorrowBookController extends AbstractController<BorrowBookControlle
     }
 
     @GetMapping("/borrow-books")
-    public ResponseEntity<ApiResponseEntity<List<BorrowBookRegisterResponse>>> getAllBorrowRequests() {
+    public ResponseEntity<ApiResponseEntity<List<BorrowBookViewResponse>>> getAllBorrowRequests() {
         logger.info("Request Received to fetch all borrow details of the user {}", userSession.getCurrentUserId());
 
-        List<BorrowBook> borrowBooks = service.getAllBorrowBooks();
-
-        List<BorrowBookRegisterResponse> responseDTOS = mapper.mapToBorrowBookRegisterResponses(borrowBooks);
+        List<BorrowBookViewResponse> borrowBooks = service.getAllBorrowBooks();
 
         logger.info("Request completed to fetch borrow details of a user");
 
         return ResponseEntityHelper
-                .buildSuccessResponse("Borrow Books Fetched Successfully", responseDTOS);
+                .buildSuccessResponse("Borrow Books Fetched Successfully", borrowBooks);
     }
 
     @PatchMapping("/borrow-books/return-book")

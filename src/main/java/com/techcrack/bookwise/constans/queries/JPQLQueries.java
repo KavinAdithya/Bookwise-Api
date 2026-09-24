@@ -201,4 +201,26 @@ public class JPQLQueries {
             WHERE b.isActive
             AND b.bookStatus = "PUBLISHED"
             """;
+
+    public static final String FIND_ALL_BORROW_BOOKS_USER = """
+                SELECT
+                    new com.techcrack.bookwise.dtos.borrowbook.response.BorrowBookViewResponse(
+                        br.id,
+                        b.id,
+                        b.coverImageUrl,
+                        b.title,
+                        u.name,
+                        br.quantity,
+                        br.borrowDate,
+                        br.dueDate,
+                        br.returnDate,
+                        br.status,
+                        br.totalAmountPaidOnReturn
+                    )
+                FROM BorrowBook br
+                JOIN br.book b
+                JOIN b.author a
+                JOIN a.user u
+                where br.user.id = :userId
+            """;
 }
