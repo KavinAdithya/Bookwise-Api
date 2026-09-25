@@ -7,7 +7,7 @@ import com.techcrack.bookwise.dtos.borrowbook.request.BorrowBookRequest;
 import com.techcrack.bookwise.dtos.borrowbook.request.ReturnBookRequest;
 import com.techcrack.bookwise.dtos.borrowbook.response.BorrowBookRegisterResponse;
 import com.techcrack.bookwise.dtos.borrowbook.response.BorrowBookViewResponse;
-import com.techcrack.bookwise.dtos.borrowbook.response.DueAmountResponse;
+import com.techcrack.bookwise.dtos.borrowbook.response.ReturnBorrowBookDetails;
 import com.techcrack.bookwise.dtos.borrowbook.response.ReturnBookResponse;
 import com.techcrack.bookwise.entity.BorrowBook;
 import com.techcrack.bookwise.mapper.BorrowBookMapper;
@@ -57,16 +57,15 @@ public class BorrowBookController extends AbstractController<BorrowBookControlle
                     );
     }
 
-    @GetMapping("/borrow-books/{borrowBookId}/calculate-due")
-    public ResponseEntity<ApiResponseEntity<DueAmountResponse>> calculateDueAmount(@PathVariable long borrowBookId) {
-        logger.info("Request received to calculate due amount for {}", borrowBookId);
-        double dueAmount = service.calculateDueAmount(borrowBookId);
+    @GetMapping("/borrow-books/{borrowBookId}/return/details")
+    public ResponseEntity<ApiResponseEntity<ReturnBorrowBookDetails>> computeReturnBookDetail(@PathVariable long borrowBookId) {
+        logger.info("Request received to compute return book details for {}", borrowBookId);
 
-        DueAmountResponse response = mapper.mapToDueAmountResponse(dueAmount);
+        ReturnBorrowBookDetails response = service.computeReturnDetails(borrowBookId);
 
-        logger.info("Request Completed to calculate due amount");
+        logger.info("Request Completed to compute return book details");
         return ResponseEntityHelper
-                .buildSuccessResponse("Due Amount Fetched", response);
+                .buildSuccessResponse("Return Book Details Fetched", response);
     }
 
     @GetMapping("/borrow-books")

@@ -1,12 +1,11 @@
 package com.techcrack.bookwise.mapper;
 
 import com.techcrack.bookwise.abstractions.CurrentUserService;
-import com.techcrack.bookwise.constans.ApplicationData;
 import com.techcrack.bookwise.dtos.borrowbook.layer.BorrowBookContext;
 import com.techcrack.bookwise.dtos.borrowbook.layer.ReturnBookContext;
 import com.techcrack.bookwise.dtos.borrowbook.request.ReturnBookRequest;
 import com.techcrack.bookwise.dtos.borrowbook.response.BorrowBookRegisterResponse;
-import com.techcrack.bookwise.dtos.borrowbook.response.DueAmountResponse;
+import com.techcrack.bookwise.dtos.borrowbook.response.ReturnBorrowBookDetails;
 import com.techcrack.bookwise.dtos.borrowbook.response.ReturnBookResponse;
 import com.techcrack.bookwise.entity.BorrowBook;
 import org.springframework.stereotype.Component;
@@ -38,10 +37,6 @@ public class BorrowBookMapper {
         }
 
         return borrowBookRegisterResponses;
-    }
-
-    public DueAmountResponse mapToDueAmountResponse(double dueAmount) {
-        return new DueAmountResponse(dueAmount);
     }
 
     public ReturnBookContext mapToReturnBookContext(ReturnBookRequest request) {

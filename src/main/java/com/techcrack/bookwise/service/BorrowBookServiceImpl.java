@@ -5,9 +5,11 @@ import com.techcrack.bookwise.constans.ApplicationData;
 import com.techcrack.bookwise.constans.enums.BorrowStatus;
 import com.techcrack.bookwise.constans.enums.Subscriptions;
 import com.techcrack.bookwise.dtos.book.response.BorrowBookConfirmationDetail;
+import com.techcrack.bookwise.dtos.borrowbook.layer.DueAmountDetails;
 import com.techcrack.bookwise.dtos.borrowbook.layer.ReturnBookContext;
 import com.techcrack.bookwise.dtos.borrowbook.request.BorrowBookRequest;
 import com.techcrack.bookwise.dtos.borrowbook.response.BorrowBookViewResponse;
+import com.techcrack.bookwise.dtos.borrowbook.response.ReturnBorrowBookDetails;
 import com.techcrack.bookwise.dtos.subscription.response.BorrowBookSubscriptionDetail;
 import com.techcrack.bookwise.dtos.subscription.response.SubscriptionDetails;
 import com.techcrack.bookwise.entity.Book;
@@ -189,15 +191,42 @@ public class BorrowBookServiceImpl extends AbstractService<BorrowBookServiceImpl
      * @param borrowBookId refers to borrow-book where we will compute due amount
      * @return returns calculated due amount
      */
-    public double calculateDueAmount(long borrowBookId) {
+    public DueAmountDetails calculateDueAmount(long borrowBookId) {
         BorrowBook entity = this.getBorrowBookById(borrowBookId);
 
         return calculateDueAmount(entity);
     }
 
-    public double calculateDueAmount(BorrowBook entity) {
+    @Override
+    public ReturnBorrowBookDetails computeReturnDetails(long borrowBookId) {
+        logger.info("Return Details computing started");
+
+        BorrowBook borrowBook = getBorrowBookById(borrowBookId);
+        DueAmountDetails dueAmountDetails = calculateDueAmount(borrowBook);
+
+        logger.info("Return book details computed");
+
+        return new ReturnBorrowBookDetails(
+                borrowBook.getId(),
+                borrowBook.getBook().getId(),
+                borrowBook.getBook().getTitle(),
+                borrowBook.getBook().getDescription(),
+                borrowBook.getQuantity(),
+                borrowBook.getBook().getCategory().getName(),
+                borrowBook.getBook().getAuthor().getUser().getName(),
+                borrowBook.getBorrowDate(),
+                borrowBook.getDueDate(),
+                borrowBook.getBook().getCoverImageUrl(),
+                dueAmountDetails
+        );
+    }
+
+    @Override
+    public DueAmountDetails calculateDueAmount(BorrowBook entity) {
+        long totalDays = ChronoUnit.DAYS.between(entity.getBorrowDate(), ApplicationData.getSystemDate());
+
         if (ApplicationData.getSystemDate().isBefore(entity.getDueDate())) {
-            return 0;
+            return new DueAmountDetails(0, totalDays,0,0);
         }
 
         long daysDelayed = ChronoUnit.DAYS.between(entity.getDueDate(), ApplicationData.getSystemDate());
@@ -205,7 +234,9 @@ public class BorrowBookServiceImpl extends AbstractService<BorrowBookServiceImpl
         double dailyRent = subscriptionService.getSubscriptionPlanByUserId(entity.getUser().getId())
                 .getDelayDailyFineAmount();
 
-        return dailyRent * daysDelayed * entity.getQuantity();
+        double dueAmount = dailyRent * daysDelayed * entity.getQuantity();
+
+        return new DueAmountDetails(daysDelayed, totalDays, dailyRent, dueAmount);
     }
 
     @Override
@@ -231,7 +262,7 @@ public class BorrowBookServiceImpl extends AbstractService<BorrowBookServiceImpl
         BorrowBook borrowBook = this.getBorrowBookById(context.borrowBookId());
 
         // Calculation of due amount
-        double dueAmount = calculateDueAmount(borrowBook);
+        double dueAmount = calculateDueAmount(borrowBook).totalDueAmount();
 
         if (dueAmount != context.amountPaying()) {
             logger.warn("Amount Paying {} Amount Due {}", context.amountPaying(), dueAmount);
