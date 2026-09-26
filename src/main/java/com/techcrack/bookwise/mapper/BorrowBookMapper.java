@@ -4,6 +4,7 @@ import com.techcrack.bookwise.abstractions.CurrentUserService;
 import com.techcrack.bookwise.dtos.borrowbook.layer.BorrowBookContext;
 import com.techcrack.bookwise.dtos.borrowbook.layer.ReturnBookContext;
 import com.techcrack.bookwise.dtos.borrowbook.request.ReturnBookRequest;
+import com.techcrack.bookwise.dtos.borrowbook.response.BorrowBookDetailView;
 import com.techcrack.bookwise.dtos.borrowbook.response.BorrowBookRegisterResponse;
 import com.techcrack.bookwise.dtos.borrowbook.response.ReturnBorrowBookDetails;
 import com.techcrack.bookwise.dtos.borrowbook.response.ReturnBookResponse;

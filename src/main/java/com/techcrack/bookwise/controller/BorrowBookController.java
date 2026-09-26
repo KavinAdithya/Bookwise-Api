@@ -5,10 +5,7 @@ import com.techcrack.bookwise.dtos.book.response.BorrowBookConfirmationDetail;
 import com.techcrack.bookwise.dtos.borrowbook.layer.ReturnBookContext;
 import com.techcrack.bookwise.dtos.borrowbook.request.BorrowBookRequest;
 import com.techcrack.bookwise.dtos.borrowbook.request.ReturnBookRequest;
-import com.techcrack.bookwise.dtos.borrowbook.response.BorrowBookRegisterResponse;
-import com.techcrack.bookwise.dtos.borrowbook.response.BorrowBookViewResponse;
-import com.techcrack.bookwise.dtos.borrowbook.response.ReturnBorrowBookDetails;
-import com.techcrack.bookwise.dtos.borrowbook.response.ReturnBookResponse;
+import com.techcrack.bookwise.dtos.borrowbook.response.*;
 import com.techcrack.bookwise.entity.BorrowBook;
 import com.techcrack.bookwise.mapper.BorrowBookMapper;
 import com.techcrack.bookwise.abstractions.CurrentUserService;
@@ -42,18 +39,16 @@ public class BorrowBookController extends AbstractController<BorrowBookControlle
     }
 
     @GetMapping("/borrow-books/{borrowBookId}")
-    public ResponseEntity<ApiResponseEntity<BorrowBookRegisterResponse>> getBorrowBookById(@PathVariable long borrowBookId) {
+    public ResponseEntity<ApiResponseEntity<BorrowBookDetailView>> getBorrowBookById(@PathVariable long borrowBookId) {
         logger.info("Request received to get borrow details for {}", borrowBookId);
 
-        BorrowBook book = service.getBorrowBookById(borrowBookId);
-
-        BorrowBookRegisterResponse response = mapper.mapToBorrowBookRegisterResponse(book);
+        BorrowBookDetailView borrowBookDetailView = service.getBorrowBookDetailView(borrowBookId);
 
         logger.info("Request completed for get borrow details for {}", borrowBookId);
         return ResponseEntityHelper
                     .buildSuccessResponse(
                         "Borrow Details Fetched",
-                            response
+                            borrowBookDetailView
                     );
     }
 

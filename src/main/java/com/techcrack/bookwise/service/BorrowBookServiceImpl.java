@@ -8,6 +8,8 @@ import com.techcrack.bookwise.dtos.book.response.BorrowBookConfirmationDetail;
 import com.techcrack.bookwise.dtos.borrowbook.layer.DueAmountDetails;
 import com.techcrack.bookwise.dtos.borrowbook.layer.ReturnBookContext;
 import com.techcrack.bookwise.dtos.borrowbook.request.BorrowBookRequest;
+import com.techcrack.bookwise.dtos.borrowbook.response.BookBasicInfo;
+import com.techcrack.bookwise.dtos.borrowbook.response.BorrowBookDetailView;
 import com.techcrack.bookwise.dtos.borrowbook.response.BorrowBookViewResponse;
 import com.techcrack.bookwise.dtos.borrowbook.response.ReturnBorrowBookDetails;
 import com.techcrack.bookwise.dtos.subscription.response.BorrowBookSubscriptionDetail;
@@ -206,17 +208,21 @@ public class BorrowBookServiceImpl extends AbstractService<BorrowBookServiceImpl
 
         logger.info("Return book details computed");
 
+        BookBasicInfo book = new BookBasicInfo(
+            borrowBook.getBook().getId(),
+            borrowBook.getBook().getTitle(),
+            borrowBook.getBook().getDescription(),
+            borrowBook.getBook().getCategory().getName(),
+            borrowBook.getBook().getAuthor().getUser().getName(),
+            borrowBook.getBook().getCoverImageUrl()
+        );
+
         return new ReturnBorrowBookDetails(
                 borrowBook.getId(),
-                borrowBook.getBook().getId(),
-                borrowBook.getBook().getTitle(),
-                borrowBook.getBook().getDescription(),
+                book,
                 borrowBook.getQuantity(),
-                borrowBook.getBook().getCategory().getName(),
-                borrowBook.getBook().getAuthor().getUser().getName(),
                 borrowBook.getBorrowDate(),
                 borrowBook.getDueDate(),
-                borrowBook.getBook().getCoverImageUrl(),
                 dueAmountDetails
         );
     }
@@ -297,6 +303,11 @@ public class BorrowBookServiceImpl extends AbstractService<BorrowBookServiceImpl
     }
 
     @Override
+    public BorrowBookDetailView getBorrowBookDetailView(long borrowBookId) {
+        return repo.getBorrowBookDetailViewByBorrowBookId(borrowBookId);
+    }
+
+    @Override
     public BorrowBookConfirmationDetail computeBorrowBookConfirmationDetails(BorrowBookRequest request) {
         logger.info("Request Received to get borrow book confirmation details");
 
@@ -345,5 +356,4 @@ public class BorrowBookServiceImpl extends AbstractService<BorrowBookServiceImpl
         return repo.findByIdAndIsActiveTrue(key)
                 .orElseThrow(() -> new ObjectNotFoundException(BorrowBook.class, "Borrow Book is Not available"));
     }
-
 }

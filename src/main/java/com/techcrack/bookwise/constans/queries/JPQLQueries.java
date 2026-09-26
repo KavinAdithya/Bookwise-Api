@@ -223,4 +223,31 @@ public class JPQLQueries {
                 JOIN a.user u
                 where br.user.id = :userId
             """;
+
+    public static final String GET_BORROW_BOOK_DETAIL_VIEW = """
+                SELECT
+                    new com.techcrack.bookwise.dtos.borrowbook.response.BorrowBookDetailView(
+                        br.id,
+                        new com.techcrack.bookwise.dtos.borrowbook.response.BookBasicInfo(
+                            b.id,
+                            b.title,
+                            b.description,
+                            c.name,
+                            u.name,
+                            b.coverImageUrl
+                        ),
+                        br.quantity,
+                        br.borrowDate,
+                        br.dueDate,
+                        br.returnDate,
+                        br.status,
+                        br.totalAmountPaidOnReturn
+                    )
+                FROM BorrowBook br
+                JOIN br.book b
+                JOIN b.category c
+                JOIN b.author a
+                JOIN a.user u
+                WHERE br.Id = :borrowBookId
+            """;
 }
