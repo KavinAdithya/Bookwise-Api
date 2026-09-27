@@ -2,20 +2,21 @@ package com.techcrack.bookwise.controller;
 
 import com.techcrack.bookwise.abstractions.CurrentUserService;
 import com.techcrack.bookwise.abstractions.PurchaseBookService;
-import com.techcrack.bookwise.dtos.purchasebook.request.PurchaseBookAmountCalculateRequest;
 import com.techcrack.bookwise.dtos.purchasebook.request.PurchaseBookRequest;
-import com.techcrack.bookwise.dtos.purchasebook.response.PurchaseBookAmountCalculateResponse;
+import com.techcrack.bookwise.dtos.purchasebook.request.PurchasingBookOrderDetailRequest;
+import com.techcrack.bookwise.dtos.purchasebook.response.PurchaseBookViewResponse;
+import com.techcrack.bookwise.dtos.purchasebook.response.PurchasePriceOfOrder;
 import com.techcrack.bookwise.dtos.purchasebook.response.PurchaseBookResponse;
+import com.techcrack.bookwise.dtos.purchasebook.response.PurchasingBookDetailResponse;
 import com.techcrack.bookwise.entity.PurchaseBook;
 import com.techcrack.bookwise.mapper.PurchaseBookMapper;
 import com.techcrack.bookwise.responseHelper.ApiResponseEntity;
 import com.techcrack.bookwise.responseHelper.ResponseEntityHelper;
 import com.techcrack.bookwise.utils.AbstractController;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api")
@@ -39,17 +40,27 @@ public class PurchaseBookController extends AbstractController<PurchaseBookContr
                 .buildSuccessResponse("Book Purchased successfully", response);
     }
 
-    @PostMapping("/purchase-books/calculate-amount")
-    public ResponseEntity<ApiResponseEntity<PurchaseBookAmountCalculateResponse>> calculatePurchaseAmount(@RequestBody PurchaseBookAmountCalculateRequest request) {
-       logger.info("Request Received tp calculate purchase amount for {}" , request);
+    @GetMapping("/purchase-books/calculate-amount")
+    public ResponseEntity<ApiResponseEntity<PurchasingBookDetailResponse>> calculatePurchaseAmount(@RequestParam("bookId") long bookId, @RequestParam("quantity") int quantity) {
+       logger.info("Request Received to calculate purchase amount for {}" , bookId);
 
-       double amount = service.calculatePurchasePriceBook(request);
+       PurchasingBookDetailResponse response = service.computePurchasingBookOrderDetails(new PurchasingBookOrderDetailRequest(bookId, quantity));
 
-        PurchaseBookAmountCalculateResponse response = new PurchaseBookAmountCalculateResponse(amount);
-
-        logger.info("Purchase Book Amount Calculation Request Completed Amount {}", amount);
+        logger.info("Purchase Book Amount Calculation Request Completed  {}", response);
 
         return ResponseEntityHelper
                 .buildSuccessResponse("Amount Calculated Successfully", response);
+    }
+
+    @GetMapping("/user/me/purchase-books")
+    public ResponseEntity<ApiResponseEntity<List<PurchaseBookViewResponse>>> getAllUserPurchaseBooks() {
+        logger.info("Request received to get all user purchase books");
+
+        List<PurchaseBookViewResponse> purchaseBookViewResponses = service.findAllPurchaseBooks();
+
+        logger.info("Request completed to get all user purchase books");
+
+        return ResponseEntityHelper
+                .buildSuccessResponse("Purchase Books Fetched", purchaseBookViewResponses);
     }
 }

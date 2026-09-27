@@ -1,5 +1,6 @@
 package com.techcrack.bookwise.jwt;
 
+import com.techcrack.bookwise.constans.ApplicationData;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
@@ -39,7 +40,7 @@ public class JwtService {
                 .add(new HashMap<>())
                 .subject(username)
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 10))
+                .expiration(new Date(System.currentTimeMillis() + ApplicationData.LOGIN_EXPIRY_SECONDS))
                 .and()
                 .signWith(getKey())
                 .compact();

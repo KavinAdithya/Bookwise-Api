@@ -2,18 +2,23 @@ package com.techcrack.bookwise.service;
 
 import com.techcrack.bookwise.abstractions.*;
 import com.techcrack.bookwise.constans.ApplicationData;
-import com.techcrack.bookwise.dtos.purchasebook.request.PurchaseBookAmountCalculateRequest;
+import com.techcrack.bookwise.dtos.purchasebook.context.PurchaseBookBasicInfo;
+import com.techcrack.bookwise.dtos.purchasebook.request.PurchasingBookOrderDetailRequest;
 import com.techcrack.bookwise.dtos.purchasebook.request.PurchaseBookRequest;
+import com.techcrack.bookwise.dtos.purchasebook.response.PurchaseBookViewResponse;
+import com.techcrack.bookwise.dtos.purchasebook.response.PurchasePriceOfOrder;
+import com.techcrack.bookwise.dtos.purchasebook.response.PurchasingBookDetailResponse;
 import com.techcrack.bookwise.entity.Book;
 import com.techcrack.bookwise.entity.PurchaseBook;
 import com.techcrack.bookwise.entity.Users;
-import com.techcrack.bookwise.exceptions.customized.InvalidDataException;
-import com.techcrack.bookwise.exceptions.customized.RevenueGenerationFailedException;
+import com.techcrack.bookwise.exceptions.customized.*;
 import com.techcrack.bookwise.helper.PurchaseBookHelper;
 import com.techcrack.bookwise.repository.PurchaseBookRepository;
 import com.techcrack.bookwise.utils.AbstractRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class PurchaseBookServiceImpl extends AbstractRepository<PurchaseBookServiceImpl, PurchaseBookRepository>
@@ -79,7 +84,7 @@ public class PurchaseBookServiceImpl extends AbstractRepository<PurchaseBookServ
 
         if (!available) {
             logger.error("Requested book stock is not available");
-            throw new InvalidDataException("Book Quantity not available as you requested Quantity : "+ request.quantity());
+            throw new OutOfStockException("Book Quantity not available as you requested Quantity : "+ request.quantity());
         }
 
         logger.info("Book Quantity Available");
@@ -87,7 +92,7 @@ public class PurchaseBookServiceImpl extends AbstractRepository<PurchaseBookServ
         boolean res = bookService.updateBookAvailability(request.bookId(), request.quantity());
 
         if (!res) {
-            throw new InvalidDataException("Failed to update book count");
+            throw new TransactionFailedException("Failed to update book count");
         }
 
         PurchaseBook entity = new PurchaseBook();
@@ -97,7 +102,7 @@ public class PurchaseBookServiceImpl extends AbstractRepository<PurchaseBookServ
         populateRelationships(entity, request);
         entity.setPurchaseDate(ApplicationData.getSystemDate());
         entity.setQuantity(request.quantity());
-        double totalPurchaseAmount = helper.calculateTotalAmountFromPurchaseBook(entity);
+        double totalPurchaseAmount = helper.calculateTotalAmountFromPurchaseBook(entity).amount();
 
         if (totalPurchaseAmount != request.purchaseAmount()) {
             String failureMessage = buildInvalidRequestAmount(totalPurchaseAmount, request.purchaseAmount()).toString();
@@ -132,10 +137,49 @@ public class PurchaseBookServiceImpl extends AbstractRepository<PurchaseBookServ
     }
 
     @Override
-    public double calculatePurchasePriceBook(PurchaseBookAmountCalculateRequest request) {
+    public PurchasingBookDetailResponse computePurchasingBookOrderDetails(PurchasingBookOrderDetailRequest request) {
+        logger.info("Process started to compute purchase book details Book Id : {} Quantity : {}", request.bookId(), request.quantity());
+
         Book book = bookService.get(request.bookId());
 
-        return helper.calculateTotalAmount(book, request.quantity());
+        if (book == null) {
+            logger.warn("Book Not found with id {}", request.bookId());
+            throw new ObjectNotFoundException(Book.class, "Book Not Found");
+        }
+
+        if (request.quantity() > book.getAvailableCopies()) {
+            logger.info("Requested Quantity is not available for purchase books");
+            throw new OutOfStockException("Requested Book Quantity is not Available");
+        }
+
+        PurchasePriceOfOrder purchasePrice = helper.calculateTotalAmount(book, request.quantity());
+
+        if (purchasePrice == null) {
+            logger.warn("Failed to compute Purchase price for request {}", request);
+            throw new ComputationFailedException("Failed to calculate Purchase Price of Book " + book.getId());
+        }
+
+        logger.info("Purchase Price Computed for {} as {}", request, purchasePrice);
+
+        PurchaseBookBasicInfo bookBasicInfo = new PurchaseBookBasicInfo(
+                book.getId(),
+                book.getTitle(),
+                book.getDescription(),
+                book.getAvailableCopies(),
+                book.getCategory().getName(),
+                book.getAuthor().getUser().getName(),
+                book.getCoverImageUrl()
+        );
+
+        return new PurchasingBookDetailResponse(
+                bookBasicInfo,
+                purchasePrice
+        );
+    }
+
+    @Override
+    public List<PurchaseBookViewResponse> findAllPurchaseBooks() {
+        return repo.findAllPurchaseBooksBasedOnUser(userSession.getCurrentUserId());
     }
 
     private StringBuilder buildInvalidRequestAmount(double totalPurchaseAmount, double requestedPurchaseAmount) {
