@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import static com.techcrack.bookwise.constans.queries.JPQLQueries.*;
+import static com.techcrack.bookwise.constans.queries.jpql.Author.*;
 
 public interface AuthorRepository extends JpaRepository<Author, Long> {
 

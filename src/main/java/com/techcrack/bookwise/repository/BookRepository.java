@@ -1,7 +1,6 @@
 package com.techcrack.bookwise.repository;
 
 import com.techcrack.bookwise.constans.enums.BookStatus;
-import com.techcrack.bookwise.constans.enums.Status;
 import com.techcrack.bookwise.dtos.book.response.AdminViewBookResponse;
 import com.techcrack.bookwise.dtos.book.response.AuthorBookViewResponse;
 import com.techcrack.bookwise.dtos.book.response.UserBookDetailViewResponse;
@@ -17,7 +16,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import static com.techcrack.bookwise.constans.queries.JPQLQueries.*;
+import static com.techcrack.bookwise.constans.queries.jpql.Book.*;
 
 public interface BookRepository extends JpaRepository<Book, Long> {
     boolean existsByISBN(String ISBN);

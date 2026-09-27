@@ -10,7 +10,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.Optional;
 
-import static com.techcrack.bookwise.constans.queries.JPQLQueries.*;
+import static com.techcrack.bookwise.constans.queries.jpql.User.*;
 
 public interface UserRepository extends JpaRepository<Users, Long> {
     Optional<Users> findUserByUsername(String username);
@@ -28,7 +28,7 @@ public interface UserRepository extends JpaRepository<Users, Long> {
     @Query(FETCH_ALL_USERS)
     List<AdminUserViewResponse> getAllUser();
 
-    @Query(FETCH_ALL_USERS_IsActive_BASED)
+    @Query(FETCH_ALL_USERS_ACTIVE_BASED)
     List<AdminUserViewResponse> getAllUser(@Param("isActive") boolean isActive);
 
     @Query(FETCH_USER_SUBSCRIPTION)

@@ -1,7 +1,5 @@
 package com.techcrack.bookwise.repository;
 
-import com.techcrack.bookwise.constans.queries.JPQLQueries;
-import com.techcrack.bookwise.constans.queries.RawQueries;
 import com.techcrack.bookwise.constans.enums.Subscriptions;
 import com.techcrack.bookwise.entity.Subscription;
 import jakarta.transaction.Transactional;
@@ -12,23 +10,28 @@ import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
 
+import static com.techcrack.bookwise.constans.queries.jpql.Subscription.FETCH_SUBSCRIPTIONS;
+import static com.techcrack.bookwise.constans.queries.jpql.Subscription.HAS_LIMIT_EXISTS_FOR_BORROW_BOOK;
+import static com.techcrack.bookwise.constans.queries.sql.Subscription.DEACTIVATE_ALL_SUBSCRIPTIONS;
+import static com.techcrack.bookwise.constans.queries.sql.Subscription.UPDATE_SUBSCRIPTION_BOOK_ALLOWED_COUNT;
+
 public interface SubscriptionRepository extends JpaRepository<Subscription, Long> {
     @Modifying
     @Transactional
-    @Query(value = RawQueries.DEACTIVATE_ALL_SUBSCRIPTIONS, nativeQuery = true)
+    @Query(value = DEACTIVATE_ALL_SUBSCRIPTIONS, nativeQuery = true)
     int deactivateActiveSubscription(@Param("userId") long userId,
                                      @Param("updatedBy") long updatedBy,
                                      @Param("updatedAt") LocalDateTime updatedAt);
 
-    @Query(value = JPQLQueries.HAS_LIMIT_EXISTS_FOR_BORROW_BOOK)
+    @Query(HAS_LIMIT_EXISTS_FOR_BORROW_BOOK)
     boolean existsLimitForBookBorrow(@Param("userId") long userId);
 
-    @Query(JPQLQueries.FETCH_SUBSCRIPTIONS)
+    @Query(FETCH_SUBSCRIPTIONS)
     Subscriptions getSubscriptionPlanByUserId(@Param("userId") long userId);
 
     @Modifying
     @Transactional
-    @Query(value = RawQueries.UPDATE_SUBSCRIPTION_BOOK_ALLOWED_COUNT, nativeQuery = true)
+    @Query(value = UPDATE_SUBSCRIPTION_BOOK_ALLOWED_COUNT, nativeQuery = true)
     int updateBooksAllowed(@Param("userId") long userId,
                            @Param("quantity") long quantity);
 
