@@ -7,6 +7,7 @@ import com.techcrack.bookwise.dtos.purchasebook.request.PurchasingBookOrderDetai
 import com.techcrack.bookwise.dtos.purchasebook.request.PurchaseBookRequest;
 import com.techcrack.bookwise.dtos.purchasebook.response.PurchaseBookViewResponse;
 import com.techcrack.bookwise.dtos.purchasebook.response.PurchasePriceOfOrder;
+import com.techcrack.bookwise.dtos.purchasebook.response.PurchasedBookDetailResponse;
 import com.techcrack.bookwise.dtos.purchasebook.response.PurchasingBookDetailResponse;
 import com.techcrack.bookwise.entity.Book;
 import com.techcrack.bookwise.entity.PurchaseBook;
@@ -180,6 +181,11 @@ public class PurchaseBookServiceImpl extends AbstractRepository<PurchaseBookServ
     @Override
     public List<PurchaseBookViewResponse> findAllPurchaseBooks() {
         return repo.findAllPurchaseBooksBasedOnUser(userSession.getCurrentUserId());
+    }
+
+    @Override
+    public PurchasedBookDetailResponse getPurchaseBookDetailsById(long purchasedBookId) {
+        return repo.getPurchasedBookDetailById(purchasedBookId);
     }
 
     private StringBuilder buildInvalidRequestAmount(double totalPurchaseAmount, double requestedPurchaseAmount) {

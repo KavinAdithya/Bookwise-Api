@@ -4,10 +4,7 @@ import com.techcrack.bookwise.abstractions.CurrentUserService;
 import com.techcrack.bookwise.abstractions.PurchaseBookService;
 import com.techcrack.bookwise.dtos.purchasebook.request.PurchaseBookRequest;
 import com.techcrack.bookwise.dtos.purchasebook.request.PurchasingBookOrderDetailRequest;
-import com.techcrack.bookwise.dtos.purchasebook.response.PurchaseBookViewResponse;
-import com.techcrack.bookwise.dtos.purchasebook.response.PurchasePriceOfOrder;
-import com.techcrack.bookwise.dtos.purchasebook.response.PurchaseBookResponse;
-import com.techcrack.bookwise.dtos.purchasebook.response.PurchasingBookDetailResponse;
+import com.techcrack.bookwise.dtos.purchasebook.response.*;
 import com.techcrack.bookwise.entity.PurchaseBook;
 import com.techcrack.bookwise.mapper.PurchaseBookMapper;
 import com.techcrack.bookwise.responseHelper.ApiResponseEntity;
@@ -62,5 +59,17 @@ public class PurchaseBookController extends AbstractController<PurchaseBookContr
 
         return ResponseEntityHelper
                 .buildSuccessResponse("Purchase Books Fetched", purchaseBookViewResponses);
+    }
+
+    @GetMapping("/user/me/purchase-books/{purchaseBookId}")
+    public ResponseEntity<ApiResponseEntity<PurchasedBookDetailResponse>> getPurchasedBookDetail(@PathVariable("purchaseBookId") long purchaseBookId) {
+        logger.info("Request Received to fetch purchased book details with is {}", purchaseBookId);
+
+        PurchasedBookDetailResponse purchasedBookDetailResponse = service.getPurchaseBookDetailsById(purchaseBookId);
+
+        logger.info("Request completed to fetch purchased book details");
+
+        return ResponseEntityHelper
+                .buildSuccessResponse("Purchased Book Detail Fetched", purchasedBookDetailResponse);
     }
 }

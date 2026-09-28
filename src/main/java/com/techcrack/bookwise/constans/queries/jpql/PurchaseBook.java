@@ -20,4 +20,30 @@ public class PurchaseBook {
                 WHERE pb.isActive
                     AND pb.user.id = :userId
             """;
+
+    public static final String GET_PURCHASED_BOOK_BY_ID = """
+                SELECT
+                    new com.techcrack.bookwise.dtos.purchasebook.response.PurchasedBookDetailResponse(
+                        pb.id,
+                        new com.techcrack.bookwise.dtos.purchasebook.context.PurchaseBookBasicInfo(
+                            b.id,
+                            b.title,
+                            b.description,
+                            b.availableCopies,
+                            c.name,
+                            u.name,
+                            b.coverImageUrl
+                        ),
+                        pb.quantity,
+                        pb.purchaseDate,
+                        pb.totalAmount
+                    )
+                FROM PurchaseBook pb
+                JOIN pb.book b
+                JOIN b.author a
+                JOIN a.user u
+                JOIN b.category c
+                WHERE pb.isActive
+                    AND pb.id = :purchaseBookId
+            """;
 }
