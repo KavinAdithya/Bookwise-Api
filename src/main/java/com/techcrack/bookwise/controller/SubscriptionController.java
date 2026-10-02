@@ -3,6 +3,7 @@ package com.techcrack.bookwise.controller;
 import com.techcrack.bookwise.abstractions.CurrentUserService;
 import com.techcrack.bookwise.abstractions.SubscriptionService;
 import com.techcrack.bookwise.constans.enums.Subscriptions;
+import com.techcrack.bookwise.dtos.subscription.response.CurrentSubscriptionWithAvailablePlanResponse;
 import com.techcrack.bookwise.dtos.subscription.response.SubscriptionPlanResponse;
 import com.techcrack.bookwise.mapper.SubscriptionMapper;
 import com.techcrack.bookwise.responseHelper.ApiResponseEntity;
@@ -36,4 +37,15 @@ public class SubscriptionController extends AbstractController<SubscriptionContr
                 .buildSuccessResponse("Subscriptions Fetched Successfully", responses);
     }
 
+    @GetMapping("/subscription/me")
+    public ResponseEntity<ApiResponseEntity<CurrentSubscriptionWithAvailablePlanResponse>>  getCurrentUserSubscriptionAndAvailablePlans() {
+        logger.info("Request received to fetch current user subscription details with available plans");
+
+        CurrentSubscriptionWithAvailablePlanResponse response = service.findCurrentUserPlanWithAvailablePlans();
+
+        logger.info("Request completed to fetch current user subscription and available plans");
+
+        return ResponseEntityHelper
+                .buildSuccessResponse("Subscription Details Fetched", response);
+    }
 }

@@ -6,17 +6,22 @@ import com.techcrack.bookwise.abstractions.UserService;
 import com.techcrack.bookwise.constans.ApplicationData;
 import com.techcrack.bookwise.constans.enums.Subscriptions;
 import com.techcrack.bookwise.dtos.subscription.DiscountDetails;
+import com.techcrack.bookwise.dtos.subscription.response.CurrentSubscriptionDetailResponse;
+import com.techcrack.bookwise.dtos.subscription.response.CurrentSubscriptionWithAvailablePlanResponse;
+import com.techcrack.bookwise.dtos.subscription.response.SubscriptionPlanDetailResponse;
 import com.techcrack.bookwise.entity.Subscription;
 import com.techcrack.bookwise.entity.Users;
 import com.techcrack.bookwise.abstractions.CurrentUserService;
 import com.techcrack.bookwise.exceptions.customized.ObjectNotFoundException;
 import com.techcrack.bookwise.helper.DiscountHelper;
+import com.techcrack.bookwise.helper.SubscriptionHelper;
 import com.techcrack.bookwise.repository.SubscriptionRepository;
 import com.techcrack.bookwise.utils.AbstractRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class SubscriptionServiceImpl extends AbstractRepository<SubscriptionServiceImpl, SubscriptionRepository>
@@ -25,16 +30,19 @@ public class SubscriptionServiceImpl extends AbstractRepository<SubscriptionServ
     private final UserService userService;
     private final AdminRevenueService adminRevenueService;
     private final DiscountHelper discountHelper;
+    private final SubscriptionHelper helper;
 
     public SubscriptionServiceImpl(SubscriptionRepository repo,
                                    UserService userService,
                                    CurrentUserService userSession,
                                    AdminRevenueService adminRevenueService,
-                                   DiscountHelper discountHelper) {
+                                   DiscountHelper discountHelper,
+                                   SubscriptionHelper helper) {
         super(SubscriptionServiceImpl.class, repo, userSession);
         this.userService = userService;
         this.adminRevenueService = adminRevenueService;
         this.discountHelper = discountHelper;
+        this.helper = helper;
     }
 
     @Transactional
@@ -195,5 +203,30 @@ public class SubscriptionServiceImpl extends AbstractRepository<SubscriptionServ
     @Override
     public Subscription getSubscriptionByUserId(long userId) {
         return repo.getSubscriptionByIsActiveTrueAndUser_Id(userId);
+    }
+
+    @Override
+    public CurrentSubscriptionWithAvailablePlanResponse findCurrentUserPlanWithAvailablePlans() {
+        logger.info("Process started to fetch current user and available plan details");
+
+        List<SubscriptionPlanDetailResponse> availablePlans = helper.getAllAvailablePlans();
+
+        Subscription currentSubscription = getSubscriptionByUserId(userSession.getCurrentUserId());
+
+        CurrentSubscriptionDetailResponse currentSubscriptionDetailResponse = new CurrentSubscriptionDetailResponse(
+                currentSubscription.getId(),
+                currentSubscription.getSubscriptions().ordinal(),
+                currentSubscription.getSubscriptions().toString(),
+                currentSubscription.getSubscriptionAmount(),
+                helper.convertIntoStringBasedOnUnlimited(currentSubscription.getBooksAllowedPerMonth()),
+                helper.convertIntoStringBasedOnUnlimited(currentSubscription.getSubscriptions().getDays()),
+                currentSubscription.getStartDate(),
+                currentSubscription.getEndDate()
+        );
+
+        return new CurrentSubscriptionWithAvailablePlanResponse(
+                currentSubscriptionDetailResponse,
+                availablePlans
+        );
     }
 }
