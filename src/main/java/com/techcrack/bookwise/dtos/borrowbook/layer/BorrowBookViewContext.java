@@ -1,11 +1,10 @@
-package com.techcrack.bookwise.dtos.borrowbook.response;
+package com.techcrack.bookwise.dtos.borrowbook.layer;
 
 import com.techcrack.bookwise.constans.enums.BorrowStatus;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-public record BorrowBookViewResponse(
+public record BorrowBookViewContext(
         long borrowBookId,
         long bookId,
         String coverImageUrl,
@@ -15,7 +14,6 @@ public record BorrowBookViewResponse(
         LocalDateTime borrowedDate,
         LocalDateTime dueDate,
         LocalDateTime returnedAt,
-        BorrowStatus borrowStatus,
-        BigDecimal fineAmount
+        BorrowStatus borrowStatus
 ) {
 }

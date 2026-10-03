@@ -21,4 +21,5 @@ public interface SubscriptionService extends BasicCRUD<Subscription> {
     Subscriptions[] getAllSubscriptions();
     Subscription getSubscriptionByUserId(long userId);
     CurrentSubscriptionWithAvailablePlanResponse findCurrentUserPlanWithAvailablePlans();
+    void inactivateExpiredSubscriptionAndActivateFreePlan(LocalDateTime currentDateTime);
 }

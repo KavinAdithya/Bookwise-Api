@@ -3,31 +3,34 @@ package com.techcrack.bookwise.service;
 import com.techcrack.bookwise.abstractions.*;
 import com.techcrack.bookwise.constans.ApplicationData;
 import com.techcrack.bookwise.constans.enums.BorrowStatus;
-import com.techcrack.bookwise.constans.enums.Subscriptions;
 import com.techcrack.bookwise.dtos.book.response.BorrowBookConfirmationDetail;
 import com.techcrack.bookwise.dtos.borrowbook.layer.DueAmountDetails;
 import com.techcrack.bookwise.dtos.borrowbook.layer.ReturnBookContext;
 import com.techcrack.bookwise.dtos.borrowbook.request.BorrowBookRequest;
 import com.techcrack.bookwise.dtos.borrowbook.response.BookBasicInfo;
 import com.techcrack.bookwise.dtos.borrowbook.response.BorrowBookDetailView;
+import com.techcrack.bookwise.dtos.borrowbook.layer.BorrowBookViewContext;
 import com.techcrack.bookwise.dtos.borrowbook.response.BorrowBookViewResponse;
 import com.techcrack.bookwise.dtos.borrowbook.response.ReturnBorrowBookDetails;
 import com.techcrack.bookwise.dtos.subscription.response.BorrowBookSubscriptionDetail;
-import com.techcrack.bookwise.dtos.subscription.response.SubscriptionDetails;
 import com.techcrack.bookwise.entity.Book;
 import com.techcrack.bookwise.entity.BorrowBook;
 import com.techcrack.bookwise.entity.Subscription;
 import com.techcrack.bookwise.exceptions.customized.*;
+import com.techcrack.bookwise.exceptions.customized.checked.DueAmountFailedException;
 import com.techcrack.bookwise.exceptions.templates.Errors;
 import com.techcrack.bookwise.helper.BorrowBookHelper;
+import com.techcrack.bookwise.helper.TimeHelper;
 import com.techcrack.bookwise.repository.BorrowBookRepository;
 import com.techcrack.bookwise.utils.AbstractService;
 import com.techcrack.bookwise.validations.BorrowBookValidations;
+import jakarta.transaction.InvalidTransactionException;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -48,7 +51,8 @@ public class BorrowBookServiceImpl extends AbstractService<BorrowBookServiceImpl
                                  CurrentUserService userSession,
                                  BorrowBookHelper helper,
                                  AuthorRevenueService authorRevenueService,
-                                 AdminRevenueService adminRevenueService) {
+                                 AdminRevenueService adminRevenueService,
+                                 TimeHelper timeHelper) {
        super(BorrowBookServiceImpl.class, repo, validations, userSession);
        this.userService = userService;
        this.bookService = bookService;
@@ -204,6 +208,10 @@ public class BorrowBookServiceImpl extends AbstractService<BorrowBookServiceImpl
         logger.info("Return Details computing started");
 
         BorrowBook borrowBook = getBorrowBookById(borrowBookId);
+
+        if (borrowBook.getStatus() != BorrowStatus.BORROWED)
+            throw new InvalidOperationException("Cannot fetch return details for book which is not in borrowed status");
+
         DueAmountDetails dueAmountDetails = calculateDueAmount(borrowBook);
 
         logger.info("Return book details computed");
@@ -229,20 +237,14 @@ public class BorrowBookServiceImpl extends AbstractService<BorrowBookServiceImpl
 
     @Override
     public DueAmountDetails calculateDueAmount(BorrowBook entity) {
-        long totalDays = ChronoUnit.DAYS.between(entity.getBorrowDate(), ApplicationData.getSystemDate());
+        try {
+            return helper.calculateDueAmountFromBorrowBook(subscriptionService, userSession.getCurrentUserId(), entity);
 
-        if (ApplicationData.getSystemDate().isBefore(entity.getDueDate())) {
-            return new DueAmountDetails(0, totalDays,0,0);
+        } catch (DueAmountFailedException e) {
+            logger.warn("Due Amount Calculation due to {}", e.getMessage());
         }
 
-        long daysDelayed = ChronoUnit.DAYS.between(entity.getDueDate(), ApplicationData.getSystemDate());
-
-        double dailyRent = subscriptionService.getSubscriptionPlanByUserId(entity.getUser().getId())
-                .getDelayDailyFineAmount();
-
-        double dueAmount = dailyRent * daysDelayed * entity.getQuantity();
-
-        return new DueAmountDetails(daysDelayed, totalDays, dailyRent, dueAmount);
+        return null;
     }
 
     @Override
@@ -257,7 +259,45 @@ public class BorrowBookServiceImpl extends AbstractService<BorrowBookServiceImpl
 
     @Override
     public List<BorrowBookViewResponse> getAllBorrowBooks() {
-        return repo.findAllBorrowsBasedOnUser(userSession.getCurrentUserId());
+        List<BorrowBookViewContext> borrowBookContext = repo.findAllBorrowsBasedOnUser(userSession.getCurrentUserId());
+        List<BorrowBookViewResponse> borrowBookViewResponses = new ArrayList<>();
+
+        double dailyFineAmount = subscriptionService.getSubscriptionPlanByUserId(userSession.getCurrentUserId())
+                .getDelayDailyFineAmount();
+
+        for (BorrowBookViewContext borrowBook : borrowBookContext) {
+            DueAmountDetails dueAmount = null;
+
+            if (borrowBook.borrowStatus() == BorrowStatus.BORROWED) {
+                dueAmount = helper.calculateDueAmountDetailsBasedOnDateGap(
+                        dailyFineAmount,
+                        borrowBook.borrowedQuantity(),
+                        borrowBook.borrowedDate(),
+                        borrowBook.dueDate(),
+                        ApplicationData.getSystemDate()
+                );
+            }
+
+            double fineAmount = dueAmount == null ? 0 : dueAmount.totalDueAmount();
+
+            borrowBookViewResponses.add(
+                    new BorrowBookViewResponse(
+                        borrowBook.borrowBookId(),
+                        borrowBook.bookId(),
+                        borrowBook.coverImageUrl(),
+                        borrowBook.bookTitle(),
+                        borrowBook.authorName(),
+                        borrowBook.borrowedQuantity(),
+                        borrowBook.borrowedDate(),
+                        borrowBook.dueDate(),
+                        borrowBook.returnedAt(),
+                        borrowBook.borrowStatus(),
+                        BigDecimal.valueOf(fineAmount)
+                    )
+            );
+        }
+
+        return borrowBookViewResponses;
     }
 
     @Transactional

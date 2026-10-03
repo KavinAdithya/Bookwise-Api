@@ -3,7 +3,7 @@ package com.techcrack.bookwise.constans.queries.jpql;
 public class BorrowBook {
     public static final String FIND_ALL_BORROW_BOOKS_USER = """
                 SELECT
-                    new com.techcrack.bookwise.dtos.borrowbook.response.BorrowBookViewResponse(
+                    new com.techcrack.bookwise.dtos.borrowbook.layer.BorrowBookViewContext(
                         br.id,
                         b.id,
                         b.coverImageUrl,
@@ -13,8 +13,7 @@ public class BorrowBook {
                         br.borrowDate,
                         br.dueDate,
                         br.returnDate,
-                        br.status,
-                        br.totalAmountPaidOnReturn
+                        br.status
                     )
                 FROM BorrowBook br
                 JOIN br.book b

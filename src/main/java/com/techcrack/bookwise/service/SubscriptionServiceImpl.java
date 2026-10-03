@@ -229,4 +229,8 @@ public class SubscriptionServiceImpl extends AbstractRepository<SubscriptionServ
                 availablePlans
         );
     }
+
+    public void inactivateExpiredSubscriptionAndActivateFreePlan(LocalDateTime currentDateTime) {
+
+    }
 }
