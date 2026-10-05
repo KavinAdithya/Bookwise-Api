@@ -14,4 +14,10 @@ public class ResponseEntityHelper {
                 .body(ApiResponseEntity.failure(message));
     }
 
+    public static ResponseEntity<ApiResponseEntity<java.lang.Object>> buildSuccessResponseWithoutBody(String message) {
+        return ResponseEntity.ok(
+                ApiResponseEntity.successWithoutBody(message)
+        );
+    }
+
 }

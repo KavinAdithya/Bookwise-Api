@@ -14,4 +14,11 @@ public class Subscription {
                   SET books_allowed_per_month = books_allowed_per_month - :quantity
                   WHERE Is_Active = 1 AND user_Id = :userId;
             """;
+
+    public static final String INACTIVATE_EXPIRED_SUBSCRIPTIONS = """
+                UPDATE Subscriptions s
+                SET Is_Active = 0
+                WHERE s.Is_Active = 1 AND
+                    s.user_id IN :userIds
+            """;
 }

@@ -2,7 +2,9 @@ package com.techcrack.bookwise.abstractions;
 
 import com.techcrack.bookwise.constans.enums.Subscriptions;
 import com.techcrack.bookwise.dtos.subscription.DiscountDetails;
+import com.techcrack.bookwise.dtos.subscription.request.SubscriptionUpgradeRequest;
 import com.techcrack.bookwise.dtos.subscription.response.CurrentSubscriptionWithAvailablePlanResponse;
+import com.techcrack.bookwise.dtos.subscription.response.SubscriptionUpgradeDetailResponse;
 import com.techcrack.bookwise.entity.Subscription;
 import com.techcrack.bookwise.entity.Users;
 
@@ -22,4 +24,6 @@ public interface SubscriptionService extends BasicCRUD<Subscription> {
     Subscription getSubscriptionByUserId(long userId);
     CurrentSubscriptionWithAvailablePlanResponse findCurrentUserPlanWithAvailablePlans();
     void inactivateExpiredSubscriptionAndActivateFreePlan(LocalDateTime currentDateTime);
+    void upgradeCurrentSubscriptionPlan(SubscriptionUpgradeRequest newPlanDetails);
 }
+

@@ -9,11 +9,10 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
-import static com.techcrack.bookwise.constans.queries.jpql.Subscription.FETCH_SUBSCRIPTIONS;
-import static com.techcrack.bookwise.constans.queries.jpql.Subscription.HAS_LIMIT_EXISTS_FOR_BORROW_BOOK;
-import static com.techcrack.bookwise.constans.queries.sql.Subscription.DEACTIVATE_ALL_SUBSCRIPTIONS;
-import static com.techcrack.bookwise.constans.queries.sql.Subscription.UPDATE_SUBSCRIPTION_BOOK_ALLOWED_COUNT;
+import static com.techcrack.bookwise.constans.queries.jpql.Subscription.*;
+import static com.techcrack.bookwise.constans.queries.sql.Subscription.*;
 
 public interface SubscriptionRepository extends JpaRepository<Subscription, Long> {
     @Modifying
@@ -36,4 +35,11 @@ public interface SubscriptionRepository extends JpaRepository<Subscription, Long
                            @Param("quantity") long quantity);
 
     Subscription getSubscriptionByIsActiveTrueAndUser_Id(long userId);
+
+    @Modifying
+    @Query(value = INACTIVATE_EXPIRED_SUBSCRIPTIONS, nativeQuery = true)
+    void deactivateSubscriptionExpired(List<Long> userIds);
+
+    @Query(FETCH_EXPIRED_USERID)
+    List<Long> findAllExpiredUserIds(LocalDateTime currentSystemDate);
 }

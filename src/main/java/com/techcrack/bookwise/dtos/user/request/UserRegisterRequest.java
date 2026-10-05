@@ -1,6 +1,6 @@
 package com.techcrack.bookwise.dtos.user.request;
 
-import com.techcrack.bookwise.dtos.subscription.request.SubscriptionRegisterDTO;
+import com.techcrack.bookwise.dtos.subscription.request.SubscriptionRegisterResponse;
 import com.techcrack.bookwise.entity.Users;
 
 public class UserRegisterRequest {
@@ -10,7 +10,7 @@ public class UserRegisterRequest {
     private String password;
     private String address;
     private String contact;
-    private SubscriptionRegisterDTO subscription;
+    private SubscriptionRegisterResponse subscription;
 
     public UserRegisterRequest(String address, String contact, String email, String name, String password, String username) {
         this.address = address;
@@ -21,11 +21,11 @@ public class UserRegisterRequest {
         this.username = username;
     }
 
-    public SubscriptionRegisterDTO getSubscription() {
+    public SubscriptionRegisterResponse getSubscription() {
         return subscription;
     }
 
-    public void setSubscription(SubscriptionRegisterDTO subscription) {
+    public void setSubscription(SubscriptionRegisterResponse subscription) {
         this.subscription = subscription;
     }
 

@@ -16,4 +16,12 @@ public class Subscription {
                        s.isActive = true
             """;
 
+    public static final String FETCH_EXPIRED_USERID = """
+                SELECT
+                    u.id
+                FROM Subscription s
+                INNER JOIN s.user u
+                where s.isActive AND
+                    s.endDate < :currentSystemDate
+            """;
 }

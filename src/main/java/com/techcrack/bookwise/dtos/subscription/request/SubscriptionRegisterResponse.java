@@ -3,10 +3,10 @@ package com.techcrack.bookwise.dtos.subscription.request;
 import com.techcrack.bookwise.constans.enums.Subscriptions;
 import com.techcrack.bookwise.entity.Subscription;
 
-public class SubscriptionRegisterDTO {
+public class SubscriptionRegisterResponse {
     private Subscriptions plan;
 
-    public SubscriptionRegisterDTO() {
+    public SubscriptionRegisterResponse() {
         super();
     }
 

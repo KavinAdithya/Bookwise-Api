@@ -2,7 +2,7 @@ package com.techcrack.bookwise.constans.enums;
 
 public enum Subscriptions {
     FREE(Integer.MAX_VALUE, 0, 0, 0),
-    BASE(5, 0, 3, 20),
+    BASE(5, 20, 3, 20),
     PREMIUM(30, 100, 7, 10),
     LIFETIME(Integer.MAX_VALUE, 9000, Integer.MAX_VALUE, 0);
 

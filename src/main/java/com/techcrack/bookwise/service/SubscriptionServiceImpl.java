@@ -6,17 +6,23 @@ import com.techcrack.bookwise.abstractions.UserService;
 import com.techcrack.bookwise.constans.ApplicationData;
 import com.techcrack.bookwise.constans.enums.Subscriptions;
 import com.techcrack.bookwise.dtos.subscription.DiscountDetails;
+import com.techcrack.bookwise.dtos.subscription.request.SubscriptionRegisterResponse;
+import com.techcrack.bookwise.dtos.subscription.request.SubscriptionUpgradeRequest;
 import com.techcrack.bookwise.dtos.subscription.response.CurrentSubscriptionDetailResponse;
 import com.techcrack.bookwise.dtos.subscription.response.CurrentSubscriptionWithAvailablePlanResponse;
 import com.techcrack.bookwise.dtos.subscription.response.SubscriptionPlanDetailResponse;
 import com.techcrack.bookwise.entity.Subscription;
 import com.techcrack.bookwise.entity.Users;
 import com.techcrack.bookwise.abstractions.CurrentUserService;
+import com.techcrack.bookwise.exceptions.customized.InvalidDataException;
 import com.techcrack.bookwise.exceptions.customized.ObjectNotFoundException;
+import com.techcrack.bookwise.exceptions.customized.TransactionFailedException;
+import com.techcrack.bookwise.exceptions.templates.Errors;
 import com.techcrack.bookwise.helper.DiscountHelper;
 import com.techcrack.bookwise.helper.SubscriptionHelper;
 import com.techcrack.bookwise.repository.SubscriptionRepository;
 import com.techcrack.bookwise.utils.AbstractRepository;
+import com.techcrack.bookwise.validations.SubscriptionValidation;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -31,18 +37,21 @@ public class SubscriptionServiceImpl extends AbstractRepository<SubscriptionServ
     private final AdminRevenueService adminRevenueService;
     private final DiscountHelper discountHelper;
     private final SubscriptionHelper helper;
+    private final SubscriptionValidation validation;
 
     public SubscriptionServiceImpl(SubscriptionRepository repo,
                                    UserService userService,
                                    CurrentUserService userSession,
                                    AdminRevenueService adminRevenueService,
                                    DiscountHelper discountHelper,
-                                   SubscriptionHelper helper) {
+                                   SubscriptionHelper helper,
+                                   SubscriptionValidation validation) {
         super(SubscriptionServiceImpl.class, repo, userSession);
         this.userService = userService;
         this.adminRevenueService = adminRevenueService;
         this.discountHelper = discountHelper;
         this.helper = helper;
+        this.validation = validation;
     }
 
     @Transactional
@@ -230,7 +239,54 @@ public class SubscriptionServiceImpl extends AbstractRepository<SubscriptionServ
         );
     }
 
+    @Transactional
     public void inactivateExpiredSubscriptionAndActivateFreePlan(LocalDateTime currentDateTime) {
+        logger.info("Process Started to in activate expired subscription");
 
+        List<Long> expiredUserIds = repo.findAllExpiredUserIds(currentDateTime);
+
+        logger.debug("USER IDS found for in activate subscription {}", expiredUserIds);
+
+        if (expiredUserIds.isEmpty()) {
+            logger.info("No Users found to inactivate subscription");
+            return;
+        }
+
+        repo.deactivateSubscriptionExpired(expiredUserIds);
+
+        logger.debug("Inactivated subscription which got expired");
+
+        DiscountDetails discountDetails = new DiscountDetails(0);
+
+        for (Long userId : expiredUserIds) {
+            activateSubscription(userId, Subscriptions.FREE, new DiscountDetails(0));
+        }
+
+        logger.info("Subscription inactivated and activated free plan");
+    }
+
+    @Override
+    @Transactional
+    public void upgradeCurrentSubscriptionPlan(SubscriptionUpgradeRequest request) {
+        logger.info("Request Received to upgrade current user plan USER SESSION {}", userSession.getCurrentUserName());
+
+        Errors errors = validation.isValidSubscriptionUpgradeDetails(request);
+
+        if (errors.hasErrors()) {
+            logger.warn(errors.getData());
+            throw new InvalidDataException(errors.getData());
+        }
+
+        logger.debug("Upgraded Request data validated");
+
+        int rowsAffected = repo.deactivateActiveSubscription(userSession.getCurrentUserId(), userSession.getCurrentUserId(), ApplicationData.getSystemDate());
+
+        if (rowsAffected == 0) {
+            throw new TransactionFailedException("Failed to inactivate current user");
+        }
+
+        Subscription  subscription = activateSubscription(userSession.getCurrentUserId(), request.newPlan(), new DiscountDetails(0));
+
+        logger.info("Subscription activated with details of {}", subscription);
     }
 }

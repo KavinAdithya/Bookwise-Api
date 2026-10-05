@@ -1,7 +1,7 @@
 package com.techcrack.bookwise.mapper;
 
 import com.techcrack.bookwise.constans.enums.Subscriptions;
-import com.techcrack.bookwise.dtos.subscription.request.SubscriptionRegisterDTO;
+import com.techcrack.bookwise.dtos.subscription.request.SubscriptionRegisterResponse;
 import com.techcrack.bookwise.dtos.subscription.response.SubscriptionPlanResponse;
 import com.techcrack.bookwise.dtos.subscription.response.SubscriptionResponse;
 import com.techcrack.bookwise.entity.Subscription;
@@ -12,7 +12,7 @@ import java.util.List;
 
 @Component
 public class SubscriptionMapper {
-    public Subscription mapToSubscription(SubscriptionRegisterDTO source) {
+    public Subscription mapToSubscription(SubscriptionRegisterResponse source) {
 
         return source.buildSubscription();
     }

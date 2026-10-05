@@ -3,6 +3,7 @@ package com.techcrack.bookwise.controller;
 import com.techcrack.bookwise.abstractions.CurrentUserService;
 import com.techcrack.bookwise.abstractions.SubscriptionService;
 import com.techcrack.bookwise.constans.enums.Subscriptions;
+import com.techcrack.bookwise.dtos.subscription.request.SubscriptionUpgradeRequest;
 import com.techcrack.bookwise.dtos.subscription.response.CurrentSubscriptionWithAvailablePlanResponse;
 import com.techcrack.bookwise.dtos.subscription.response.SubscriptionPlanResponse;
 import com.techcrack.bookwise.mapper.SubscriptionMapper;
@@ -11,6 +12,7 @@ import com.techcrack.bookwise.responseHelper.ResponseEntityHelper;
 import com.techcrack.bookwise.utils.AbstractController;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -47,5 +49,17 @@ public class SubscriptionController extends AbstractController<SubscriptionContr
 
         return ResponseEntityHelper
                 .buildSuccessResponse("Subscription Details Fetched", response);
+    }
+
+    @PostMapping("/subscription/upgrade")
+    public ResponseEntity<ApiResponseEntity<Object>> upgradeSubscription(SubscriptionUpgradeRequest request) {
+        logger.info("Request received to upgraded subscription");
+
+        service.upgradeCurrentSubscriptionPlan(request);
+
+        logger.info("Request completed to upgraded subscription");
+
+        return ResponseEntityHelper
+                .buildSuccessResponseWithoutBody("Subscription Upgraded Successfully");
     }
 }

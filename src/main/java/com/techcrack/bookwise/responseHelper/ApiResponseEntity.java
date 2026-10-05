@@ -29,6 +29,9 @@ public record ApiResponseEntity<T>(boolean success, String message, T data, Loca
 				null,
 				ApplicationData.getSystemDate()
 		);
+	}
 
+	public static ApiResponseEntity<Object> successWithoutBody(String message) {
+		return success(message, null);
 	}
 }
