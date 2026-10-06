@@ -6,15 +6,14 @@ import com.techcrack.bookwise.constans.enums.Subscriptions;
 import com.techcrack.bookwise.dtos.subscription.request.SubscriptionUpgradeRequest;
 import com.techcrack.bookwise.dtos.subscription.response.CurrentSubscriptionWithAvailablePlanResponse;
 import com.techcrack.bookwise.dtos.subscription.response.SubscriptionPlanResponse;
+import com.techcrack.bookwise.dtos.subscription.response.SubscriptionUpgradeDetailResponse;
+import com.techcrack.bookwise.dtos.subscription.response.SubscriptionUpgradePlanDetail;
 import com.techcrack.bookwise.mapper.SubscriptionMapper;
 import com.techcrack.bookwise.responseHelper.ApiResponseEntity;
 import com.techcrack.bookwise.responseHelper.ResponseEntityHelper;
 import com.techcrack.bookwise.utils.AbstractController;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -39,7 +38,7 @@ public class SubscriptionController extends AbstractController<SubscriptionContr
                 .buildSuccessResponse("Subscriptions Fetched Successfully", responses);
     }
 
-    @GetMapping("/subscription/me")
+    @GetMapping("/subscriptions/me")
     public ResponseEntity<ApiResponseEntity<CurrentSubscriptionWithAvailablePlanResponse>>  getCurrentUserSubscriptionAndAvailablePlans() {
         logger.info("Request received to fetch current user subscription details with available plans");
 
@@ -51,8 +50,8 @@ public class SubscriptionController extends AbstractController<SubscriptionContr
                 .buildSuccessResponse("Subscription Details Fetched", response);
     }
 
-    @PostMapping("/subscription/upgrade")
-    public ResponseEntity<ApiResponseEntity<Object>> upgradeSubscription(SubscriptionUpgradeRequest request) {
+    @PostMapping("/subscriptions/upgrade")
+    public ResponseEntity<ApiResponseEntity<Object>> upgradeSubscription(@RequestBody SubscriptionUpgradeRequest request) {
         logger.info("Request received to upgraded subscription");
 
         service.upgradeCurrentSubscriptionPlan(request);
@@ -61,5 +60,17 @@ public class SubscriptionController extends AbstractController<SubscriptionContr
 
         return ResponseEntityHelper
                 .buildSuccessResponseWithoutBody("Subscription Upgraded Successfully");
+    }
+
+    @GetMapping("/subscriptions/confirm/upgrade/{subscriptionPlanId}")
+    public ResponseEntity<ApiResponseEntity<SubscriptionUpgradeDetailResponse>> getSubscriptionDetailsOfCurrentAndUpgradePlan(@PathVariable("subscriptionPlanId") int subscriptionPlanId) {
+        logger.info("Request Received to get current and upgrade plan details");
+
+        SubscriptionUpgradeDetailResponse response = service.getCurrentAndUpgradePlanDetails(subscriptionPlanId);
+
+        logger.info("Request Completed to get current and upgrade plan details");
+
+        return ResponseEntityHelper
+                .buildSuccessResponse("Fetched Current and Upgrade Plan Details", response);
     }
 }

@@ -8,9 +8,7 @@ import com.techcrack.bookwise.constans.enums.Subscriptions;
 import com.techcrack.bookwise.dtos.subscription.DiscountDetails;
 import com.techcrack.bookwise.dtos.subscription.request.SubscriptionRegisterResponse;
 import com.techcrack.bookwise.dtos.subscription.request.SubscriptionUpgradeRequest;
-import com.techcrack.bookwise.dtos.subscription.response.CurrentSubscriptionDetailResponse;
-import com.techcrack.bookwise.dtos.subscription.response.CurrentSubscriptionWithAvailablePlanResponse;
-import com.techcrack.bookwise.dtos.subscription.response.SubscriptionPlanDetailResponse;
+import com.techcrack.bookwise.dtos.subscription.response.*;
 import com.techcrack.bookwise.entity.Subscription;
 import com.techcrack.bookwise.entity.Users;
 import com.techcrack.bookwise.abstractions.CurrentUserService;
@@ -288,5 +286,22 @@ public class SubscriptionServiceImpl extends AbstractRepository<SubscriptionServ
         Subscription  subscription = activateSubscription(userSession.getCurrentUserId(), request.newPlan(), new DiscountDetails(0));
 
         logger.info("Subscription activated with details of {}", subscription);
+    }
+
+    @Override
+    public SubscriptionUpgradeDetailResponse getCurrentAndUpgradePlanDetails(int subscriptionPlanId) {
+        logger.info("Fetching current plan and new plan details");
+
+        Subscriptions currentPlan = repo.getSubscriptionPlanByUserId(userSession.getCurrentUserId());
+
+        SubscriptionUpgradePlanDetail currentPlanDetails = helper.convertSubscriptionsToDetail(currentPlan);
+
+        SubscriptionUpgradePlanDetail upgradePlanDetail = helper.convertSubscriptionsToDetail(
+                helper.findSubscriptionById(subscriptionPlanId)
+        );
+
+        logger.info("Fetched current plan and upgrade plan");
+
+        return new SubscriptionUpgradeDetailResponse(currentPlanDetails, upgradePlanDetail);
     }
 }
