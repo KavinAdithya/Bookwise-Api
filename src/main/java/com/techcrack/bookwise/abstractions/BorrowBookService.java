@@ -17,7 +17,7 @@ public interface BorrowBookService extends BasicCRUD<BorrowBook> {
     DueAmountDetails calculateDueAmount(long borrowBookId);
     ReturnBorrowBookDetails computeReturnDetails(long borrowBookId);
     DueAmountDetails calculateDueAmount(BorrowBook entity);
-    List<BorrowBookViewResponse> getAllBorrowBooks();
+    List<BorrowBookViewResponse> getAllBorrowBooksBasedOnCurrentUser();
     void returnBook(ReturnBookContext context);
     BorrowBookDetailView getBorrowBookDetailView(long borrowBookId);
     BorrowBookConfirmationDetail computeBorrowBookConfirmationDetails(BorrowBookRequest request);

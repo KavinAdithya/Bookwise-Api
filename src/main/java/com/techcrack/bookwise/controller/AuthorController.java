@@ -73,7 +73,7 @@ public class AuthorController extends AbstractController<AuthorController, Autho
     }
 
     @PatchMapping("/reject")
-      public ResponseEntity<ApiResponseEntity<String>> rejectAuthors(@RequestBody AuthorIdsRequest request) {
+    public ResponseEntity<ApiResponseEntity<String>> rejectAuthors(@RequestBody AuthorIdsRequest request) {
         logger.info("Request Received to reject Authors");
 
         int authorsCount = service.rejectAuthors(request.getAuthorIds());
@@ -108,5 +108,4 @@ public class AuthorController extends AbstractController<AuthorController, Autho
         return ResponseEntityHelper
                 .buildSuccessResponse("Author Fetched Successfully", viewAuthorResponse);
     }
-
 }

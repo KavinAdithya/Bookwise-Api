@@ -258,7 +258,7 @@ public class BorrowBookServiceImpl extends AbstractService<BorrowBookServiceImpl
     }
 
     @Override
-    public List<BorrowBookViewResponse> getAllBorrowBooks() {
+    public List<BorrowBookViewResponse> getAllBorrowBooksBasedOnCurrentUser() {
         List<BorrowBookViewContext> borrowBookContext = repo.findAllBorrowsBasedOnUser(userSession.getCurrentUserId());
         List<BorrowBookViewResponse> borrowBookViewResponses = new ArrayList<>();
 
