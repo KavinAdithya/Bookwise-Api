@@ -35,7 +35,7 @@ public class UserServiceValidation extends AbstractLogger<UserServiceValidation>
         return errors;
     }
 
-    private void findFailedConstraint(Users users, Errors errors) {
+    public void findFailedConstraint(Users users, Errors errors) {
         if (repository.existsByUsername(users.getUsername())) {
             errors.addErrorMessage("User name already exists. Try Different");
         }
@@ -60,28 +60,25 @@ public class UserServiceValidation extends AbstractLogger<UserServiceValidation>
     public boolean isValidPassWord(String password) {
         logger.debug("Password Validating Process Started for {}", password);
 
-        if (password.length() < 8) {
+        if (password == null || password.length() < 8) {
             return false;
         }
 
-        boolean isDigit = false, isAlpha = false, isSpl = false;
+        boolean isDigit = false, isCapAlpha = false, isSmallAlpha = false, isSpl = false;
 
         for (char ch : password.toCharArray()) {
-            if (Character.isDigit(ch)) {
-                isDigit = true;
-            } else if (Character.isAlphabetic(ch))  {
-                isAlpha = true;
-            } else {
-                isSpl = true;
-            }
+            isDigit = isDigit || Character.isDigit(ch);
+            isSmallAlpha = isSmallAlpha || Character.isLowerCase(ch);
+            isCapAlpha = isCapAlpha || Character.isUpperCase(ch);
+            isSpl = isSpl || !Character.isLetterOrDigit(ch);
 
-            if (isDigit && isAlpha && isSpl) {
+            if (isDigit && isSmallAlpha && isCapAlpha && isSpl) {
                 logger.debug("Password is Validated successfully.");
                 return true;
             }
         }
 
-        logger.debug("Password Validation Failed Due to IsDigit = {}, IsAlpha = {}, IsSpecialCharacter = {}", isDigit, isAlpha, isSpl);
+        logger.debug("Password Validation Failed Due to IsDigit = {}, IsSmallAlpha = {}, IsCapAlpha = {} IsSpecialCharacter = {}", isDigit, isSmallAlpha, isCapAlpha, isSpl);
 
         return false;
     }

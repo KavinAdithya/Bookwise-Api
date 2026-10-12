@@ -18,6 +18,9 @@ public class Errors {
         errors.add(message + ". ");
     }
 
+    public int errorsCount() {
+        return errors.size();
+    }
 
     public String getData() {
         StringBuilder errorData = new StringBuilder();
