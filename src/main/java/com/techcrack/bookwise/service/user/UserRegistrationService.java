@@ -1,4 +1,4 @@
-package com.techcrack.bookwise.service;
+package com.techcrack.bookwise.service.user;
 
 import com.techcrack.bookwise.abstractions.SubscriptionService;
 import com.techcrack.bookwise.abstractions.UserService;

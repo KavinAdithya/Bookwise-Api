@@ -1,4 +1,4 @@
-package com.techcrack.bookwise.service;
+package com.techcrack.bookwise.service.author;
 
 import com.techcrack.bookwise.abstractions.AuthorService;
 import com.techcrack.bookwise.constans.enums.Roles;
@@ -9,6 +9,7 @@ import com.techcrack.bookwise.entity.Subscription;
 import com.techcrack.bookwise.entity.Users;
 import com.techcrack.bookwise.abstractions.CurrentUserService;
 import com.techcrack.bookwise.responseHelper.RegistrationResult;
+import com.techcrack.bookwise.service.user.UserRegistrationService;
 import com.techcrack.bookwise.utils.AbstractLogger;
 import org.springframework.stereotype.Service;
 

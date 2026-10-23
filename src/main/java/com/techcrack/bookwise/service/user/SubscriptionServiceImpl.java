@@ -1,4 +1,4 @@
-package com.techcrack.bookwise.service;
+package com.techcrack.bookwise.service.user;
 
 import com.techcrack.bookwise.abstractions.AdminRevenueService;
 import com.techcrack.bookwise.abstractions.SubscriptionService;
@@ -6,7 +6,6 @@ import com.techcrack.bookwise.abstractions.UserService;
 import com.techcrack.bookwise.constans.ApplicationData;
 import com.techcrack.bookwise.constans.enums.Subscriptions;
 import com.techcrack.bookwise.dtos.subscription.DiscountDetails;
-import com.techcrack.bookwise.dtos.subscription.request.SubscriptionRegisterResponse;
 import com.techcrack.bookwise.dtos.subscription.request.SubscriptionUpgradeRequest;
 import com.techcrack.bookwise.dtos.subscription.response.*;
 import com.techcrack.bookwise.entity.Subscription;

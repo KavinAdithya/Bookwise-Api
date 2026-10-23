@@ -1,11 +1,10 @@
-package com.techcrack.bookwise.service;
+package com.techcrack.bookwise.service.book;
 
 import com.techcrack.bookwise.abstractions.AuthorService;
 import com.techcrack.bookwise.abstractions.BookService;
 import com.techcrack.bookwise.abstractions.CategoryService;
 import com.techcrack.bookwise.constans.ApplicationData;
 import com.techcrack.bookwise.constans.enums.BookStatus;
-import com.techcrack.bookwise.constans.enums.Status;
 import com.techcrack.bookwise.dtos.book.request.BookRegisterRequest;
 import com.techcrack.bookwise.dtos.book.response.*;
 import com.techcrack.bookwise.entity.Author;
@@ -20,7 +19,6 @@ import com.techcrack.bookwise.repository.BookRepository;
 import com.techcrack.bookwise.utils.AbstractService;
 import com.techcrack.bookwise.validations.BookServiceValidations;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 

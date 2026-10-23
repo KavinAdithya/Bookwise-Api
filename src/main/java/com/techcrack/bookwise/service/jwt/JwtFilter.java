@@ -1,4 +1,4 @@
-package com.techcrack.bookwise.jwt;
+package com.techcrack.bookwise.service.jwt;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

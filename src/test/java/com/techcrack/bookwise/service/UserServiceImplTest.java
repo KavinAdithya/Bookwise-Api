@@ -2,25 +2,31 @@ package com.techcrack.bookwise.service;
 
 
 import com.techcrack.bookwise.constans.enums.Roles;
+import com.techcrack.bookwise.dtos.user.context.AuthenticationResult;
+import com.techcrack.bookwise.entity.UserPrincipal;
 import com.techcrack.bookwise.entity.Users;
+import com.techcrack.bookwise.exceptions.customized.InvalidDataException;
 import com.techcrack.bookwise.exceptions.templates.Errors;
-import com.techcrack.bookwise.jwt.JwtService;
+import com.techcrack.bookwise.service.jwt.JwtService;
 import com.techcrack.bookwise.repository.UserRepository;
+import com.techcrack.bookwise.service.notification.OtpService;
+import com.techcrack.bookwise.service.user.PasswordResetService;
+import com.techcrack.bookwise.service.user.UserServiceImpl;
 import com.techcrack.bookwise.validations.UserServiceValidation;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("User Service Test")
@@ -89,11 +95,87 @@ class UserServiceImplTest {
             // Act Test
             Users users = userService.register(createUserRequest);
 
-            System.out.println(users.getPassword());
-            System.out.println(createUserRequest.getPassword());
-
             // Assert
             assertEquals(createUserRequest, createdUser);
+        }
+
+        @Test
+        public void userCreationFailedWhenUserHasValidationErrors() {
+            Errors errors = new Errors();
+
+            errors.addErrorMessage("User Validation failed");
+
+            when(userServiceValidation.validateUserData(any(Users.class)))
+                    .thenReturn(errors);
+
+            assertThrows(InvalidDataException.class, () -> userService.register(createUserRequest));
+        }
+    }
+
+    @Nested
+    @DisplayName("User Authentication test")
+    class UserAuthenticationTest {
+        private static String username;
+        private static String password;
+
+        @BeforeAll
+        public static void setUp() {
+            username = "User123";
+            password = "User@123";
+        }
+
+        @Test
+        void authenticateSuccessfully() {
+            String username = "User-123";
+            String password = "User@123";
+            String token = "mock-jwt-token";
+
+            UserPrincipal principal = mock(UserPrincipal.class);
+
+            Authentication authentication = mock(Authentication.class);
+
+            when(authManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
+                    .thenReturn(authentication);
+
+            when(authentication.getPrincipal())
+                    .thenReturn(principal);
+
+            when(jwtService.generateToken(username))
+                    .thenReturn(token);
+
+            AuthenticationResult result =
+                    userService.authenticate(username, password);
+
+            assertNotNull(result);
+            assertEquals(token, result.token());
+
+            verify(authManager).authenticate(any(UsernamePasswordAuthenticationToken.class));
+            verify(jwtService).generateToken(username);
+        }
+
+        @Test
+        void authenticationFailedForInvalidCredentials() {
+            final String username = "user-123";
+            final String password = "Wrong-Password@123";
+
+            when(authManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
+                    .thenThrow(new BadCredentialsException("Invalid Credentials"));
+
+            assertThrows(BadCredentialsException.class, () -> userService.authenticate(username, password));
+
+            verify(jwtService, never()).generateToken(any(String.class));
+        }
+
+        @Test
+        @DisplayName("User Credential Null cases")
+        void authenticationFailedForNullCredentials() {
+
+            when(authManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
+                    .thenThrow(new BadCredentialsException("Invalid Credentials"));
+
+            assertThrows(BadCredentialsException.class, () -> userService.authenticate(null, null));
+
+            verify(jwtService, never()).generateToken(any(String.class));
         }
     }
 

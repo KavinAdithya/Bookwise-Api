@@ -1,4 +1,4 @@
-package com.techcrack.bookwise.service;
+package com.techcrack.bookwise.service.book;
 
 import com.techcrack.bookwise.abstractions.CategoryService;
 import com.techcrack.bookwise.entity.Category;

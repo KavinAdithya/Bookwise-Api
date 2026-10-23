@@ -1,4 +1,4 @@
-package com.techcrack.bookwise.service;
+package com.techcrack.bookwise.service.user;
 
 import com.techcrack.bookwise.abstractions.UserService;
 import com.techcrack.bookwise.dtos.passwordReset.PasswordResetRequest;
@@ -12,10 +12,10 @@ import com.techcrack.bookwise.entity.Users;
 import com.techcrack.bookwise.exceptions.customized.InvalidDataException;
 import com.techcrack.bookwise.exceptions.customized.ObjectNotFoundException;
 import com.techcrack.bookwise.abstractions.CurrentUserService;
-import com.techcrack.bookwise.jwt.JwtService;
+import com.techcrack.bookwise.service.jwt.JwtService;
 import com.techcrack.bookwise.repository.UserRepository;
 import com.techcrack.bookwise.exceptions.templates.Errors;
-import com.techcrack.bookwise.responseHelper.ResponseEntityHelper;
+import com.techcrack.bookwise.service.notification.OtpService;
 import com.techcrack.bookwise.utils.AbstractService;
 import com.techcrack.bookwise.validations.UserServiceValidation;
 import jakarta.transaction.Transactional;
@@ -91,8 +91,6 @@ public class UserServiceImpl extends AbstractService<UserServiceImpl, UserReposi
     public AuthenticationResult authenticate(String username, String password) {
 
         logger.info("Authentication Process started for {}", username);
-
-        logger.debug("Authentication  Data  {} and {}", username, password);
 
         Authentication authentication = authManager.authenticate(
                 new UsernamePasswordAuthenticationToken(

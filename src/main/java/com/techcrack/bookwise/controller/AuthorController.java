@@ -10,7 +10,7 @@ import com.techcrack.bookwise.dtos.author.response.ViewAuthorResponse;
 import com.techcrack.bookwise.entity.Author;
 import com.techcrack.bookwise.entity.Subscription;
 import com.techcrack.bookwise.abstractions.CurrentUserService;
-import com.techcrack.bookwise.service.AuthorRegistrationService; 
+import com.techcrack.bookwise.service.author.AuthorRegistrationService;
 import com.techcrack.bookwise.responseHelper.ApiResponseEntity;
 import com.techcrack.bookwise.mapper.AuthorMapper;
 import com.techcrack.bookwise.responseHelper.RegistrationResult;

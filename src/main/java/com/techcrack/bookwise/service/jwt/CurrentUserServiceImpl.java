@@ -1,4 +1,4 @@
-package com.techcrack.bookwise.service;
+package com.techcrack.bookwise.service.jwt;
 
 import com.techcrack.bookwise.abstractions.CurrentUserService;
 import com.techcrack.bookwise.entity.UserPrincipal;

@@ -13,7 +13,7 @@ import com.techcrack.bookwise.dtos.user.request.UserRegisterRequest;
 import com.techcrack.bookwise.entity.Subscription;
 import com.techcrack.bookwise.entity.Users;
 import com.techcrack.bookwise.abstractions.CurrentUserService;
-import com.techcrack.bookwise.service.UserRegistrationService;
+import com.techcrack.bookwise.service.user.UserRegistrationService;
 import com.techcrack.bookwise.responseHelper.ApiResponseEntity;
 import com.techcrack.bookwise.mapper.UserMapper;
 import com.techcrack.bookwise.responseHelper.RegistrationResult;

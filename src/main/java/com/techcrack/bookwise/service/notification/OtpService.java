@@ -1,4 +1,4 @@
-package com.techcrack.bookwise.service;
+package com.techcrack.bookwise.service.notification;
 
 import com.techcrack.bookwise.abstractions.notificationService.NotificationService;
 import com.techcrack.bookwise.constans.ApplicationData;

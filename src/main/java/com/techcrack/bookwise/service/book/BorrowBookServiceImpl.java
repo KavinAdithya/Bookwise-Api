@@ -1,4 +1,4 @@
-package com.techcrack.bookwise.service;
+package com.techcrack.bookwise.service.book;
 
 import com.techcrack.bookwise.abstractions.*;
 import com.techcrack.bookwise.constans.ApplicationData;
@@ -24,7 +24,6 @@ import com.techcrack.bookwise.helper.TimeHelper;
 import com.techcrack.bookwise.repository.BorrowBookRepository;
 import com.techcrack.bookwise.utils.AbstractService;
 import com.techcrack.bookwise.validations.BorrowBookValidations;
-import jakarta.transaction.InvalidTransactionException;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
