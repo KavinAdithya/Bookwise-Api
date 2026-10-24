@@ -5,6 +5,7 @@ import com.techcrack.bookwise.dtos.admin.sqlProjector.AdminRevenueIncomeBasedPro
 import com.techcrack.bookwise.dtos.author.context.AdminRevenueSummary;
 import com.techcrack.bookwise.dtos.author.context.IncomeTypeBasedRevenue;
 import com.techcrack.bookwise.dtos.author.sqlProjector.AuthorRevenueProjector;
+import com.techcrack.bookwise.dtos.author.sqlProjector.BookQuantityProjector;
 import com.techcrack.bookwise.exceptions.customized.InvalidDataException;
 import com.techcrack.bookwise.exceptions.customized.InvalidDateRangeException;
 import com.techcrack.bookwise.helper.CollectionHelper;
@@ -66,40 +67,63 @@ public class AdminRevenueCalculationService extends AbstractLogger<AdminRevenueC
         BigDecimal overallProfitOrLoss = BigDecimal.ZERO;
 
         for (String curIncomeType : totalRevenue.keySet()) {
-            if (!authorRevenue.containsKey(curIncomeType) || !incomeTypeMap.containsKey(curIncomeType))
+            if (!incomeTypeMap.containsKey(curIncomeType))
                 continue;
 
             final AdminRevenueIncomeBasedProjector curIncomeTypeAdminRevenue = totalRevenue.get(curIncomeType);
-            final AuthorRevenueProjector curIncomeTypeAuthorRevenue = authorRevenue.get(curIncomeType);
-            final BigDecimal currentProfitOrLoss = curIncomeTypeAdminRevenue.getTotalIncome().subtract(curIncomeTypeAuthorRevenue.getTotalRevenue());
+            final AuthorRevenueProjector curIncomeTypeAuthorRevenue = authorRevenue.getOrDefault(curIncomeType, null);
+            final BigDecimal currentProfitOrLoss = curIncomeTypeAdminRevenue.getTotalIncome().subtract(curIncomeTypeAuthorRevenue == null ? BigDecimal.ZERO : curIncomeTypeAuthorRevenue.getTotalRevenue());
 
             overallTotalRevenue = overallTotalRevenue.add(curIncomeTypeAdminRevenue.getTotalIncome());
-            overallAuthorRevenue = overallAuthorRevenue.add(curIncomeTypeAuthorRevenue.getTotalRevenue());
-            overallAuthorRevenueClaimed = overallAuthorRevenueClaimed.add(curIncomeTypeAuthorRevenue.getRevenueClaimed());
-            overallAuthorRevenueNotClaimed = overallAuthorRevenueNotClaimed.add(curIncomeTypeAuthorRevenue.getRevenueNotClaimed());
+
+            if (curIncomeTypeAuthorRevenue != null) {
+                overallAuthorRevenue = overallAuthorRevenue.add(curIncomeTypeAuthorRevenue.getTotalRevenue());
+                overallAuthorRevenueClaimed = overallAuthorRevenueClaimed.add(curIncomeTypeAuthorRevenue.getRevenueClaimed());
+                overallAuthorRevenueNotClaimed = overallAuthorRevenueNotClaimed.add(curIncomeTypeAuthorRevenue.getRevenueNotClaimed());
+            }
             overallProfitOrLoss = overallProfitOrLoss.add(currentProfitOrLoss);
 
             incomeTypeBasedRevenues.add(mapper.mapToIncomeTypeBasedRevenue(
                 incomeTypeMap.get(curIncomeType),
-                startDate,
-                endDate,
                 curIncomeTypeAdminRevenue,
                 curIncomeTypeAuthorRevenue,
                 currentProfitOrLoss
             ));
         }
 
+        List<BookQuantityProjector> bookQuantityProjectors = getTotalAuthorRevenueBookCount(startDate, endDate, incomeType);
+
+        long totalBooksBorrowed = 0;
+        long totalBooksSold = 0;
+
+        for (BookQuantityProjector bookQuantityProjector : bookQuantityProjectors) {
+            totalBooksSold += bookQuantityProjector.getPurchaseBookCount();
+            totalBooksBorrowed += bookQuantityProjector.getBorrowBookCount();
+        }
+
         return new AdminRevenueSummary(
                 startDate,
                 endDate,
-                0,
-                0,
+                totalBooksSold,
+                totalBooksBorrowed,
                 overallTotalRevenue,
                 overallAuthorRevenue,
                 overallAuthorRevenueClaimed,
                 overallAuthorRevenueNotClaimed,
                 overallProfitOrLoss,
                 incomeTypeBasedRevenues
+        );
+    }
+
+    public List<BookQuantityProjector> getTotalAuthorRevenueBookCount(LocalDateTime startDate, LocalDateTime endDate, IncomeType incomeType) {
+        if (incomeType == null)
+            throw new InvalidDataException("Income Type is invalid");
+
+        return authorRevenueRepository.getAllAuthorRevenueBooksQuantity(
+                startDate,
+                endDate,
+                incomeType == IncomeType.UNKNOWN,
+                incomeType == IncomeType.UNKNOWN ? null : incomeType.name()
         );
     }
 

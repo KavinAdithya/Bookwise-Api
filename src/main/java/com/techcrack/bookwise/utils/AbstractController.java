@@ -6,7 +6,7 @@ import com.techcrack.bookwise.abstractions.CurrentUserService;
  * IMPORTANT: Always use in controller layer only.
  * @param <L> Logger Type
  * @param <S> Service Type
- * @param <M> Helper Type
+ * @param <M> Mapper Type
  */
 public class AbstractController<L, S, M> extends AbstractLogger<L>{
     protected final M mapper;

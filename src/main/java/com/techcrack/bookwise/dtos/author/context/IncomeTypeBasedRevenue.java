@@ -6,8 +6,6 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 public record IncomeTypeBasedRevenue(
-        LocalDateTime startDate,
-        LocalDateTime endDate,
         IncomeType incomeType,
         BigDecimal totalRevenue,
         BigDecimal authorRevenue,

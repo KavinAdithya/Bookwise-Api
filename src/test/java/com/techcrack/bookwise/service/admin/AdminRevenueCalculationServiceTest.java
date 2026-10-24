@@ -1,140 +1,180 @@
 package com.techcrack.bookwise.service.admin;
 
 import com.techcrack.bookwise.constans.enums.IncomeType;
+import com.techcrack.bookwise.dtos.admin.sqlProjector.AdminRevenueIncomeBasedProjector;
+import com.techcrack.bookwise.dtos.author.sqlProjector.AuthorRevenueProjector;
 import com.techcrack.bookwise.exceptions.customized.InvalidDataException;
 import com.techcrack.bookwise.exceptions.customized.InvalidDateRangeException;
+import com.techcrack.bookwise.helper.CollectionHelper;
+import com.techcrack.bookwise.mapper.AdminRevenueCalculationMapper;
 import com.techcrack.bookwise.repository.AdminRevenueRepository;
 import com.techcrack.bookwise.repository.AuthorRevenueRepository;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.time.LocalDateTime;
-import java.util.Map;
+import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class AdminRevenueCalculationServiceTest {
+
     @Mock
     private AdminRevenueRepository adminRevenueRepository;
 
     @Mock
     private AuthorRevenueRepository authorRevenueRepository;
 
-    @InjectMocks
-    private AdminRevenueCalculationService adminRevenueCalculationService;
+    @Mock
+    private AdminRevenueCalculationMapper mapper;
 
-    @Nested
-    @DisplayName("Summing up total amount based on income type")
-    class IncomeTypeCalculationTest {
-        @Test
-        public void calculateTotalAllRevenueTest() {
-            when(
-            adminRevenueRepository
-                    .calculateTotalAdminRevenue(
-                            any(LocalDateTime.class),
-                            any(LocalDateTime.class),
-                            any(Boolean.class),
-                            any()
-                    ))
-                    .thenReturn(new BigDecimal("100.00"));
-            BigDecimal res = adminRevenueCalculationService.calculateTotalAllRevenue(LocalDateTime.now().minusYears(1), LocalDateTime.now());
+    private AdminRevenueCalculationService service;
 
-            assertEquals(100.00, res.doubleValue());
-        }
+    @BeforeEach
+    void setUp() {
+        CollectionHelper collectionHelper = new CollectionHelper();
 
-        @Test
-        public void calculateTotalAllRevenueInvalidDurationCase() {
-            BigDecimal res = adminRevenueCalculationService.calculateTotalAllRevenue(LocalDateTime.now(), LocalDateTime.now().minusYears(1));
+        service = new AdminRevenueCalculationService(
+                adminRevenueRepository,
+                authorRevenueRepository,
+                collectionHelper,
+                mapper
+        );
+    }
 
-            assertEquals(0.00, res.doubleValue());
+    @Test
+    void calculateTotalRevenueBasedOnIncomeType_invalidDates_returnsEmptyList() {
+        LocalDateTime endDate = LocalDateTime.now();
+        LocalDateTime startDate = endDate.plusDays(1);
 
+        List<AdminRevenueIncomeBasedProjector> result =
+                service.calculateTotalRevenueBasedOnIncomeType(
+                        startDate,
+                        endDate,
+                        IncomeType.UNKNOWN
+                );
 
-            verify(adminRevenueRepository, never()).calculateTotalAdminRevenue(any(), any(), any(Boolean.class), any());
-        }
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
 
-        @Test
-        public void calculateTotalAllRevenueEdgeCase() {
-            BigDecimal res =
-                        adminRevenueCalculationService.calculateTotalAllRevenue(null, null);
+        verifyNoInteractions(adminRevenueRepository);
+    }
 
-            assertEquals(BigDecimal.ZERO, res);
+    @Test
+    void calculateTotalRevenueBasedOnIncomeType_unknownIncomeType_queriesAllTypes() {
+        LocalDateTime start = LocalDateTime.of(2026, 1, 1, 0, 0);
+        LocalDateTime end = LocalDateTime.of(2026, 1, 31, 23, 59);
 
-            verify(adminRevenueRepository, never())
-                    .calculateTotalAdminRevenue(
-                            any(),
-                            any(),
-                            anyBoolean(),
-                            isNull()
-                    );
-        }
+        when(adminRevenueRepository.calculateTotalAdminRevenue(
+                start, end, true, null
+        )).thenReturn(List.of());
 
-        @Test
-        public void calculateTotalRevenueBasedOnIncomeTypeTest() {
-            BigDecimal res = adminRevenueCalculationService.calculateTotalRevenueBasedOnIncomeType(LocalDateTime.now().minusYears(1), LocalDateTime.now(), null);
+        List<AdminRevenueIncomeBasedProjector> result =
+                service.calculateTotalRevenueBasedOnIncomeType(
+                        start, end, IncomeType.UNKNOWN
+                );
 
-            assertEquals(0, res.doubleValue());
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
 
-            verifyNoInteractions(adminRevenueRepository);
-        }
+        verify(adminRevenueRepository).calculateTotalAdminRevenue(
+                start, end, true, null
+        );
+    }
 
-        @Test
-        public void findAllIncomeTypeRevenuesTest() {
-            when(
-                    adminRevenueRepository
-                            .calculateTotalAdminRevenue(
-                                    any(LocalDateTime.class),
-                                    any(LocalDateTime.class),
-                                    any(Boolean.class),
-                                    any()
-                            ))
-                    .thenReturn(new BigDecimal("100.00"));
+    @Test
+    void calculateTotalRevenueBasedOnIncomeType_specificType_queriesThatType() {
+        LocalDateTime start = LocalDateTime.of(2026, 1, 1, 0, 0);
+        LocalDateTime end = LocalDateTime.of(2026, 1, 31, 23, 59);
 
-            Map<IncomeType, BigDecimal> res = adminRevenueCalculationService.findAllIncomeTypeRevenues(LocalDateTime.now().minusYears(1), LocalDateTime.now(), IncomeType.UNKNOWN);
+        IncomeType specificType = Arrays.stream(IncomeType.values())
+                .filter(type -> type != IncomeType.UNKNOWN)
+                .findFirst()
+                .orElseThrow();
 
-            assertEquals(3, res.size());
-            assertEquals(300.00, res
-                                            .values()
-                                            .stream()
-                                            .reduce(BigDecimal.valueOf(0.00), (a, b) -> BigDecimal.valueOf(a.doubleValue() + b.doubleValue()))
-                                            .doubleValue());
-        }
+        when(adminRevenueRepository.calculateTotalAdminRevenue(
+                start, end, false, specificType.name()
+        )).thenReturn(List.of());
 
-        @Test
-        public void findAllIncomeTypeRevenuesInvalidDurationExceptionTest() {
+        service.calculateTotalRevenueBasedOnIncomeType(
+                start, end, specificType
+        );
 
-            InvalidDateRangeException exception = assertThrows(InvalidDateRangeException.class, () ->  adminRevenueCalculationService
-                                                                                .findAllIncomeTypeRevenues(
-                                                                                        null,
-                                                                                        null,
-                                                                                        IncomeType.UNKNOWN
-                                                                                )
-            );
+        verify(adminRevenueRepository).calculateTotalAdminRevenue(
+                start, end, false, specificType.name()
+        );
+    }
 
-            assertEquals("Start date or end date is wrong.", exception.getMessage());
-        }
+    @Test
+    void findAllIncomeTypeRevenues_invalidDateRange_throwsException() {
+        LocalDateTime start = LocalDateTime.of(2026, 2, 1, 0, 0);
+        LocalDateTime end = LocalDateTime.of(2026, 1, 1, 0, 0);
 
-        @Test
-        public void findAllIncomeTypeRevenuesIncomeTypeNullExceptionTest() {
+        assertThrows(
+                InvalidDateRangeException.class,
+                () -> service.findAllIncomeTypeRevenues(
+                        start, end, IncomeType.UNKNOWN
+                )
+        );
 
-            InvalidDataException exception = assertThrows(InvalidDataException.class, () ->  adminRevenueCalculationService
-                    .findAllIncomeTypeRevenues(
-                            LocalDateTime.now().minusYears(1),
-                            LocalDateTime.now(),
-                            null
-                    )
-            );
+        verifyNoInteractions(adminRevenueRepository);
+    }
 
-            assertEquals("Invalid Income type.", exception.getMessage());
-        }
+    @Test
+    void findAllIncomeTypeRevenues_nullIncomeType_throwsException() {
+        LocalDateTime start = LocalDateTime.of(2026, 1, 1, 0, 0);
+        LocalDateTime end = LocalDateTime.of(2026, 1, 31, 0, 0);
+
+        assertThrows(
+                InvalidDataException.class,
+                () -> service.findAllIncomeTypeRevenues(
+                        start, end, null
+                )
+        );
+
+        verifyNoInteractions(adminRevenueRepository);
+    }
+
+    @Test
+    void getTotalAuthorRevenue_nullIncomeType_throwsException() {
+        assertThrows(
+                InvalidDataException.class,
+                () -> service.getTotalAuthorRevenue(
+                        LocalDateTime.now(),
+                        LocalDateTime.now(),
+                        null
+                )
+        );
+
+        verifyNoInteractions(authorRevenueRepository);
+    }
+
+    @Test
+    void getTotalAuthorRevenue_unknownIncomeType_queriesAllTypes() {
+        LocalDateTime start = LocalDateTime.of(2026, 1, 1, 0, 0);
+        LocalDateTime end = LocalDateTime.of(2026, 1, 31, 0, 0);
+
+        when(authorRevenueRepository.getTotalAuthorRevenue(
+                start, end, true, null
+        )).thenReturn(List.of());
+
+        List<AuthorRevenueProjector> result =
+                service.getTotalAuthorRevenue(
+                        start, end, IncomeType.UNKNOWN
+                );
+
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+
+        verify(authorRevenueRepository).getTotalAuthorRevenue(
+                start, end, true, null
+        );
     }
 }
