@@ -14,8 +14,8 @@ import static com.techcrack.bookwise.constans.queries.sql.AuthorRevenueSqlQuerie
 
 public interface AuthorRevenueRepository extends JpaRepository<AuthorRevenue, Long> {
     @Query(value = TOTAL_AUTHOR_REVENUE, nativeQuery = true)
-    List<AuthorRevenueProjector> getTotalAuthorRevenue(LocalDateTime startDate, LocalDateTime endDate, boolean isAllIncomeType, String incomeType);
+    List<AuthorRevenueProjector> getTotalAuthorRevenue(LocalDateTime startDate, LocalDateTime endDate, boolean isAllIncomeType, String incomeType, boolean isAuthorLevel, Long authorId);
 
     @Query(value = BOOKS_QUANTITY, nativeQuery = true)
-    List<BookQuantityProjector> getAllAuthorRevenueBooksQuantity(LocalDateTime startDate, LocalDateTime endDate, boolean isAllIncomeType, String incomeType);
+    List<BookQuantityProjector> getAllAuthorRevenueBooksQuantity(LocalDateTime startDate, LocalDateTime endDate, boolean isAllIncomeType, String incomeType , boolean isAuthorLevel, Long authorId);
 }

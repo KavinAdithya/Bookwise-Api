@@ -1,8 +1,6 @@
-package com.techcrack.bookwise.dtos.author.context;
+package com.techcrack.bookwise.dtos.admin.context;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -16,6 +14,6 @@ public record AdminRevenueSummary(
         BigDecimal totalAuthorRevenueReleased,
         BigDecimal totalAuthorRevenueHold,
         BigDecimal profitOrLossAmount,
-        List<IncomeTypeBasedRevenue> incomeTypeBasedRevenues
+        List<AdminIncomeTypeBasedRevenue> incomeTypeBasedRevenues
 ) {
 }

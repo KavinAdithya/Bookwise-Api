@@ -4,6 +4,8 @@ import com.techcrack.bookwise.abstractions.AuthorRevenueService;
 import com.techcrack.bookwise.abstractions.CurrentUserService;
 import com.techcrack.bookwise.constans.ApplicationData;
 import com.techcrack.bookwise.constans.enums.IncomeType;
+import com.techcrack.bookwise.dtos.author.context.AuthorRevenueSummary;
+import com.techcrack.bookwise.dtos.author.context.AuthorRevenueSummaryRequest;
 import com.techcrack.bookwise.entity.AuthorRevenue;
 import com.techcrack.bookwise.entity.BorrowBook;
 import com.techcrack.bookwise.entity.PurchaseBook;
@@ -19,10 +21,12 @@ public class AuthorRevenueServiceImpl extends AbstractRepository<AuthorRevenueSe
         implements AuthorRevenueService {
 
     private final AuthorRevenueHelper helper;
+    private final AuthorRevenueCalculationService authorRevenueCalculationService;
 
-    public AuthorRevenueServiceImpl(AuthorRevenueRepository repo, CurrentUserService userSession, AuthorRevenueHelper helper) {
+    public AuthorRevenueServiceImpl(AuthorRevenueRepository repo, CurrentUserService userSession, AuthorRevenueHelper helper, AuthorRevenueCalculationService authorRevenueCalculationService) {
         super(AuthorRevenueServiceImpl.class, repo, userSession);
         this.helper = helper;
+        this.authorRevenueCalculationService = authorRevenueCalculationService;
     }
 
     @Override
@@ -100,6 +104,11 @@ public class AuthorRevenueServiceImpl extends AbstractRepository<AuthorRevenueSe
         return true;
     }
 
+    @Override
+    public AuthorRevenueSummary computeAuthorRevenueSummary(AuthorRevenueSummaryRequest request) {
+        return authorRevenueCalculationService.computeAuthorRevenueSummaryForDashboard(userSession.getCurrentUserId(), request);
+    }
+
     private AuthorRevenue createAuthorRevenue() {
         long currentLoggedInAs = userSession.getCurrentUserId();
         AuthorRevenue revenue = new AuthorRevenue();
@@ -109,4 +118,5 @@ public class AuthorRevenueServiceImpl extends AbstractRepository<AuthorRevenueSe
 
         return revenue;
     }
+
 }

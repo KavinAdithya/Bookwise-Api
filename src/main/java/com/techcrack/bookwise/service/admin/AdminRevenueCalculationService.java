@@ -2,14 +2,14 @@ package com.techcrack.bookwise.service.admin;
 
 import com.techcrack.bookwise.constans.enums.IncomeType;
 import com.techcrack.bookwise.dtos.admin.sqlProjector.AdminRevenueIncomeBasedProjector;
-import com.techcrack.bookwise.dtos.author.context.AdminRevenueSummary;
-import com.techcrack.bookwise.dtos.author.context.IncomeTypeBasedRevenue;
+import com.techcrack.bookwise.dtos.admin.context.AdminRevenueSummary;
+import com.techcrack.bookwise.dtos.admin.context.AdminIncomeTypeBasedRevenue;
 import com.techcrack.bookwise.dtos.author.sqlProjector.AuthorRevenueProjector;
 import com.techcrack.bookwise.dtos.author.sqlProjector.BookQuantityProjector;
 import com.techcrack.bookwise.exceptions.customized.InvalidDataException;
 import com.techcrack.bookwise.exceptions.customized.InvalidDateRangeException;
 import com.techcrack.bookwise.helper.CollectionHelper;
-import com.techcrack.bookwise.mapper.AdminRevenueCalculationMapper;
+import com.techcrack.bookwise.mapper.RevenueCalculationMapper;
 import com.techcrack.bookwise.repository.AdminRevenueRepository;
 import com.techcrack.bookwise.repository.AuthorRevenueRepository;
 import com.techcrack.bookwise.utils.AbstractLogger;
@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
 public class AdminRevenueCalculationService extends AbstractLogger<AdminRevenueCalculationService> {
@@ -29,7 +28,7 @@ public class AdminRevenueCalculationService extends AbstractLogger<AdminRevenueC
     private final AdminRevenueRepository adminRevenueRepository;
     private final AuthorRevenueRepository authorRevenueRepository;
     private final CollectionHelper collectionHelper;
-    private final AdminRevenueCalculationMapper mapper;
+    private final RevenueCalculationMapper mapper;
 
     // Instance data
     private final Map<String, IncomeType> incomeTypeMap;
@@ -38,7 +37,7 @@ public class AdminRevenueCalculationService extends AbstractLogger<AdminRevenueC
                                             AdminRevenueRepository adminRevenueRepository,
                                             AuthorRevenueRepository authorRevenueRepository,
                                             CollectionHelper collectionHelper,
-                                            AdminRevenueCalculationMapper mapper
+                                            RevenueCalculationMapper mapper
                                         ) {
         super(AdminRevenueCalculationService.class);
         this.adminRevenueRepository = adminRevenueRepository;
@@ -58,7 +57,7 @@ public class AdminRevenueCalculationService extends AbstractLogger<AdminRevenueC
         final Map<String, AuthorRevenueProjector> authorRevenue = collectionHelper.convertListIntoMap(
                                                                             getTotalAuthorRevenue(startDate, endDate, incomeType),
                                                                             AuthorRevenueProjector::getIncomeType);
-        final List<IncomeTypeBasedRevenue> incomeTypeBasedRevenues = new ArrayList<>();
+        final List<AdminIncomeTypeBasedRevenue> incomeTypeBasedRevenues = new ArrayList<>();
 
         BigDecimal overallTotalRevenue = BigDecimal.ZERO;
         BigDecimal overallAuthorRevenue = BigDecimal.ZERO;
@@ -83,7 +82,7 @@ public class AdminRevenueCalculationService extends AbstractLogger<AdminRevenueC
             }
             overallProfitOrLoss = overallProfitOrLoss.add(currentProfitOrLoss);
 
-            incomeTypeBasedRevenues.add(mapper.mapToIncomeTypeBasedRevenue(
+            incomeTypeBasedRevenues.add(mapper.mapToAdminIncomeTypeBasedRevenue(
                 incomeTypeMap.get(curIncomeType),
                 curIncomeTypeAdminRevenue,
                 curIncomeTypeAuthorRevenue,
@@ -123,7 +122,9 @@ public class AdminRevenueCalculationService extends AbstractLogger<AdminRevenueC
                 startDate,
                 endDate,
                 incomeType == IncomeType.UNKNOWN,
-                incomeType == IncomeType.UNKNOWN ? null : incomeType.name()
+                incomeType == IncomeType.UNKNOWN ? null : incomeType.name(),
+                false,
+                null
         );
     }
 
@@ -135,7 +136,9 @@ public class AdminRevenueCalculationService extends AbstractLogger<AdminRevenueC
             startDate,
             endDate,
             incomeType == IncomeType.UNKNOWN,
-            incomeType == IncomeType.UNKNOWN ? null : incomeType.name()
+            incomeType == IncomeType.UNKNOWN ? null : incomeType.name(),
+            false,
+            null
         );
     }
 

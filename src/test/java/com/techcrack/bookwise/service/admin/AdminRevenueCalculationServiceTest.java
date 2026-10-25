@@ -6,13 +6,12 @@ import com.techcrack.bookwise.dtos.author.sqlProjector.AuthorRevenueProjector;
 import com.techcrack.bookwise.exceptions.customized.InvalidDataException;
 import com.techcrack.bookwise.exceptions.customized.InvalidDateRangeException;
 import com.techcrack.bookwise.helper.CollectionHelper;
-import com.techcrack.bookwise.mapper.AdminRevenueCalculationMapper;
+import com.techcrack.bookwise.mapper.RevenueCalculationMapper;
 import com.techcrack.bookwise.repository.AdminRevenueRepository;
 import com.techcrack.bookwise.repository.AuthorRevenueRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -33,7 +32,7 @@ class AdminRevenueCalculationServiceTest {
     private AuthorRevenueRepository authorRevenueRepository;
 
     @Mock
-    private AdminRevenueCalculationMapper mapper;
+    private RevenueCalculationMapper mapper;
 
     private AdminRevenueCalculationService service;
 
@@ -162,7 +161,7 @@ class AdminRevenueCalculationServiceTest {
         LocalDateTime end = LocalDateTime.of(2026, 1, 31, 0, 0);
 
         when(authorRevenueRepository.getTotalAuthorRevenue(
-                start, end, true, null
+                start, end, true, null, false, null
         )).thenReturn(List.of());
 
         List<AuthorRevenueProjector> result =
@@ -174,7 +173,7 @@ class AdminRevenueCalculationServiceTest {
         assertTrue(result.isEmpty());
 
         verify(authorRevenueRepository).getTotalAuthorRevenue(
-                start, end, true, null
+                start, end, true, null, false, null
         );
     }
 }

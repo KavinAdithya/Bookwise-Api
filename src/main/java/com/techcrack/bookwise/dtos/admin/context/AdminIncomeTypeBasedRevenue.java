@@ -1,11 +1,10 @@
-package com.techcrack.bookwise.dtos.author.context;
+package com.techcrack.bookwise.dtos.admin.context;
 
 import com.techcrack.bookwise.constans.enums.IncomeType;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
-public record IncomeTypeBasedRevenue(
+public record AdminIncomeTypeBasedRevenue(
         IncomeType incomeType,
         BigDecimal totalRevenue,
         BigDecimal authorRevenue,

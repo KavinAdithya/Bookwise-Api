@@ -27,6 +27,7 @@ public class AuthorRevenueSqlQueries {
                     AND ar.income_date >= :startDate
                     AND ar.income_date <= :endDate
                     AND (:isAllIncomeType = 1 OR ar.source_type = :incomeType)
+                    AND (:isAuthorLevel = 0 || ar.author_id = :authorId)
                 GROUP BY ar.source_type
             """;
 
@@ -62,6 +63,7 @@ public class AuthorRevenueSqlQueries {
                     AND ar.income_date >= :startDate
                     AND ar.income_date <= :endDate
                     AND (:isAllIncomeType = 1 OR ar.source_type = :incomeType)
+                    AND (:isAuthorLevel = 0 || ar.author_id = :authorId)
                 GROUP BY ar.source_type
             """;
 }
