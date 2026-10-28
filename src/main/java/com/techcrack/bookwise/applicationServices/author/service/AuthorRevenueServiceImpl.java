@@ -1,0 +1,122 @@
+package com.techcrack.bookwise.applicationServices.author.service;
+
+import com.techcrack.bookwise.applicationServices.jwt.abstraction.CurrentUserService;
+import com.techcrack.bookwise.constans.ApplicationData;
+import com.techcrack.bookwise.constans.enums.IncomeType;
+import com.techcrack.bookwise.applicationServices.author.dto.context.AuthorRevenueSummary;
+import com.techcrack.bookwise.applicationServices.author.dto.context.AuthorRevenueSummaryRequest;
+import com.techcrack.bookwise.applicationServices.author.entity.AuthorRevenue;
+import com.techcrack.bookwise.applicationServices.borrowbook.entity.BorrowBook;
+import com.techcrack.bookwise.applicationServices.purchasebook.entity.PurchaseBook;
+import com.techcrack.bookwise.exceptions.customized.ObjectNotFoundException;
+import com.techcrack.bookwise.applicationServices.author.helper.AuthorRevenueHelper;
+import com.techcrack.bookwise.applicationServices.author.repository.AuthorRevenueRepository;
+import com.techcrack.bookwise.applicationServices.author.abstraction.AuthorRevenueService;
+import com.techcrack.bookwise.utils.AbstractRepository;
+import jakarta.transaction.Transactional;
+import org.springframework.stereotype.Service;
+
+@Service
+public class AuthorRevenueServiceImpl extends AbstractRepository<AuthorRevenueServiceImpl, AuthorRevenueRepository>
+        implements AuthorRevenueService {
+
+    private final AuthorRevenueHelper helper;
+    private final AuthorRevenueCalculationService authorRevenueCalculationService;
+
+    public AuthorRevenueServiceImpl(AuthorRevenueRepository repo, CurrentUserService userSession, AuthorRevenueHelper helper, AuthorRevenueCalculationService authorRevenueCalculationService) {
+        super(AuthorRevenueServiceImpl.class, repo, userSession);
+        this.helper = helper;
+        this.authorRevenueCalculationService = authorRevenueCalculationService;
+    }
+
+    @Override
+    public AuthorRevenue register(AuthorRevenue entity) {
+        return repo.save(entity);
+    }
+
+    @Override
+    public void remove(long key) {
+        repo.deleteById(key);
+    }
+
+    @Override
+    public AuthorRevenue update(AuthorRevenue entity) {
+        return repo.save(entity);
+    }
+
+    @Override
+    public AuthorRevenue get(long key) {
+        return repo.findById(key)
+                .orElseThrow(() -> new ObjectNotFoundException(AuthorRevenue.class, "Author Revenue not found with id " + key));
+    }
+
+    @Override
+    @Transactional
+    public boolean createRevenueFromBorrowBook(BorrowBook borrowBook) {
+        logger.info("Recording revenue for author process started");
+
+        if (borrowBook == null || borrowBook.getBook() == null || borrowBook.getBook().getAuthor() == null)
+            return false;
+
+        double revenueAmount = helper.calculateBorrowBookRevenue(borrowBook);
+
+        if (revenueAmount <= 0)
+            return false;
+
+        long authorId = borrowBook.getBook().getAuthor().getId();
+
+        AuthorRevenue revenue = createAuthorRevenue();
+
+        revenue.setAuthorId(authorId);
+        revenue.setAmount(revenueAmount);
+        revenue.setSourceType(IncomeType.BOOK_BORROW_FEE);
+        revenue.setSourceId(borrowBook.getId());
+
+        register(revenue);
+
+        logger.info("Revenue Recorded Details {}", revenue);
+
+        return true;
+    }
+
+    @Override
+    @Transactional
+    public boolean createRevenueFromPurchaseBook(PurchaseBook purchaseBook) {
+        logger.info("Revenue Creation for author process started");
+
+        if (purchaseBook == null || purchaseBook.getBook() == null || purchaseBook.getBook().getAuthor() == null) {
+            logger.warn("Failed to created author revenue due to entity is null");
+            return false;
+        }
+
+        AuthorRevenue revenue = createAuthorRevenue();
+
+        revenue.setAuthorId(purchaseBook.getBook().getAuthor().getId());
+        revenue.setSourceType(IncomeType.BOOK_PURCHASE_FEE);
+        revenue.setSourceId(purchaseBook.getId());
+
+        double revenueAmount = helper.calculatePurchaseBookRevenue(purchaseBook);
+        revenue.setAmount(revenueAmount);
+
+        register(revenue);
+
+        logger.info("Author Revenue Generated Successfully");
+        return true;
+    }
+
+    @Override
+    public AuthorRevenueSummary computeAuthorRevenueSummary(AuthorRevenueSummaryRequest request) {
+        return authorRevenueCalculationService.computeAuthorRevenueSummaryForDashboard(userSession.getCurrentUserId(), request);
+    }
+
+    private AuthorRevenue createAuthorRevenue() {
+        long currentLoggedInAs = userSession.getCurrentUserId();
+        AuthorRevenue revenue = new AuthorRevenue();
+        revenue.initialize(currentLoggedInAs == -1 ? null : currentLoggedInAs);
+        revenue.setIncomeDate(ApplicationData.getSystemDate());
+        revenue.setAmountDisbursed(false);
+
+        return revenue;
+    }
+
+}

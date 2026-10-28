@@ -1,0 +1,49 @@
+package com.techcrack.bookwise.applicationServices.purchasebook.repository.queries;
+
+public class PurchaseBookJPQLQueries {
+    public static final String FIND_ALL_USER_PURCHASED_BOOK = """
+                SELECT
+                    new com.techcrack.bookwise.applicationServices.purchasebook.dto.response.PurchaseBookViewResponse(
+                        pb.id,
+                        b.title,
+                        c.name,
+                        u.name,
+                        pb.totalAmount,
+                        pb.purchaseDate,
+                        b.coverImageUrl
+                    )
+                FROM PurchaseBook pb
+                JOIN pb.book b
+                JOIN b.category c
+                JOIN b.author a
+                JOIN a.user u
+                WHERE pb.isActive
+                    AND pb.user.id = :userId
+            """;
+
+    public static final String GET_PURCHASED_BOOK_BY_ID = """
+                SELECT
+                    new com.techcrack.bookwise.applicationServices.purchasebook.dto.response.PurchasedBookDetailResponse(
+                        pb.id,
+                        new com.techcrack.bookwise.applicationServices.purchasebook.dto.context.PurchaseBookBasicInfo(
+                            b.id,
+                            b.title,
+                            b.description,
+                            b.availableCopies,
+                            c.name,
+                            u.name,
+                            b.coverImageUrl
+                        ),
+                        pb.quantity,
+                        pb.purchaseDate,
+                        pb.totalAmount
+                    )
+                FROM PurchaseBook pb
+                JOIN pb.book b
+                JOIN b.author a
+                JOIN a.user u
+                JOIN b.category c
+                WHERE pb.isActive
+                    AND pb.id = :purchaseBookId
+            """;
+}

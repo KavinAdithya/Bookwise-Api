@@ -1,6 +1,6 @@
 package com.techcrack.bookwise.scheduler;
 
-import com.techcrack.bookwise.abstractions.SubscriptionService;
+import com.techcrack.bookwise.applicationServices.subscription.abstraction.SubscriptionService;
 import com.techcrack.bookwise.constans.ApplicationData;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;

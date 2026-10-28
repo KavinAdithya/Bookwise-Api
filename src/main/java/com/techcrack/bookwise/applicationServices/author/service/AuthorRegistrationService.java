@@ -1,0 +1,47 @@
+package com.techcrack.bookwise.applicationServices.author.service;
+
+import com.techcrack.bookwise.constans.enums.Roles;
+import com.techcrack.bookwise.constans.enums.Status;
+import com.techcrack.bookwise.constans.enums.Subscriptions;
+import com.techcrack.bookwise.applicationServices.author.entity.Author;
+import com.techcrack.bookwise.applicationServices.subscription.entity.Subscription;
+import com.techcrack.bookwise.applicationServices.user.entity.Users;
+import com.techcrack.bookwise.applicationServices.jwt.abstraction.CurrentUserService;
+import com.techcrack.bookwise.responseHelper.RegistrationResult;
+import com.techcrack.bookwise.applicationServices.author.abstraction.AuthorService;
+import com.techcrack.bookwise.applicationServices.user.service.UserRegistrationService;
+import com.techcrack.bookwise.utils.AbstractLogger;
+import org.springframework.stereotype.Service;
+
+@Service
+public class AuthorRegistrationService extends AbstractLogger<AuthorRegistrationService> {
+    private final AuthorService authorService;
+    private final UserRegistrationService userRegistrationService;
+    private final CurrentUserService userSession;
+
+    public AuthorRegistrationService(AuthorService authorService, UserRegistrationService userRegistrationService, CurrentUserService userSession) {
+        super(AuthorRegistrationService.class);
+        this.authorService = authorService;
+        this.userSession = userSession;
+        this.userRegistrationService = userRegistrationService;
+    }
+
+    public RegistrationResult<Author, Subscription> register(Author author) {
+        logger.info("Author Registration process started {}", author.getUser().getUsername());
+
+        author.getUser().setRole(Roles.AUTHOR);
+        author.setStatus(Status.PENDING);
+
+        RegistrationResult<Users, Subscription> userRegistrationResult = userRegistrationService.register(author.getUser(), Subscriptions.FREE);
+        author.setUser(userRegistrationResult.entity());
+
+        logger.debug("User & Subscription Registered Info : {}", userRegistrationResult);
+
+        author = authorService.register(author);
+
+        logger.debug("Saved Author Info : {}" , author);
+        logger.info("Author Registration Process done for {}", author.getUser().getUsername());
+
+        return new RegistrationResult<>(author, userRegistrationResult.relatedEntity());
+    }
+}

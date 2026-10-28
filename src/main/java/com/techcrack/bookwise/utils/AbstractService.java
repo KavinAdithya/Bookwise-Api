@@ -1,6 +1,6 @@
 package com.techcrack.bookwise.utils;
 
-import com.techcrack.bookwise.abstractions.CurrentUserService;
+import com.techcrack.bookwise.applicationServices.jwt.abstraction.CurrentUserService;
 
 /**
  * IMPORTANT: Use when we need validation and repo in the service layer.

@@ -1,0 +1,40 @@
+package com.techcrack.bookwise.applicationServices.jwt.service;
+
+import com.techcrack.bookwise.applicationServices.jwt.abstraction.CurrentUserService;
+import com.techcrack.bookwise.applicationServices.jwt.entity.UserPrincipal;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
+
+
+@Component
+public class CurrentUserServiceImpl implements CurrentUserService {
+    @Override
+    public long getCurrentUserId() {
+        try {
+            UserPrincipal principal = getCurrentUser();
+            return principal.getUserId();
+        } catch (Exception e) {
+            return -1;
+        }
+    }
+
+    @Override
+    public String getCurrentUserName() {
+        UserPrincipal principal = getCurrentUser();
+        return principal.getUsername();
+    }
+
+    @Override
+    public UserPrincipal getCurrentUser() {
+        Authentication authentication = SecurityContextHolder
+                .getContext()
+                .getAuthentication();
+        assert authentication != null;
+        UserPrincipal principal = (UserPrincipal) authentication.getPrincipal();
+
+        assert principal != null;
+
+        return principal;
+    }
+}

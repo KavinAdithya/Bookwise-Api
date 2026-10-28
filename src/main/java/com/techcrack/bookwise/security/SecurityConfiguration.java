@@ -1,6 +1,6 @@
 package com.techcrack.bookwise.security;
 
-import com.techcrack.bookwise.service.jwt.JwtFilter;
+import com.techcrack.bookwise.applicationServices.jwt.service.JwtFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;

@@ -1,0 +1,107 @@
+package com.techcrack.bookwise.applicationServices.borrowbook.controller;
+
+import com.techcrack.bookwise.applicationServices.borrowbook.abstraction.BorrowBookService;
+import com.techcrack.bookwise.applicationServices.book.dto.response.BorrowBookConfirmationDetail;
+import com.techcrack.bookwise.applicationServices.borrowbook.dto.layer.ReturnBookContext;
+import com.techcrack.bookwise.applicationServices.borrowbook.dto.request.BorrowBookRequest;
+import com.techcrack.bookwise.applicationServices.borrowbook.dto.request.ReturnBookRequest;
+import com.techcrack.bookwise.applicationServices.borrowbook.dto.response.*;
+import com.techcrack.bookwise.applicationServices.borrowbook.entity.BorrowBook;
+import com.techcrack.bookwise.applicationServices.borrowbook.mapper.BorrowBookMapper;
+import com.techcrack.bookwise.applicationServices.jwt.abstraction.CurrentUserService;
+import com.techcrack.bookwise.responseHelper.ApiResponseEntity;
+import com.techcrack.bookwise.responseHelper.ResponseEntityHelper;
+import com.techcrack.bookwise.utils.AbstractController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api")
+public class BorrowBookController extends AbstractController<BorrowBookController, BorrowBookService, BorrowBookMapper> {
+    public BorrowBookController(BorrowBookService service, BorrowBookMapper helper, CurrentUserService userSession) {
+        super(BorrowBookController.class, service, helper, userSession);
+    }
+
+    @PostMapping("/borrow-books/register")
+    public ResponseEntity<ApiResponseEntity<BorrowBookRegisterResponse>> registerBorrowBook(@RequestBody BorrowBookRequest request) {
+        logger.info("Request Received to borrow book {}", request);
+
+        BorrowBook borrowBook = service.borrowBook(request);
+        logger.info("Book has been Borrowed");
+
+        BorrowBookRegisterResponse response = mapper.mapToBorrowBookRegisterResponse(borrowBook);
+
+        logger.info("Request completed for borrow book {}", request);
+        return ResponseEntityHelper
+                .buildSuccessResponse("Book Borrowed Successfully", response);
+    }
+
+    @GetMapping("/borrow-books/{borrowBookId}")
+    public ResponseEntity<ApiResponseEntity<BorrowBookDetailView>> getBorrowBookById(@PathVariable long borrowBookId) {
+        logger.info("Request received to get borrow details for {}", borrowBookId);
+
+        BorrowBookDetailView borrowBookDetailView = service.getBorrowBookDetailView(borrowBookId);
+
+        logger.info("Request completed for get borrow details for {}", borrowBookId);
+        return ResponseEntityHelper
+                    .buildSuccessResponse(
+                        "Borrow Details Fetched",
+                            borrowBookDetailView
+                    );
+    }
+
+    @GetMapping("/borrow-books/{borrowBookId}/return/details")
+    public ResponseEntity<ApiResponseEntity<ReturnBorrowBookDetails>> computeReturnBookDetail(@PathVariable long borrowBookId) {
+        logger.info("Request received to compute return book details for {}", borrowBookId);
+
+        ReturnBorrowBookDetails response = service.computeReturnDetails(borrowBookId);
+
+        logger.info("Request Completed to compute return book details");
+        return ResponseEntityHelper
+                .buildSuccessResponse("Return Book Details Fetched", response);
+    }
+
+    @GetMapping("/borrow-books")
+    public ResponseEntity<ApiResponseEntity<List<BorrowBookViewResponse>>> getAllBorrowRequestsBasedOnCurrentUser() {
+        logger.info("Request Received to fetch all borrow details of the user {}", userSession.getCurrentUserId());
+
+        List<BorrowBookViewResponse> borrowBooks = service.getAllBorrowBooksBasedOnCurrentUser();
+
+        logger.info("Request completed to fetch borrow details of a user");
+
+        return ResponseEntityHelper
+                .buildSuccessResponse("Borrow Books Fetched Successfully", borrowBooks);
+    }
+
+    @PatchMapping("/borrow-books/return-book")
+    public ResponseEntity<ApiResponseEntity<ReturnBookResponse>> returnBorrowBook(@RequestBody ReturnBookRequest request) {
+        logger.info("Request received to return a book with {}", request);
+
+
+        ReturnBookContext context = mapper.mapToReturnBookContext(request);
+
+        service.returnBook(context);
+
+        ReturnBookResponse response = mapper.mapToReturnBookResponse("Return Completed for borrow id " + context.borrowBookId());
+
+        logger.info("Request Completed to return a book {}", request);
+        return ResponseEntityHelper
+                .buildSuccessResponse("Book Returned Successfully", response);
+    }
+
+    @GetMapping("/borrow-books/confirmation/{bookId}/{quantity}")
+    public  ResponseEntity<ApiResponseEntity<BorrowBookConfirmationDetail>> getBorrowBookConfirmationDetails(@PathVariable("bookId") long bookId, @PathVariable("quantity") int quantity) {
+        logger.info("Request received to get borrow book confirmation details");
+
+        BorrowBookConfirmationDetail borrowBookConfirmationDetail = service.computeBorrowBookConfirmationDetails(
+                new BorrowBookRequest(bookId, quantity)
+        );
+
+        logger.info("Request Completed to get borrow book confirmation details");
+
+        return ResponseEntityHelper
+                .buildSuccessResponse("Computed Borrow Book Confirmation Details", borrowBookConfirmationDetail);
+    }
+}

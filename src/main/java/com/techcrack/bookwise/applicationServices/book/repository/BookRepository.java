@@ -1,0 +1,70 @@
+package com.techcrack.bookwise.applicationServices.book.repository;
+
+import com.techcrack.bookwise.applicationServices.book.repository.projection.BookCountProjection;
+import com.techcrack.bookwise.constans.enums.BookStatus;
+import com.techcrack.bookwise.applicationServices.book.dto.response.AdminViewBookResponse;
+import com.techcrack.bookwise.applicationServices.book.dto.response.AuthorBookViewResponse;
+import com.techcrack.bookwise.applicationServices.book.dto.response.UserBookDetailViewResponse;
+import com.techcrack.bookwise.applicationServices.book.dto.response.UserBookViewResponse;
+import com.techcrack.bookwise.applicationServices.book.entity.Book;
+import jakarta.transaction.Transactional;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+
+import static com.techcrack.bookwise.applicationServices.book.repository.queries.BookJPQLQueries.*;
+import static com.techcrack.bookwise.applicationServices.book.repository.queries.BookSqlQueries.BOOK_COUNT;
+
+public interface BookRepository extends JpaRepository<Book, Long> {
+    boolean existsByISBN(String ISBN);
+    boolean existsByTitle(String title);
+
+    List<Book> findAllByBookStatusAndAvailableCopiesGreaterThanAndIsActiveTrue(BookStatus bookStatus, int availableCopies);
+
+
+    @Modifying
+    @Transactional
+    @Query(value = CHANGE_STATUS_ALL_BOOKS)
+    int changeStatusOfAllBooks(
+            @Param("bookIds") List<Long> bookIds,
+            @Param("isActive") boolean isActive,
+            @Param("status") BookStatus status,
+            @Param("updatedBy") long updatedBy,
+            @Param("updatedAt") LocalDateTime updatedAt,
+            @Param("publishDate") LocalDateTime publishDate
+            );
+
+    @Modifying
+    @Transactional
+    @Query(value = UPDATE_BOOK_QUANTITY)
+    int updateBookQuantity(
+            @Param("bookId") long bookId,
+            @Param("quantity") int quantity,
+            @Param("updatedBy") long updatedBy,
+            @Param("updatedAt") LocalDateTime updatedAt);
+
+    @Query(FETCH_BOOKS_FOR_AUTHOR)
+    List<AuthorBookViewResponse> getAuthorBooksByAuthorId(long authorId);
+
+    Optional<Book> findByIdAndIsActiveTrue(long id);
+
+    @Query(FETCH_ALL_BOOKS)
+    List<AdminViewBookResponse> getAllBooks();
+
+    @Query(FETCH_ALL_BOOKS_BY_STATUS)
+    List<AdminViewBookResponse> getAllBooksByStatus(@Param("bookStatus") BookStatus bookStatus);
+
+    @Query(FETCH_USER_BOOK_DETAIL)
+    UserBookDetailViewResponse getUserBookDetailsById(@Param("bookId") long bookId);
+
+    @Query(FETCH_ALL_USER_BOOKS)
+    List<UserBookViewResponse> getAllPublishedUserBooks();
+
+    @Query(value = BOOK_COUNT, nativeQuery = true)
+    BookCountProjection getBookCountDetails();
+}

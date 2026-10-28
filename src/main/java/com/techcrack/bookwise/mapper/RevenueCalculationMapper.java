@@ -1,10 +1,10 @@
 package com.techcrack.bookwise.mapper;
 
 import com.techcrack.bookwise.constans.enums.IncomeType;
-import com.techcrack.bookwise.dtos.admin.sqlProjector.AdminRevenueIncomeBasedProjector;
-import com.techcrack.bookwise.dtos.admin.context.AdminIncomeTypeBasedRevenue;
-import com.techcrack.bookwise.dtos.author.context.AuthorIncomeTypeBasedRevenue;
-import com.techcrack.bookwise.dtos.author.sqlProjector.AuthorRevenueProjector;
+import com.techcrack.bookwise.applicationServices.admin.dto.sqlProjector.AdminRevenueIncomeBasedProjector;
+import com.techcrack.bookwise.applicationServices.admin.dto.context.AdminIncomeTypeBasedRevenue;
+import com.techcrack.bookwise.applicationServices.author.dto.context.AuthorIncomeTypeBasedRevenue;
+import com.techcrack.bookwise.applicationServices.author.dto.sqlProjector.AuthorRevenueProjector;
 
 import org.springframework.stereotype.Component;
 

@@ -1,7 +1,7 @@
 package com.techcrack.bookwise.helper;
 
-import com.techcrack.bookwise.dtos.subscription.DiscountDetails;
-import com.techcrack.bookwise.entity.Subscription;
+import com.techcrack.bookwise.applicationServices.subscription.dto.DiscountDetails;
+import com.techcrack.bookwise.applicationServices.subscription.entity.Subscription;
 import org.springframework.stereotype.Component;
 
 @Component

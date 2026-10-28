@@ -1,0 +1,223 @@
+package com.techcrack.bookwise.applicationServices.purchasebook.service;
+
+import com.techcrack.bookwise.constans.ApplicationData;
+import com.techcrack.bookwise.applicationServices.purchasebook.dto.context.PurchaseBookBasicInfo;
+import com.techcrack.bookwise.applicationServices.purchasebook.dto.request.PurchasingBookOrderDetailRequest;
+import com.techcrack.bookwise.applicationServices.purchasebook.dto.request.PurchaseBookRequest;
+import com.techcrack.bookwise.applicationServices.purchasebook.dto.response.PurchaseBookViewResponse;
+import com.techcrack.bookwise.applicationServices.purchasebook.dto.response.PurchasePriceOfOrder;
+import com.techcrack.bookwise.applicationServices.purchasebook.dto.response.PurchasedBookDetailResponse;
+import com.techcrack.bookwise.applicationServices.purchasebook.dto.response.PurchasingBookDetailResponse;
+import com.techcrack.bookwise.applicationServices.book.abstraction.BookService;
+import com.techcrack.bookwise.applicationServices.book.entity.Book;
+import com.techcrack.bookwise.applicationServices.jwt.abstraction.CurrentUserService;
+import com.techcrack.bookwise.applicationServices.purchasebook.abstraction.PurchaseBookService;
+import com.techcrack.bookwise.applicationServices.purchasebook.entity.PurchaseBook;
+import com.techcrack.bookwise.applicationServices.user.abstraction.UserService;
+import com.techcrack.bookwise.applicationServices.user.entity.Users;
+import com.techcrack.bookwise.exceptions.customized.*;
+import com.techcrack.bookwise.applicationServices.purchasebook.helper.PurchaseBookHelper;
+import com.techcrack.bookwise.applicationServices.purchasebook.repository.PurchaseBookRepository;
+import com.techcrack.bookwise.applicationServices.admin.abstraction.AdminRevenueService;
+import com.techcrack.bookwise.applicationServices.author.abstraction.AuthorRevenueService;
+import com.techcrack.bookwise.utils.AbstractRepository;
+import jakarta.transaction.Transactional;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+public class PurchaseBookServiceImpl extends AbstractRepository<PurchaseBookServiceImpl, PurchaseBookRepository>
+                                    implements PurchaseBookService {
+    private final BookService bookService;
+    private final UserService userService;
+    private final AdminRevenueService adminRevenueService;
+    private final AuthorRevenueService authorRevenueService;
+    private final PurchaseBookHelper helper;
+
+    public PurchaseBookServiceImpl(
+            PurchaseBookRepository repo,
+            BookService bookService,
+            UserService userService,
+            CurrentUserService userSession,
+            AdminRevenueService adminRevenueService,
+            AuthorRevenueService authorRevenueService,
+            PurchaseBookHelper helper) {
+        super(PurchaseBookServiceImpl.class, repo, userSession);
+        this.bookService = bookService;
+        this.userService = userService;
+        this.adminRevenueService = adminRevenueService;
+        this.authorRevenueService = authorRevenueService;
+        this.helper = helper;
+    }
+
+    @Override
+    public PurchaseBook register(PurchaseBook entity) {
+        logger.info("Book Purchase Process Started for User {} Book {}", entity.getUser().getId(), entity.getBook().getId());
+
+        entity = repo.save(entity);
+
+        logger.info("Book has been successfully purchased.");
+
+        return entity;
+    }
+
+    @Override
+    public void remove(long key) {
+
+    }
+
+    @Override
+    public PurchaseBook update(PurchaseBook entity) {
+        return null;
+    }
+
+    @Override
+    public PurchaseBook get(long key) {
+        return null;
+    }
+
+    @Override
+    @Transactional
+    public PurchaseBook purchaseBook(PurchaseBookRequest request) {
+        if (request.quantity() <= 0)  {
+            logger.warn("For Purchasing Book Invalid Quantity {}", request.quantity());
+            throw new InvalidDataException("Invalid Purchase Book Quantity " + request.quantity());
+        }
+        logger.info("Purchasing Book Process Started");
+
+        boolean available = bookService.checkBookAvailability(request.bookId(), request.quantity());
+
+        if (!available) {
+            logger.error("Requested book stock is not available");
+            throw new OutOfStockException("Book Quantity not available as you requested Quantity : "+ request.quantity());
+        }
+
+        logger.info("Book Quantity Available");
+
+        boolean res = bookService.updateBookAvailability(request.bookId(), request.quantity());
+
+        if (!res) {
+            throw new TransactionFailedException("Failed to update book count");
+        }
+
+        PurchaseBook entity = new PurchaseBook();
+
+        entity.initialize(userSession.getCurrentUserId());
+
+        populateRelationships(entity, request);
+        entity.setPurchaseDate(ApplicationData.getSystemDate());
+        entity.setQuantity(request.quantity());
+        double totalPurchaseAmount = helper.calculateTotalAmountFromPurchaseBook(entity).amount();
+
+        if (totalPurchaseAmount != request.purchaseAmount()) {
+            String failureMessage = buildInvalidRequestAmount(totalPurchaseAmount, request.purchaseAmount()).toString();
+            logger.warn("Amount Mismatch between Actual and request amount to purchase a book");
+            throw new InvalidDataException(failureMessage);
+        }
+
+        entity.setTotalAmount(totalPurchaseAmount);
+
+        logger.info("Purchasing Related Data has been computed and ready to purchase {}", entity);
+        PurchaseBook purchaseBook = register(entity);
+        logger.info("Book has been purchased with details {}", purchaseBook);
+
+        boolean isAdminRevenueGenerated = adminRevenueService.createRevenueFromPurchaseBook(entity);
+
+        if (!isAdminRevenueGenerated) {
+            logger.warn("Failed to generate revenue for admin");
+            throw new RevenueGenerationFailedException("Failed to generate Admin Revenue");
+        }
+
+        logger.info("Admin Revenue Generated Successfully");
+
+        boolean isAuthorRevenueGenerated = authorRevenueService.createRevenueFromPurchaseBook(entity);
+
+        if (!isAuthorRevenueGenerated) {
+            logger.warn("Failed to generate revenue for author");
+            throw new RevenueGenerationFailedException("Failed to generate Author Revenue");
+        }
+
+        logger.info("Author Revenue Generated Successfully");
+        return purchaseBook;
+    }
+
+    @Override
+    public PurchasingBookDetailResponse computePurchasingBookOrderDetails(PurchasingBookOrderDetailRequest request) {
+        logger.info("Process started to compute purchase book details Book Id : {} Quantity : {}", request.bookId(), request.quantity());
+
+        Book book = bookService.get(request.bookId());
+
+        if (book == null) {
+            logger.warn("Book Not found with id {}", request.bookId());
+            throw new ObjectNotFoundException(Book.class, "Book Not Found");
+        }
+
+        if (request.quantity() > book.getAvailableCopies()) {
+            logger.info("Requested Quantity is not available for purchase books");
+            throw new OutOfStockException("Requested Book Quantity is not Available");
+        }
+
+        PurchasePriceOfOrder purchasePrice = helper.calculateTotalAmount(book, request.quantity());
+
+        if (purchasePrice == null) {
+            logger.warn("Failed to compute Purchase price for request {}", request);
+            throw new ComputationFailedException("Failed to calculate Purchase Price of Book " + book.getId());
+        }
+
+        logger.info("Purchase Price Computed for {} as {}", request, purchasePrice);
+
+        PurchaseBookBasicInfo bookBasicInfo = new PurchaseBookBasicInfo(
+                book.getId(),
+                book.getTitle(),
+                book.getDescription(),
+                book.getAvailableCopies(),
+                book.getCategory().getName(),
+                book.getAuthor().getUser().getName(),
+                book.getCoverImageUrl()
+        );
+
+        return new PurchasingBookDetailResponse(
+                bookBasicInfo,
+                purchasePrice
+        );
+    }
+
+    @Override
+    public List<PurchaseBookViewResponse> findAllPurchaseBooks() {
+        return repo.findAllPurchaseBooksBasedOnUser(userSession.getCurrentUserId());
+    }
+
+    @Override
+    public PurchasedBookDetailResponse getPurchaseBookDetailsById(long purchasedBookId) {
+        return repo.getPurchasedBookDetailById(purchasedBookId);
+    }
+
+    private StringBuilder buildInvalidRequestAmount(double totalPurchaseAmount, double requestedPurchaseAmount) {
+        return new StringBuilder()
+                .append("Invalid Purchase Book Amount")
+                .append(" Actual Purchase Book Amount ")
+                .append(totalPurchaseAmount)
+                .append(" Purchase Book Requested Amount ")
+                .append(requestedPurchaseAmount)
+                .append(" Difference Amount is ")
+                .append(Math.abs(totalPurchaseAmount - requestedPurchaseAmount));
+    }
+
+    private void populateRelationships(PurchaseBook entity, PurchaseBookRequest request) {
+        logger.info("For Book Purchase Filling related data");
+
+        Book book = bookService.get(request.bookId());
+
+        entity.setBook(book);
+
+        logger.debug("Book Info : {}", book);
+
+        Users user = userService.get(userSession.getCurrentUserId());
+        entity.setUser(user);
+
+        logger.debug("User Info : {}", user);
+
+        logger.info("Book Purchase related entities are added");
+    }
+}

@@ -1,0 +1,39 @@
+package com.techcrack.bookwise.applicationServices.author.helper;
+import com.techcrack.bookwise.applicationServices.borrowbook.entity.BorrowBook;
+import com.techcrack.bookwise.applicationServices.purchasebook.entity.PurchaseBook;
+import org.springframework.stereotype.Component;
+
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+
+@Component
+public class AuthorRevenueHelper {
+    public double calculateBorrowBookRevenue(BorrowBook borrowBook) {
+        if (borrowBook == null || borrowBook.getBook() == null) {
+            return 0.0;
+        }
+
+        double monthlyRent = borrowBook.getBook().getBorrowFee();
+        LocalDateTime startDate = borrowBook.getBorrowDate();
+        LocalDateTime returnDate = borrowBook.getReturnDate();
+
+        if (monthlyRent <= 0 || startDate == null || returnDate == null || startDate.isAfter(returnDate)) {
+            return 0.0;
+        }
+
+        long daysUsed = ChronoUnit.DAYS.between(startDate, returnDate);
+
+        return daysUsed * (monthlyRent / 30) * borrowBook.getQuantity();
+    }
+
+    public double calculatePurchaseBookRevenue(PurchaseBook purchaseBook) {
+        if (purchaseBook == null || purchaseBook.getBook() == null) {
+            return 0.0;
+        }
+
+        double bookSoldPrice = purchaseBook.getTotalAmount();
+        double adminRevenue = bookSoldPrice * purchaseBook.getBook().getCommissionPercentage() / 100;
+
+        return bookSoldPrice - adminRevenue;
+    }
+}
