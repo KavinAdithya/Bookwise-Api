@@ -13,6 +13,7 @@ import java.util.List;
 @Component
 public class SubscriptionHelper {
     private Subscriptions[] subscriptions;
+
     public List<SubscriptionPlanDetailResponse> getAllAvailablePlans() {
         List<SubscriptionPlanDetailResponse> availablePlans = new ArrayList<>();
 
@@ -22,6 +23,7 @@ public class SubscriptionHelper {
                     subscriptions.toString(),
                     subscriptions.getRent(),
                     convertIntoStringBasedOnUnlimited(subscriptions.getBooksAllowed()),
+                    convertIntoStringBasedOnUnlimited(subscriptions.getBorrowDaysAllowed()),
                     convertIntoStringBasedOnUnlimited(subscriptions.getDays())
             ));
         }
@@ -39,6 +41,7 @@ public class SubscriptionHelper {
                 subscriptions.name(),
                 convertIntoStringBasedOnUnlimited(subscriptions.getBooksAllowed()),
                 convertIntoStringBasedOnUnlimited(subscriptions.getDays()),
+                convertIntoStringBasedOnUnlimited(subscriptions.getBorrowDaysAllowed()),
                 subscriptions.getRent()
         );
     }

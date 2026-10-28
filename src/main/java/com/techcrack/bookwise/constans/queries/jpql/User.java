@@ -35,7 +35,7 @@ public class User {
                         )
                 FROM Subscription s
                 JOIN s.user u
-                WHERE u.isActive
+                WHERE s.isActive
                     AND u.id = :userId
             """;
 }

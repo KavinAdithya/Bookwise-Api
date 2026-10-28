@@ -188,7 +188,7 @@ public class SubscriptionServiceImpl extends AbstractRepository<SubscriptionServ
     @Override
     @Transactional
     public int getFreeLimitDays(long userId) {
-        return repo.getSubscriptionPlanByUserId(userId).getDays();
+        return repo.getSubscriptionPlanByUserId(userId).getBorrowDaysAllowed();
     }
 
     @Override
@@ -226,6 +226,7 @@ public class SubscriptionServiceImpl extends AbstractRepository<SubscriptionServ
                 currentSubscription.getSubscriptionAmount(),
                 helper.convertIntoStringBasedOnUnlimited(currentSubscription.getBooksAllowedPerMonth()),
                 helper.convertIntoStringBasedOnUnlimited(currentSubscription.getSubscriptions().getDays()),
+                helper.convertIntoStringBasedOnUnlimited(currentSubscription.getSubscriptions().getBorrowDaysAllowed()),
                 currentSubscription.getStartDate(),
                 currentSubscription.getEndDate()
         );

@@ -9,6 +9,7 @@ public record CurrentSubscriptionDetailResponse(
         double price,
         String borrowLimit,
         String durationDays,
+        String borrowLimitDaysAllowed,
         LocalDateTime startDate,
         LocalDateTime endDate
 ) {

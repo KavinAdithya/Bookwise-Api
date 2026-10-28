@@ -5,6 +5,7 @@ public record SubscriptionPlanDetailResponse(
         String name,
         double price,
         String borrowLimit,
+        String borrowLimitDays,
         String durationDays
 ) {
 }

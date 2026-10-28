@@ -68,13 +68,11 @@ public class AdminRevenueServiceImpl extends AbstractRepository<AdminRevenueServ
         double bookSoldCost = purchaseBook.getTotalAmount();
         double commission = purchaseBook.getBook().getCommissionPercentage();
 
-        double commissionAmount = bookSoldCost * commission / 100;
-
         AdminRevenue adminRevenue = createAdminRevenue();
 
         adminRevenue.setSourceType(IncomeType.BOOK_PURCHASE_FEE);
         adminRevenue.setSourceId(purchaseBook.getId());
-        adminRevenue.setAmount(commissionAmount);
+        adminRevenue.setAmount(bookSoldCost);
 
         register(adminRevenue);
 

@@ -5,6 +5,7 @@ public record SubscriptionUpgradePlanDetail(
         String planType,
         String borrowLimit,
         String durationAllowed,
+        String borrowLimitDaysAllowed,
         double price
 ) {
 }
